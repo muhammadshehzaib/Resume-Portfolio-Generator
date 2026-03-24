@@ -1,7 +1,5 @@
-import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from app.database import engine, Base
 from app.models.portfolio import Portfolio
@@ -28,8 +26,7 @@ def run_migrations():
                 # Column already exists or other constraint error
                 pass
 
-# Create static directory and run migrations
-os.makedirs("static/photos", exist_ok=True)
+# Run migrations
 run_migrations()
 Base.metadata.create_all(bind=engine)
 
@@ -41,9 +38,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Mount static files for photos
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(portfolio.router, prefix="/api")
 

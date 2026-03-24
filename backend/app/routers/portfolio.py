@@ -1,5 +1,7 @@
 import json
 import re
+import cloudinary
+import cloudinary.uploader
 from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -7,6 +9,7 @@ from app.models.portfolio import Portfolio
 from app.schemas.portfolio import PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, TailorRequest, TailorResult
 from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service
 from app.auth import get_current_user
+from app.config import settings
 
 router = APIRouter()
 
@@ -147,9 +150,6 @@ async def upload_photo(
     user_id: str = Depends(get_current_user)
 ):
     """Upload a profile photo for the portfolio."""
-    import aiofiles
-    import os
-
     portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
@@ -166,19 +166,26 @@ async def upload_photo(
     if len(file_bytes) > 5 * 1024 * 1024:  # 5MB limit
         raise HTTPException(400, "Photo exceeds 5 MB limit")
 
-    # Determine file extension from content type
-    ext_map = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
-    ext = ext_map.get(file.content_type, "jpg")
+    # Upload to Cloudinary
+    try:
+        cloudinary.config(
+            cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+            api_key=settings.CLOUDINARY_API_KEY,
+            api_secret=settings.CLOUDINARY_API_SECRET,
+        )
 
-    # Save photo to static directory
-    os.makedirs("static/photos", exist_ok=True)
-    photo_path = f"static/photos/{portfolio_id}.{ext}"
-
-    async with aiofiles.open(photo_path, "wb") as f:
-        await f.write(file_bytes)
+        result = cloudinary.uploader.upload(
+            file_bytes,
+            public_id=f"portfolio-photos/{portfolio_id}",
+            overwrite=True,
+            resource_type="image",
+        )
+        photo_url = result["secure_url"]
+    except Exception as e:
+        raise HTTPException(500, f"Photo upload failed: {str(e)}")
 
     # Update portfolio with photo URL
-    portfolio.photo_url = f"/static/photos/{portfolio_id}.{ext}"
+    portfolio.photo_url = photo_url
     db.commit()
     db.refresh(portfolio)
 
