@@ -31,26 +31,42 @@ async def get_portfolio_meta_by_slug(slug: str, db: Session = Depends(get_db)):
 
 def _to_response(portfolio: Portfolio) -> PortfolioResponse:
     """Convert ORM model to API response."""
-    parsed_data = json.loads(portfolio.parsed_data)
-    parsed_resume = ParsedResume.model_validate(parsed_data)
-    ats_feedback = json.loads(portfolio.ats_feedback)
+    # Parse main portfolio data with error handling
+    try:
+        parsed_data = json.loads(portfolio.parsed_data)
+    except json.JSONDecodeError as e:
+        raise HTTPException(500, f"Corrupted portfolio data: unable to parse resume information")
 
-    # Deserialize custom_colors if present
+    try:
+        parsed_resume = ParsedResume.model_validate(parsed_data)
+    except ValueError as e:
+        raise HTTPException(500, f"Invalid portfolio data format: {str(e)}")
+
+    try:
+        ats_feedback = json.loads(portfolio.ats_feedback)
+    except json.JSONDecodeError as e:
+        raise HTTPException(500, f"Corrupted ATS feedback data in portfolio")
+
+    # Deserialize custom_colors if present - use safe default on error
     custom_colors = None
     if portfolio.custom_colors:
         try:
             colors_data = json.loads(portfolio.custom_colors)
             custom_colors = CustomColors.model_validate(colors_data)
-        except Exception:
-            pass
+        except Exception as e:
+            # Log but don't crash - use None as default (templates handle this)
+            print(f"Warning: Could not parse custom_colors for portfolio {portfolio.id}: {str(e)}")
+            custom_colors = None
 
-    # Deserialize section_order if present
+    # Deserialize section_order if present - use None on error
     section_order = None
     if portfolio.section_order:
         try:
             section_order = json.loads(portfolio.section_order)
-        except Exception:
-            pass
+        except Exception as e:
+            # Log but don't crash - templates will use default order
+            print(f"Warning: Could not parse section_order for portfolio {portfolio.id}: {str(e)}")
+            section_order = None
 
     return PortfolioResponse(
         id=portfolio.id,

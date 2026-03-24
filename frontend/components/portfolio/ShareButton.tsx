@@ -11,7 +11,14 @@ export default function ShareButton({ portfolioId, slug }: ShareButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    const portfolioUrl = process.env.NEXT_PUBLIC_PORTFOLIO_URL || window.location.origin;
+    const portfolioUrl = process.env.NEXT_PUBLIC_PORTFOLIO_URL;
+
+    if (!portfolioUrl) {
+      console.error('NEXT_PUBLIC_PORTFOLIO_URL environment variable is not set');
+      alert('Portfolio URL is not configured. Please contact support.');
+      return;
+    }
+
     const url = slug ? `${portfolioUrl}/p/${slug}` : `${portfolioUrl}/portfolio/${portfolioId}`;
     navigator.clipboard.writeText(url);
     setCopied(true);

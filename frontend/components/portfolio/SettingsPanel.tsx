@@ -77,18 +77,33 @@ export default function SettingsPanel({ portfolioId, customColors, slug, onClose
       setSlugAvailable(null);
       return;
     }
+
+    let isMounted = true;
+
     const timer = setTimeout(async () => {
       setSlugChecking(true);
       try {
         const result = await checkSlugAvailability(slugValue, portfolioId);
-        setSlugAvailable(result.available);
-      } catch {
-        setSlugAvailable(null);
+        // Only update state if this request is still relevant (component hasn't unmounted, request wasn't cancelled)
+        if (isMounted) {
+          setSlugAvailable(result.available);
+        }
+      } catch (err) {
+        // Ignore errors from cancelled requests
+        if (isMounted) {
+          setSlugAvailable(null);
+        }
       } finally {
-        setSlugChecking(false);
+        if (isMounted) {
+          setSlugChecking(false);
+        }
       }
     }, 400);
-    return () => clearTimeout(timer);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, [slugValue, slugError, portfolioId]);
 
   return (

@@ -12,7 +12,25 @@ interface QRCodeModalProps {
 export default function QRCodeModal({ portfolioId, slug, onClose }: QRCodeModalProps) {
   const qrRef = useRef<HTMLDivElement>(null);
 
-  const portfolioUrl = process.env.NEXT_PUBLIC_PORTFOLIO_URL || window.location.origin;
+  const portfolioUrl = process.env.NEXT_PUBLIC_PORTFOLIO_URL;
+
+  if (!portfolioUrl) {
+    console.error('NEXT_PUBLIC_PORTFOLIO_URL environment variable is not set');
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+          <p className="text-red-600 mb-4">Error: Portfolio URL is not configured.</p>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const url = slug ? `${portfolioUrl}/p/${slug}` : `${portfolioUrl}/portfolio/${portfolioId}`;
 
   const handleDownload = () => {

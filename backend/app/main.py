@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
@@ -22,8 +23,9 @@ def run_migrations():
             try:
                 conn.execute(text(sql))
                 conn.commit()
-            except Exception:
-                # Column already exists or other constraint error
+            except Exception as e:
+                # Column already exists or other constraint error - log it
+                print(f"Migration note: {str(e)}")
                 pass
 
 # Run migrations
@@ -32,9 +34,13 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Resume Portfolio API")
 
+# Get allowed origins from environment variable, default to localhost for development
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+allowed_origins = [origin.strip() for origin in allowed_origins]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 interface DropZoneProps {
   onFileSelect: (file: File) => void;
@@ -9,6 +9,7 @@ interface DropZoneProps {
 
 export default function DropZone({ onFileSelect, disabled }: DropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string>();
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -22,6 +23,7 @@ export default function DropZone({ onFileSelect, disabled }: DropZoneProps) {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+    setError(undefined);
 
     const files = e.dataTransfer.files;
     if (files.length > 0) {
@@ -29,14 +31,20 @@ export default function DropZone({ onFileSelect, disabled }: DropZoneProps) {
       if (file.type === 'application/pdf') {
         onFileSelect(file);
       } else {
-        alert('Please drop a PDF file');
+        setError('Only PDF files are allowed. Please drop a PDF file.');
       }
     }
   };
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      onFileSelect(e.target.files[0]);
+    setError(undefined);
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type === 'application/pdf') {
+        onFileSelect(file);
+      } else {
+        setError('Only PDF files are allowed. Please select a PDF file.');
+      }
     }
   };
 
@@ -72,6 +80,11 @@ export default function DropZone({ onFileSelect, disabled }: DropZoneProps) {
       <p className="text-lg font-semibold text-gray-700">Drag & drop your resume</p>
       <p className="text-sm text-gray-500">or click to select a PDF file</p>
       <p className="text-xs text-gray-400 mt-2">Max file size: 10 MB</p>
+      {error && (
+        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
     </div>
   );
 }

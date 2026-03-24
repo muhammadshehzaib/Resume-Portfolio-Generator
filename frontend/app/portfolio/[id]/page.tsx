@@ -73,13 +73,16 @@ export default function PortfolioPage() {
 
   const handleSaveEdit = async (data: ParsedResume) => {
     try {
+      setError(undefined);
       const updated = await updatePortfolio(portfolio!.id, data);
       setPortfolio(updated);
       setIsEditing(false);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
-      throw err;
+      const errorMessage = err instanceof Error ? err.message : 'Failed to save changes';
+      setError(errorMessage);
+      console.error('Save error:', err);
     }
   };
 
