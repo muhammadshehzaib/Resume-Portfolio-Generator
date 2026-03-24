@@ -246,7 +246,7 @@ Railway automatically serves from the `/static` folder:
 Test your backend deployment:
 
 ```bash
-curl https://api.myportfolio.com/api/health
+curl https://api.myportfolio.com/health
 # Expected: 200 OK
 ```
 
@@ -354,7 +354,7 @@ curl https://myportfolio.com
 # Expected: HTML page
 
 # Backend
-curl https://api.myportfolio.com/api/health
+curl https://api.myportfolio.com/health
 # Expected: {"status": "ok"}
 ```
 
