@@ -126,3 +126,9 @@ export async function tailorPortfolio(id: string, jobDescription: string): Promi
 
   return response.json();
 }
+
+export async function checkSlugAvailability(slug: string, excludeId: string): Promise<{ available: boolean }> {
+  const response = await fetch(`${API_URL}/api/slug/check?slug=${encodeURIComponent(slug)}&exclude_id=${encodeURIComponent(excludeId)}`);
+  if (!response.ok) throw new Error('Failed to check slug availability');
+  return response.json();
+}

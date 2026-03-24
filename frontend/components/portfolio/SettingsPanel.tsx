@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CustomColors, PortfolioSettings } from '@/lib/types';
-import { updateSettings } from '@/lib/api';
+import { updateSettings, checkSlugAvailability } from '@/lib/api';
 
 interface SettingsPanelProps {
   portfolioId: string;
@@ -20,6 +20,8 @@ export default function SettingsPanel({ portfolioId, customColors, slug, onClose
   const [error, setError] = useState<string>();
   const [slugError, setSlugError] = useState<string>();
   const [success, setSuccess] = useState(false);
+  const [slugChecking, setSlugChecking] = useState(false);
+  const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
 
   // Slug validation regex
   const slugRegex = /^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/;
@@ -40,6 +42,7 @@ export default function SettingsPanel({ portfolioId, customColors, slug, onClose
   const handleSlugChange = (value: string) => {
     const lowerValue = value.toLowerCase();
     setSlugValue(lowerValue);
+    setSlugAvailable(null);
     validateSlug(lowerValue);
   };
 
@@ -68,6 +71,25 @@ export default function SettingsPanel({ portfolioId, customColors, slug, onClose
       setSaving(false);
     }
   };
+
+  useEffect(() => {
+    if (!slugValue || slugError) {
+      setSlugAvailable(null);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setSlugChecking(true);
+      try {
+        const result = await checkSlugAvailability(slugValue, portfolioId);
+        setSlugAvailable(result.available);
+      } catch {
+        setSlugAvailable(null);
+      } finally {
+        setSlugChecking(false);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [slugValue, slugError, portfolioId]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -145,17 +167,23 @@ export default function SettingsPanel({ portfolioId, customColors, slug, onClose
                 onChange={(e) => handleSlugChange(e.target.value)}
                 className="flex-1 px-3 py-2 bg-transparent border-none focus:outline-none text-sm"
               />
-              {slugValue && !slugError && (
-                <span className="px-3 py-2 text-green-600 text-lg">✓</span>
-              )}
-              {slugError && (
+              {(slugError || slugAvailable === false) && (
                 <span className="px-3 py-2 text-red-600 text-lg">✗</span>
+              )}
+              {slugAvailable === true && !slugError && (
+                <span className="px-3 py-2 text-green-600 text-lg">✓</span>
               )}
             </div>
             {slugError ? (
               <p className="text-red-600 text-xs mt-1">{slugError}</p>
-            ) : slugValue ? (
+            ) : slugChecking ? (
+              <p className="text-gray-400 text-xs mt-1">Checking...</p>
+            ) : slugAvailable === true ? (
               <p className="text-green-600 text-xs mt-1">Available!</p>
+            ) : slugAvailable === false ? (
+              <p className="text-red-600 text-xs mt-1">Already taken</p>
+            ) : slugValue ? (
+              <p className="text-gray-400 text-xs mt-1">Checking...</p>
             ) : (
               <p className="text-gray-500 text-xs mt-1">Leave blank to use portfolio ID</p>
             )}
@@ -188,7 +216,7 @@ export default function SettingsPanel({ portfolioId, customColors, slug, onClose
           </button>
           <button
             onClick={handleSave}
-            disabled={saving || !!slugError}
+            disabled={saving || !!slugError || slugAvailable === false}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-medium"
           >
             {saving ? 'Saving...' : 'Save Settings'}

@@ -289,3 +289,16 @@ async def get_portfolio_by_slug(slug: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(portfolio)
     return _to_response(portfolio)
+
+@router.get("/slug/check")
+async def check_slug_availability(
+    slug: str,
+    exclude_id: str | None = None,
+    db: Session = Depends(get_db)
+):
+    """Check if a slug is available. Pass exclude_id to ignore the current portfolio."""
+    query = db.query(Portfolio).filter(Portfolio.slug == slug)
+    if exclude_id:
+        query = query.filter(Portfolio.id != exclude_id)
+    taken = query.first() is not None
+    return {"available": not taken}
