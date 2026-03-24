@@ -79,3 +79,9 @@ class TailorResult(BaseModel):
     tailored_summary: str
     highlighted_skills: list[str]
     skill_match_notes: str
+
+class SuggestionResult(BaseModel):
+    issues: list[str]
+    improvements: list[str]
+    positives: list[str]
+    overall_score: int

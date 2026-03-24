@@ -76,3 +76,10 @@ export interface TailorResult {
   highlighted_skills: string[];
   skill_match_notes: string;
 }
+
+export interface SuggestionResult {
+  issues: string[];
+  improvements: string[];
+  positives: string[];
+  overall_score: number;
+}

@@ -6,8 +6,8 @@ from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.portfolio import Portfolio
-from app.schemas.portfolio import PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, TailorRequest, TailorResult
-from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service
+from app.schemas.portfolio import PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, TailorRequest, TailorResult, SuggestionResult
+from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service, suggestion_service
 from app.auth import get_current_user
 from app.config import settings
 
@@ -293,6 +293,44 @@ async def tailor_portfolio(
         raise HTTPException(500, f"AI processing failed: {str(e)}")
 
     return result
+
+@router.post("/portfolio/{portfolio_id}/suggestions", response_model=SuggestionResult)
+async def get_suggestions(
+    portfolio_id: str,
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user)
+):
+    """Get AI-powered suggestions for improving the portfolio."""
+    portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
+    if not portfolio:
+        raise HTTPException(404, "Portfolio not found")
+
+    # Check ownership
+    if portfolio.user_id != user_id:
+        raise HTTPException(403, "You do not have permission to access this portfolio")
+
+    try:
+        parsed = ParsedResume.model_validate(json.loads(portfolio.parsed_data))
+    except json.JSONDecodeError:
+        raise HTTPException(500, "Corrupted portfolio data")
+
+    portfolio_data = {
+        "name": parsed.name or "Not provided",
+        "summary": parsed.summary or "Not provided",
+        "experience_count": len(parsed.experiences),
+        "experiences": [f"{e.title} at {e.company}: {'; '.join(e.description)}" for e in parsed.experiences],
+        "education": [f"{e.degree} from {e.institution}" for e in parsed.education],
+        "skills": ", ".join(parsed.skills),
+        "projects": [p.name for p in parsed.projects],
+        "has_photo": bool(portfolio.photo_url),
+        "available_for_hire": bool(portfolio.available_for_hire),
+        "ats_score": portfolio.ats_score,
+    }
+
+    try:
+        return await suggestion_service.analyze(portfolio_data)
+    except ValueError as e:
+        raise HTTPException(500, f"AI analysis failed: {str(e)}")
 
 @router.get("/p/{slug}", response_model=PortfolioResponse)
 async def get_portfolio_by_slug(slug: str, db: Session = Depends(get_db)):

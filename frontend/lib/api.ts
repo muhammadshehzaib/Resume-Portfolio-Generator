@@ -1,4 +1,4 @@
-import { PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult } from './types';
+import { PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, SuggestionResult } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -130,5 +130,17 @@ export async function tailorPortfolio(id: string, jobDescription: string): Promi
 export async function checkSlugAvailability(slug: string, excludeId: string): Promise<{ available: boolean }> {
   const response = await fetch(`${API_URL}/api/slug/check?slug=${encodeURIComponent(slug)}&exclude_id=${encodeURIComponent(excludeId)}`);
   if (!response.ok) throw new Error('Failed to check slug availability');
+  return response.json();
+}
+
+export async function getPortfolioSuggestions(id: string): Promise<SuggestionResult> {
+  const response = await fetch(`${API_URL}/api/portfolio/${id}/suggestions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Analysis failed' }));
+    throw new Error(error.detail || 'Analysis failed');
+  }
   return response.json();
 }

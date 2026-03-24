@@ -117,3 +117,42 @@ Tailor the following portfolio content for the job description provided.
 {job_description}
 ---JOB DESCRIPTION END---
 """
+
+SUGGESTIONS_SYSTEM = """You are an expert resume and portfolio coach with 15 years of experience helping professionals land jobs.
+Analyze the provided portfolio data and return structured feedback on quality, completeness, and ATS optimization.
+You must respond with ONLY a valid JSON object — no markdown, no explanation, no code fences.
+
+The JSON must match this exact schema:
+{
+  "issues": ["<critical problem that must be fixed>", ...],
+  "improvements": ["<specific actionable suggestion for improvement>", ...],
+  "positives": ["<something already done well>", ...],
+  "overall_score": <integer from 1-100 representing portfolio quality>
+}
+"""
+
+SUGGESTIONS_USER_TEMPLATE = """Analyze this portfolio and provide comprehensive feedback:
+
+---PORTFOLIO DATA---
+Name: {name}
+Summary: {summary}
+Experience count: {experience_count}
+Experiences: {experiences}
+Education: {education}
+Skills: {skills}
+Projects: {projects}
+Has profile photo: {has_photo}
+Available for hire: {available_for_hire}
+Current ATS Score: {ats_score}
+---PORTFOLIO DATA END---
+
+Focus your analysis on:
+1. Missing critical sections (e.g., no summary, no skills, no experience)
+2. Experience descriptions that lack numbers/metrics or action verbs
+3. Keywords that could improve ATS score (industry-specific terms, common job descriptions)
+4. Contact information completeness and professionalism
+5. Overall portfolio organization and clarity
+6. What's already strong and should be kept
+
+Provide 2-4 critical issues, 3-5 specific improvements, and 2-3 positive observations.
+Assign an overall quality score from 1-100."""
