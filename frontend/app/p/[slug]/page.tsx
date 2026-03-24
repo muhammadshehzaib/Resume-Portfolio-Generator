@@ -63,6 +63,7 @@ export default function PublicPortfolioPage() {
             darkMode={portfolio.dark_mode}
             photoUrl={portfolio.photo_url}
             customColors={portfolio.custom_colors}
+            sectionOrder={portfolio.section_order}
           />
         );
       case 'creative':
@@ -73,6 +74,7 @@ export default function PublicPortfolioPage() {
             darkMode={portfolio.dark_mode}
             photoUrl={portfolio.photo_url}
             customColors={portfolio.custom_colors}
+            sectionOrder={portfolio.section_order}
           />
         );
       default:
@@ -83,6 +85,7 @@ export default function PublicPortfolioPage() {
             darkMode={portfolio.dark_mode}
             photoUrl={portfolio.photo_url}
             customColors={portfolio.custom_colors}
+            sectionOrder={portfolio.section_order}
           />
         );
     }
