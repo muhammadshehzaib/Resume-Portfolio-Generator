@@ -1,0 +1,134 @@
+{
+  "info": {
+    "name": "Resume Portfolio API",
+    "description": "API collection for Resume Portfolio Generator - Upload resumes, extract info, get ATS scores, and manage portfolios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/health",
+          "host": ["{{BASE_URL}}"],
+          "path": ["health"]
+        },
+        "description": "Check if API is running"
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Resume & Generate Portfolio",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.environment.set('portfolio_id', jsonData.id);",
+              "    pm.environment.set('portfolio_score', jsonData.ats_score);",
+              "    console.log('Portfolio ID: ' + jsonData.id);",
+              "    console.log('ATS Score: ' + jsonData.ats_score);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "sample_resume.pdf",
+              "description": "PDF resume file"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/upload",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "upload"]
+        },
+        "description": "Upload a PDF resume. AI extracts info, calculates ATS score, and creates portfolio. Returns portfolio UUID."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Portfolio by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/portfolio/{{portfolio_id}}",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "portfolio", "{{portfolio_id}}"]
+        },
+        "description": "Retrieve a portfolio by its UUID. Shows all extracted data and ATS score."
+      },
+      "response": []
+    },
+    {
+      "name": "Update Portfolio (Edit)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    console.log('Portfolio updated successfully!');",
+              "    var jsonData = pm.response.json();",
+              "    console.log('Updated portfolio ID: ' + jsonData.id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"John Doe\", \"contact\": {\"email\": \"john@example.com\", \"phone\": \"+1-555-1234\", \"linkedin\": \"https://linkedin.com/in/johndoe\", \"github\": \"https://github.com/johndoe\", \"website\": \"https://johndoe.com\", \"location\": \"San Francisco, CA\"}, \"summary\": \"Experienced software engineer with 5+ years in full-stack development.\", \"experiences\": [{\"company\": \"Tech Company Inc\", \"title\": \"Senior Software Engineer\", \"start_date\": \"2020-01\", \"end_date\": null, \"description\": [\"Led team of 5 engineers\", \"Reduced API latency by 40%\", \"Mentored 3 junior engineers\"]}], \"education\": [{\"institution\": \"University of California\", \"degree\": \"Bachelor of Science\", \"field\": \"Computer Science\", \"graduation_year\": \"2018\", \"gpa\": \"3.8\"}], \"skills\": [\"Python\", \"JavaScript\", \"React\", \"Node.js\", \"PostgreSQL\", \"AWS\"], \"projects\": [{\"name\": \"Resume Portfolio Generator\", \"description\": \"AI-powered tool that converts resumes to beautiful portfolio websites\", \"technologies\": [\"Python\", \"FastAPI\", \"Next.js\", \"React\"], \"url\": \"https://github.com/johndoe/resume-portfolio\"}], \"certifications\": [\"AWS Certified Solutions Architect\", \"Kubernetes Administrator\"]}"
+        }
+      },
+      "url": {
+        "raw": "{{BASE_URL}}/api/portfolio/{{portfolio_id}}",
+        "host": ["{{BASE_URL}}"],
+        "path": ["api", "portfolio", "{{portfolio_id}}"]
+      },
+      "description": "Update/edit portfolio content. Send updated ParsedResume object. Keeps the same UUID, same shareable link."
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:8000",
+      "type": "string",
+      "description": "Base URL for the Resume Portfolio API"
+    },
+    {
+      "key": "portfolio_id",
+      "value": "",
+      "type": "string",
+      "description": "Portfolio UUID (automatically set after upload)"
+    },
+    {
+      "key": "portfolio_score",
+      "value": "",
+      "type": "string",
+      "description": "ATS score (automatically set after upload)"
+    }
+  ]
+}
