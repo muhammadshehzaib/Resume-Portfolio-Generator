@@ -18,6 +18,7 @@ def run_migrations():
             "ALTER TABLE portfolios ADD COLUMN available_for_hire INTEGER DEFAULT 0",
             "ALTER TABLE portfolios ADD COLUMN slug TEXT UNIQUE",
             "ALTER TABLE portfolios ADD COLUMN view_count INTEGER DEFAULT 0",
+            "ALTER TABLE portfolios ADD COLUMN user_id TEXT",
         ]
         for sql in migrations:
             try:

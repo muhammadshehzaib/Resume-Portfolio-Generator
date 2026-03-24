@@ -6,6 +6,7 @@ class Portfolio(Base):
     __tablename__ = "portfolios"
 
     id                  = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id             = Column(String, nullable=True)  # User identifier from auth
     raw_text            = Column(Text, nullable=False)
     parsed_data         = Column(Text, nullable=False)
     ats_score           = Column(Integer, nullable=False)

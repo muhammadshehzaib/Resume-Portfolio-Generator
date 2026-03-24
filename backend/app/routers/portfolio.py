@@ -6,6 +6,7 @@ from app.database import get_db
 from app.models.portfolio import Portfolio
 from app.schemas.portfolio import PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, TailorRequest, TailorResult
 from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service
+from app.auth import get_current_user
 
 router = APIRouter()
 
@@ -67,7 +68,8 @@ def _to_response(portfolio: Portfolio) -> PortfolioResponse:
 @router.post("/upload", response_model=PortfolioResponse)
 async def upload_resume(
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user)
 ):
     """Upload PDF resume, extract info, score ATS, and create portfolio."""
     if file.content_type != "application/pdf":
@@ -89,6 +91,7 @@ async def upload_resume(
         raise HTTPException(500, f"AI processing failed: {str(e)}")
 
     portfolio = Portfolio(
+        user_id=user_id,
         raw_text=raw_text,
         parsed_data=parsed.model_dump_json(),
         ats_score=ats.score,
@@ -117,12 +120,17 @@ async def get_portfolio(portfolio_id: str, db: Session = Depends(get_db)):
 async def update_portfolio(
     portfolio_id: str,
     data: ParsedResume,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user)
 ):
     """Update portfolio with edited data. Keep same UUID."""
     portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
+
+    # Check ownership
+    if portfolio.user_id != user_id:
+        raise HTTPException(403, "You do not have permission to edit this portfolio")
 
     # Update parsed data
     portfolio.parsed_data = data.model_dump_json()
@@ -135,7 +143,8 @@ async def update_portfolio(
 async def upload_photo(
     portfolio_id: str,
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user)
 ):
     """Upload a profile photo for the portfolio."""
     import aiofiles
@@ -144,6 +153,10 @@ async def upload_photo(
     portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
+
+    # Check ownership
+    if portfolio.user_id != user_id:
+        raise HTTPException(403, "You do not have permission to edit this portfolio")
 
     # Validate content type
     if file.content_type not in ("image/jpeg", "image/png", "image/webp"):
@@ -175,12 +188,17 @@ async def upload_photo(
 async def update_settings(
     portfolio_id: str,
     settings: PortfolioSettings,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user)
 ):
     """Update portfolio settings (template, colors, order, mode, badge, slug)."""
     portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
+
+    # Check ownership
+    if portfolio.user_id != user_id:
+        raise HTTPException(403, "You do not have permission to edit this portfolio")
 
     # Update template if provided
     if settings.template is not None:
@@ -228,12 +246,17 @@ async def update_settings(
 async def tailor_portfolio(
     portfolio_id: str,
     data: TailorRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user)
 ):
     """Tailor portfolio summary and skills to a specific job description."""
     portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
+
+    # Check ownership
+    if portfolio.user_id != user_id:
+        raise HTTPException(403, "You do not have permission to access this portfolio")
 
     parsed = ParsedResume.model_validate(json.loads(portfolio.parsed_data))
 
