@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class ContactInfo(BaseModel):
@@ -84,4 +84,4 @@ class SuggestionResult(BaseModel):
     issues: list[str]
     improvements: list[str]
     positives: list[str]
-    overall_score: int
+    overall_score: int = Field(..., ge=1, le=100)

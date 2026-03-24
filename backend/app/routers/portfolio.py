@@ -1,5 +1,6 @@
 import json
 import re
+from typing import Optional
 import cloudinary
 import cloudinary.uploader
 from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
@@ -347,7 +348,7 @@ async def get_portfolio_by_slug(slug: str, db: Session = Depends(get_db)):
 @router.get("/slug/check")
 async def check_slug_availability(
     slug: str,
-    exclude_id: str | None = None,
+    exclude_id: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     """Check if a slug is available. Pass exclude_id to ignore the current portfolio."""
