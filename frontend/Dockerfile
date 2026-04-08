@@ -7,6 +7,6 @@ RUN npm ci
 
 COPY . /app
 
-EXPOSE 3000
+EXPOSE 3005
 
-CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0", "-p", "3000"]
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0", "-p", "3005"]
