@@ -1,19 +1,22 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node
 node_modules/
 frontend/node_modules/
-
 .next/
 frontend/.next/
 
+# Env / secrets
 .env
-.env.local
-.env.*.local
-backend/.env
-frontend/.env.local
+.env.*
+!.env.example
 
+# DB
 *.db
 
-__pycache__/
-*.py[cod]
-.pytest_cache/
-
+# OS files
 .DS_Store
