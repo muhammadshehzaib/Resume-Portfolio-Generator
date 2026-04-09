@@ -13,19 +13,19 @@ const templates = [
 
 export default function TemplateSwitcher({ current, onChange }: TemplateSwitcherProps) {
   return (
-    <div className="flex gap-2 mb-6">
+    <div className="flex flex-wrap gap-3">
       {templates.map((t) => (
         <button
           key={t.id}
           onClick={() => onChange(t.id)}
-          className={`px-4 py-2 rounded-lg transition-all ${
+          className={`min-w-40 rounded-xl border px-4 py-3 text-left transition-all ${
             current === t.id
-              ? 'bg-blue-500 text-white shadow-lg'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              ? 'border-sky-500 bg-sky-50 text-sky-800 shadow-sm'
+              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
           }`}
         >
-          <div className="font-semibold">{t.label}</div>
-          <div className="text-xs opacity-75">{t.description}</div>
+          <div className="text-lg font-semibold leading-none">{t.label}</div>
+          <div className="mt-1 text-xs opacity-80">{t.description}</div>
         </button>
       ))}
     </div>

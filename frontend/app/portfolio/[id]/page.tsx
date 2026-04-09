@@ -32,6 +32,9 @@ export default function PortfolioPage() {
   const [showQRCode, setShowQRCode] = useState(false);
   const [showJobCustomization, setShowJobCustomization] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const actionBtn = 'inline-flex h-11 items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-100';
+  const actionBtnPrimary = 'inline-flex h-11 items-center gap-2 rounded-xl bg-slate-800 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700';
+  const actionBtnAccent = 'inline-flex h-11 items-center gap-2 rounded-xl bg-sky-600 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-700';
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -256,11 +259,11 @@ export default function PortfolioPage() {
 
       {/* Header with Controls */}
       {!isPreviewMode && (
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
-              <a href="/" className="text-blue-600 hover:text-blue-700 text-sm">← New portfolio</a>
-              <span className="text-sm text-gray-500 flex items-center gap-1">
+        <div className="border-b border-slate-200 bg-white/95 backdrop-blur">
+          <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+            <div className="flex items-center gap-5">
+              <a href="/" className="text-sm font-semibold text-sky-700 hover:text-sky-800">← New portfolio</a>
+              <span className="text-sm text-slate-500 flex items-center gap-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -268,10 +271,10 @@ export default function PortfolioPage() {
                 {portfolio.view_count ?? 0} {(portfolio.view_count ?? 0) === 1 ? 'view' : 'views'}
               </span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2"
+                className={actionBtnPrimary}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -280,7 +283,7 @@ export default function PortfolioPage() {
               </button>
               <button
                 onClick={() => setIsPreviewMode(true)}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                className={actionBtnAccent}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -290,10 +293,10 @@ export default function PortfolioPage() {
               </button>
               <button
                 onClick={handleToggleDarkMode}
-                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                className={`inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors ${
                   darkMode
-                    ? 'bg-gray-800 text-yellow-300 hover:bg-gray-700'
-                    : 'bg-yellow-300 text-gray-900 hover:bg-yellow-400'
+                    ? 'border border-slate-300 bg-slate-900 text-amber-200 hover:bg-slate-800'
+                    : 'border border-amber-300 bg-amber-100 text-amber-900 hover:bg-amber-200'
                 }`}
               >
                 {darkMode ? (
@@ -309,10 +312,10 @@ export default function PortfolioPage() {
               </button>
               <button
                 onClick={handleToggleAvailableForHire}
-                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                className={`inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors ${
                   availableForHire
-                    ? 'bg-green-600 text-white hover:bg-green-700'
-                    : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+                    ? 'border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                    : 'border border-slate-300 bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -322,7 +325,7 @@ export default function PortfolioPage() {
               </button>
               <button
                 onClick={() => setShowSettings(true)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2"
+                className={actionBtn}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -333,7 +336,7 @@ export default function PortfolioPage() {
               <ShareButton portfolioId={portfolio.id} slug={portfolio.slug} />
               <button
                 onClick={() => setShowQRCode(true)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                className={actionBtn}
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm5-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm8-2h8v8h-8v-8zm2 2v4h4v-4h-4z" />
@@ -342,7 +345,7 @@ export default function PortfolioPage() {
               </button>
               <button
                 onClick={() => setShowJobCustomization(true)}
-                className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors flex items-center gap-2"
+                className={actionBtn}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -351,7 +354,7 @@ export default function PortfolioPage() {
               </button>
               <button
                 onClick={() => setShowSuggestions(true)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                className={actionBtn}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -365,7 +368,7 @@ export default function PortfolioPage() {
 
       {/* Template Switcher */}
       {!isPreviewMode && (
-        <div className="bg-white border-b border-gray-200">
+        <div className="border-b border-slate-200 bg-slate-50">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <TemplateSwitcher current={template} onChange={handleTemplateChange} />
           </div>
@@ -393,7 +396,7 @@ export default function PortfolioPage() {
       {isPreviewMode && (
         <button
           onClick={() => setIsPreviewMode(false)}
-          className="fixed bottom-6 right-6 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 shadow-lg transition-colors flex items-center gap-2 z-50"
+          className="fixed bottom-6 right-6 inline-flex h-12 items-center gap-2 rounded-xl bg-slate-900 px-6 text-sm font-semibold text-white shadow-xl transition-colors hover:bg-slate-800 z-50"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
