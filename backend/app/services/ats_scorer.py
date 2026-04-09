@@ -5,15 +5,14 @@ from app.schemas.portfolio import AtsResult
 from app.utils.prompts import ATS_SYSTEM, ATS_USER_TEMPLATE
 
 client = OpenAI(
-    api_key=settings.XAI_API_KEY,
-    base_url="https://api.x.ai/v1"
+    api_key=settings.OPENAI_API_KEY,
 )
 
 async def score(raw_text: str) -> AtsResult:
-    """Score resume for ATS compatibility using Grok API."""
+    """Score resume for ATS compatibility using OpenAI."""
     try:
         message = client.chat.completions.create(
-            model="grok-3-mini",
+            model=settings.OPENAI_MODEL,
             max_tokens=2048,
             messages=[
                 {"role": "system", "content": ATS_SYSTEM},

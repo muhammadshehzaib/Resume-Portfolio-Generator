@@ -5,12 +5,11 @@ from app.schemas.portfolio import SuggestionResult
 from app.utils.prompts import SUGGESTIONS_SYSTEM, SUGGESTIONS_USER_TEMPLATE
 
 client = OpenAI(
-    api_key=settings.XAI_API_KEY,
-    base_url="https://api.x.ai/v1"
+    api_key=settings.OPENAI_API_KEY,
 )
 
 async def analyze(portfolio_data: dict) -> SuggestionResult:
-    """Analyze portfolio and return AI-powered improvement suggestions using Grok API."""
+    """Analyze portfolio and return AI-powered improvement suggestions using OpenAI."""
     try:
         # Format experiences and education as readable strings
         experiences_str = "\n".join(portfolio_data.get("experiences", []))
@@ -18,7 +17,7 @@ async def analyze(portfolio_data: dict) -> SuggestionResult:
         projects_str = ", ".join(portfolio_data.get("projects", []))
 
         message = client.chat.completions.create(
-            model="grok-3-mini",
+            model=settings.OPENAI_MODEL,
             max_tokens=2048,
             messages=[
                 {"role": "system", "content": SUGGESTIONS_SYSTEM},

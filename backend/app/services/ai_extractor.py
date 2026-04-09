@@ -5,15 +5,14 @@ from app.schemas.portfolio import ParsedResume
 from app.utils.prompts import EXTRACTION_SYSTEM, EXTRACTION_USER_TEMPLATE
 
 client = OpenAI(
-    api_key=settings.XAI_API_KEY,
-    base_url="https://api.x.ai/v1"
+    api_key=settings.OPENAI_API_KEY,
 )
 
 async def extract(raw_text: str) -> ParsedResume:
-    """Extract structured resume data using Grok API."""
+    """Extract structured resume data using OpenAI."""
     try:
         message = client.chat.completions.create(
-            model="grok-3-mini",
+            model=settings.OPENAI_MODEL,
             max_tokens=4096,
             messages=[
                 {"role": "system", "content": EXTRACTION_SYSTEM},

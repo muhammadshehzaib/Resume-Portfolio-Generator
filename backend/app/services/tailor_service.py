@@ -5,15 +5,14 @@ from app.schemas.portfolio import TailorResult
 from app.utils.prompts import TAILOR_SYSTEM, TAILOR_USER_TEMPLATE
 
 client = OpenAI(
-    api_key=settings.XAI_API_KEY,
-    base_url="https://api.x.ai/v1"
+    api_key=settings.OPENAI_API_KEY,
 )
 
 async def tailor(summary: str, skills: list[str], job_description: str) -> TailorResult:
-    """Tailor portfolio content to a specific job description using Grok API."""
+    """Tailor portfolio content to a specific job description using OpenAI."""
     try:
         message = client.chat.completions.create(
-            model="grok-3-mini",
+            model=settings.OPENAI_MODEL,
             max_tokens=2048,
             messages=[
                 {"role": "system", "content": TAILOR_SYSTEM},
