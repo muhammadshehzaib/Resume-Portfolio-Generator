@@ -1,32 +1,21 @@
-import json
-from openai import OpenAI
-from app.config import settings
 from app.schemas.portfolio import TailorResult
+from app.services.llm import chat_json
 from app.utils.prompts import TAILOR_SYSTEM, TAILOR_USER_TEMPLATE
 
-client = OpenAI(
-    api_key=settings.OPENAI_API_KEY,
-)
-
 async def tailor(summary: str, skills: list[str], job_description: str) -> TailorResult:
-    """Tailor portfolio content to a specific job description using OpenAI."""
+    """Tailor portfolio content using the configured AI provider."""
     try:
-        message = client.chat.completions.create(
-            model=settings.OPENAI_MODEL,
+        data = chat_json(
+            system_prompt=TAILOR_SYSTEM,
+            user_prompt=TAILOR_USER_TEMPLATE.format(
+                summary=summary or "",
+                skills=", ".join(skills),
+                job_description=job_description
+            ),
             max_tokens=2048,
-            messages=[
-                {"role": "system", "content": TAILOR_SYSTEM},
-                {"role": "user", "content": TAILOR_USER_TEMPLATE.format(
-                    summary=summary or "",
-                    skills=", ".join(skills),
-                    job_description=job_description
-                )}
-            ]
         )
-        raw_json = message.choices[0].message.content.strip()
-        data = json.loads(raw_json)
         return TailorResult.model_validate(data)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"AI returned invalid JSON: {str(e)}")
+    except ValueError:
+        raise
     except Exception as e:
         raise ValueError(f"Tailoring failed: {str(e)}")

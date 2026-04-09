@@ -1,8 +1,10 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    OPENAI_API_KEY: str
-    OPENAI_MODEL: str = "gpt-4o-mini"
+    AI_PROVIDER: str = "ollama"
+    AI_MODEL: str = "qwen2.5:7b-instruct"
+    AI_BASE_URL: str | None = None
+    OPENAI_API_KEY: str | None = None
     DATABASE_URL: str = "sqlite:///./portfolios.db"
     CLOUDINARY_CLOUD_NAME: str
     CLOUDINARY_API_KEY: str
