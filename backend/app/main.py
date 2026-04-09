@@ -1,10 +1,10 @@
-import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from app.database import engine, Base
 from app.models.portfolio import Portfolio
 from app.routers import portfolio
+from app.config import settings
 
 def run_migrations():
     """Run SQLite-safe migrations for new columns"""
@@ -34,8 +34,8 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Resume Portfolio API")
 
-# Get allowed origins from environment variable, default to localhost for development
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+# Get allowed origins from settings
+allowed_origins = settings.ALLOWED_ORIGINS.split(",")
 allowed_origins = [origin.strip() for origin in allowed_origins]
 
 app.add_middleware(

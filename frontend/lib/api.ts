@@ -2,12 +2,25 @@ import { PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, Sugge
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+function getAuthHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+
+  let userId = window.localStorage.getItem('rp_user_id');
+  if (!userId) {
+    userId = `user_${crypto.randomUUID()}`;
+    window.localStorage.setItem('rp_user_id', userId);
+  }
+
+  return { Authorization: `Bearer ${userId}` };
+}
+
 export async function uploadResume(file: File): Promise<PortfolioResponse> {
   const formData = new FormData();
   formData.append('file', file);
 
   const response = await fetch(`${API_URL}/api/upload`, {
     method: 'POST',
+    headers: getAuthHeaders(),
     body: formData,
   });
 
@@ -34,6 +47,7 @@ export async function updatePortfolio(id: string, data: ParsedResume): Promise<P
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify(data),
   });
@@ -52,6 +66,7 @@ export async function uploadPhoto(id: string, file: File): Promise<PortfolioResp
 
   const response = await fetch(`${API_URL}/api/portfolio/${id}/photo`, {
     method: 'POST',
+    headers: getAuthHeaders(),
     body: formData,
   });
 
@@ -68,6 +83,7 @@ export async function updateSettings(id: string, settings: PortfolioSettings): P
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify(settings),
   });
@@ -115,6 +131,7 @@ export async function tailorPortfolio(id: string, jobDescription: string): Promi
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ job_description: jobDescription }),
   });
@@ -136,7 +153,10 @@ export async function checkSlugAvailability(slug: string, excludeId: string): Pr
 export async function getPortfolioSuggestions(id: string): Promise<SuggestionResult> {
   const response = await fetch(`${API_URL}/api/portfolio/${id}/suggestions`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
   });
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: 'Analysis failed' }));
