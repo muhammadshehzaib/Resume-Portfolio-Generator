@@ -28,8 +28,16 @@ def _build_client() -> OpenAI:
             base_url=settings.AI_BASE_URL,
         )
 
+    if provider == "huggingface":
+        if not settings.OPENAI_API_KEY:
+            raise ValueError("OPENAI_API_KEY (HF token) is required when AI_PROVIDER=huggingface")
+        return OpenAI(
+            api_key=settings.OPENAI_API_KEY,
+            base_url=settings.AI_BASE_URL or "https://router.huggingface.co/v1",
+        )
+
     raise ValueError(
-        "Unsupported AI_PROVIDER. Use one of: ollama, openai, openai_compatible"
+        "Unsupported AI_PROVIDER. Use one of: ollama, openai, openai_compatible, huggingface"
     )
 
 
