@@ -15,7 +15,7 @@ interface JobCustomizationModalProps {
 export default function JobCustomizationModal({
   portfolioId,
   currentSummary,
-  currentSkills,
+  currentSkills: _currentSkills,
   onClose,
   onApply,
 }: JobCustomizationModalProps) {

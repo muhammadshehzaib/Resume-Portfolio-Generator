@@ -9,4 +9,4 @@ COPY . /app
 
 EXPOSE 3005
 
-CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0", "-p", "3005"]
+CMD ["sh", "-lc", "rm -rf /app/.next/* && npm run dev -- -H 0.0.0.0 -p 3005"]
