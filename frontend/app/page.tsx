@@ -6,7 +6,7 @@ import DropZone from '@/components/upload/DropZone';
 import UploadProgress from '@/components/upload/UploadProgress';
 import { uploadResume } from '@/lib/api';
 import Image from 'next/image';
-import { motion } from "motion/react";
+import { motion, Variants } from "motion/react";
 
 const PlayCircle = () => (
   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,7 +25,7 @@ const HexagonLogo = () => (
   </motion.svg>
 );
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -36,7 +36,7 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
