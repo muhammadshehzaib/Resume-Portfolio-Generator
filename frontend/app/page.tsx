@@ -6,7 +6,7 @@ import DropZone from '@/components/upload/DropZone';
 import UploadProgress from '@/components/upload/UploadProgress';
 import { uploadResume } from '@/lib/api';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion } from "motion/react";
 
 const PlayCircle = () => (
   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,10 +16,30 @@ const PlayCircle = () => (
 );
 
 const HexagonLogo = () => (
-  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <motion.svg 
+    animate={{ rotate: 360 }}
+    transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+    className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+  >
     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-  </svg>
+  </motion.svg>
 );
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.3
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
 
 export default function Home() {
   const router = useRouter();
@@ -73,71 +93,113 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#efefef] p-0 sm:p-4 md:p-8 lg:p-12 font-sans text-slate-900 flex flex-col items-center">
       {/* Main Container mirroring the bordered white box in the image */}
-      <motion.div
+      <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-[1500px] bg-white border border-gray-200 shadow-xl shadow-black/5 rounded-sm overflow-hidden mb-12 flex flex-col"
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full max-w-[1500px] bg-white border border-gray-200 shadow-2xl shadow-black/5 rounded-sm overflow-hidden mb-12 flex flex-col"
       >
-
+        
         {/* Header */}
         <header className="flex flex-wrap items-center justify-between px-6 py-5 md:px-10 border-b border-gray-100 gap-4 relative z-20 bg-white">
-          <div className="flex items-center gap-2 font-bold tracking-widest uppercase text-sm">
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 font-bold tracking-widest uppercase text-sm cursor-pointer"
+          >
             <HexagonLogo />
             <span>ResumeOS</span>
-          </div>
-
+          </motion.div>
+          
           <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-500">
-            <a href="#solutions" className="hover:text-black transition">Solutions</a>
-            <a href="#framework" className="hover:text-black transition">Framework</a>
-            <a href="#how-it-works" className="hover:text-black transition">How It Works</a>
-            <a href="#case-studies" className="hover:text-black transition">Case Studies</a>
+            <motion.a whileHover={{ y: -2 }} href="#solutions" className="hover:text-black transition">Solutions</motion.a>
+            <motion.a whileHover={{ y: -2 }} href="#framework" className="hover:text-black transition">Framework</motion.a>
+            <motion.a whileHover={{ y: -2 }} href="#how-it-works" className="hover:text-black transition">How It Works</motion.a>
+            <motion.a whileHover={{ y: -2 }} href="#case-studies" className="hover:text-black transition">Case Studies</motion.a>
           </nav>
-
+          
           <div className="flex items-center gap-6 text-sm font-medium">
-            <a href="#login" className="text-gray-600 hover:text-black transition hidden sm:block">Log In</a>
-            <a href="#upload" className="border border-gray-200 px-5 py-2 hover:bg-gray-50 transition rounded-sm flex items-center justify-center min-w-[120px]">Get Started</a>
+            <motion.a 
+              whileHover={{ scale: 1.05, backgroundColor: "#f9fafb" }} 
+              whileTap={{ scale: 0.95 }}
+              href="#upload" 
+              className="border border-gray-200 px-6 py-2.5 transition rounded-sm flex items-center justify-center min-w-[120px] shadow-sm hover:shadow-md"
+            >
+              Get Started
+            </motion.a>
           </div>
         </header>
 
         {/* Hero Section */}
         <div className="grid lg:grid-cols-2 flex-grow border-b border-gray-100 relative z-10">
           {/* Left Column */}
-          <div className="px-6 py-12 md:px-14 md:py-24 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col relative justify-center bg-white z-10">
-
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-              className="max-w-[550px] mb-24"
+          <div className="px-6 py-12 md:px-14 md:py-24 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col relative justify-center bg-white z-10 overflow-hidden">
+            
+            <motion.div 
+               variants={containerVariants}
+               initial="hidden"
+               animate="show"
+               className="max-w-[550px] mb-24 relative z-10"
             >
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-8 mt-4">
+              <motion.p variants={itemVariants} className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-8 mt-4">
                 AI For High-Stakes Career Leadership
-              </p>
-              <h1 className="text-5xl md:text-[64px] font-medium tracking-tight leading-[1.05] mb-8">
+              </motion.p>
+              <motion.h1 
+                variants={itemVariants} 
+                className="text-5xl md:text-[64px] font-medium tracking-tight leading-[1.05] mb-8 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900"
+                animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                style={{ backgroundSize: "200% auto" }}
+              >
                 When Context Changes, Strategy Follows.
-              </h1>
-              <p className="text-gray-500 text-lg md:text-xl leading-relaxed mb-10">
+              </motion.h1>
+              <motion.p variants={itemVariants} className="text-gray-500 text-lg md:text-xl leading-relaxed mb-10">
                 When the job market shifts, hesitation is fatal. ResumeOS provides professionals with the real-time context needed to execute career transitions, pivots, and ascensions with total confidence.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <a href="#upload" className="bg-black text-white px-8 py-3.5 text-sm font-medium hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all rounded-sm duration-300">
-                  Transition Roadmap
-                </a>
-                <button className="flex items-center border border-gray-300 px-6 py-3.5 text-sm font-medium hover:bg-gray-50 transition rounded-sm">
+              </motion.p>
+              
+              <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4">
+                <motion.a 
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  href="#upload" 
+                  className="bg-black text-white px-8 py-4 text-sm font-medium shadow-xl shadow-black/10 transition-all rounded-sm duration-300 relative overflow-hidden group"
+                >
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[100%]"
+                    animate={{ translateX: ["-100%", "200%"] }}
+                    transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", repeatDelay: 1 }}
+                  />
+                  <span className="relative">Transition Roadmap</span>
+                </motion.a>
+                <motion.button 
+                  whileHover={{ scale: 1.03, y: -2, backgroundColor: "#fafafa" }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex items-center border border-gray-300 px-6 py-4 text-sm font-medium transition rounded-sm"
+                >
                   <PlayCircle />
                   View the Framework
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             </motion.div>
 
+            {/* Background flourish */}
+            <motion.div 
+              animate={{ opacity: [0.01, 0.03, 0.01], scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
+              className="absolute top-0 left-0 w-[150%] h-[150%] pointer-events-none bg-[radial-gradient(circle_at_top_left,black,transparent_50%)]" 
+            />
+
             {/* Testimonial Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6, ease: "easeOut" }}
-              className="mt-auto border border-gray-150 p-6 max-w-[420px] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] bg-white lg:absolute lg:bottom-12"
+            <motion.div 
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0, y: [-5, 5, -5] }}
+              transition={{ 
+                opacity: { delay: 1, duration: 0.8 },
+                x: { delay: 1, duration: 0.8 },
+                y: { repeat: Infinity, duration: 6, ease: "easeInOut", delay: 1 } 
+              }}
+              whileHover={{ scale: 1.02, boxShadow: "0 20px 40px -15px rgba(0,0,0,0.05)" }}
+              className="mt-auto border border-gray-150 p-6 max-w-[420px] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] bg-white lg:absolute lg:bottom-12 z-20 cursor-default transition-shadow"
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 bg-stone-200 overflow-hidden shrink-0 filter grayscale border border-gray-200">
@@ -152,7 +214,7 @@ export default function Home() {
                 "...ResumeOS gave us shared context when alignment mattered most. It changed how we made decisions during the transition..."
               </p>
               <div className="flex gap-2 mt-6">
-                <div className="w-1.5 h-1.5 rounded-full bg-black"></div>
+                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="w-1.5 h-1.5 rounded-full bg-black"></motion.div>
                 <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
                 <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
               </div>
@@ -168,18 +230,33 @@ export default function Home() {
               backgroundPosition: 'center center'
             }}
           >
-            <div className="absolute inset-0 pointer-events-none fade-edges shadow-[inset_0_0_100px_rgba(255,255,255,0.8)] z-10"></div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
-              className="w-full max-w-xl aspect-square relative z-0"
+            <motion.div 
+              className="absolute inset-0 pointer-events-none z-10"
+              animate={{ backgroundPosition: ["0px 0px", "0px 24px"] }}
+              transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+              style={{
+                backgroundImage: 'linear-gradient(to bottom, transparent 80%, rgba(0,0,0,0.03) 100%)',
+                backgroundSize: '100% 24px'
+              }}
+            />
+            <div className="absolute inset-0 pointer-events-none fade-edges shadow-[inset_0_0_100px_rgba(255,255,255,0.8)] z-20"></div>
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.9 }}
+               animate={{ opacity: 1, scale: 1, y: [-15, 15, -15], rotate: [-2, 2, -2] }}
+               transition={{ 
+                 opacity: { delay: 0.4, duration: 1.2 },
+                 scale: { delay: 0.4, duration: 1.2 },
+                 y: { repeat: Infinity, duration: 7, ease: "easeInOut" },
+                 rotate: { repeat: Infinity, duration: 10, ease: "easeInOut" }
+               }}
+               whileHover={{ scale: 1.05, rotate: 0, transition: { duration: 0.3 } }}
+               className="w-full max-w-xl aspect-square relative z-0 origin-center"
             >
               <Image
                 src="/halftone_eagle.png"
                 alt="Dot Matrix Eagle"
                 fill
-                className="object-contain"
+                className="object-contain drop-shadow-2xl mix-blend-multiply"
                 priority
               />
             </motion.div>
@@ -188,72 +265,103 @@ export default function Home() {
       </motion.div>
 
       {/* Subsequent Sections Restyled */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.7 }}
-        className="w-full max-w-[1500px] flex flex-col gap-12"
+      <motion.div 
+         initial={{ opacity: 0, y: 50 }}
+         whileInView={{ opacity: 1, y: 0 }}
+         viewport={{ once: true, margin: "-100px" }}
+         transition={{ duration: 0.8, ease: "easeOut" }}
+         className="w-full max-w-[1500px] flex flex-col gap-12"
       >
-        <section id="upload" className="bg-white border border-gray-200 p-10 md:p-16 flex flex-col md:flex-row gap-12 rounded-sm shadow-xl shadow-black/5">
-          <div className="md:w-1/3">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4">Upload Module</p>
-            <h2 className="text-3xl font-medium tracking-tight mb-4">Initialize Your Matrix</h2>
-            <p className="text-gray-500 text-sm leading-relaxed mb-6">Drop your standard PDF resume to instantly extract ATS-optimized JSON datasets and generate a recruiter-ready portfolio link.</p>
+        <section id="upload" className="bg-white border border-gray-200 p-10 md:p-16 flex flex-col md:flex-row gap-12 rounded-sm shadow-xl shadow-black/5 items-center relative overflow-hidden group">
+          <div className="md:w-1/3 relative z-10">
+            <motion.p initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4">Ingestion Module</motion.p>
+            <motion.h2 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="text-3xl font-medium tracking-tight mb-4">Initialize Your Matrix</motion.h2>
+            <motion.p initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }} className="text-gray-500 text-sm leading-relaxed mb-6">Drop your standard PDF resume to instantly formulate ATS-optimized JSON representations and generate an interactive portfolio.</motion.p>
           </div>
-          <div className="md:w-2/3 border border-gray-100 shadow-inner bg-gray-50 rounded-sm p-8">
+          <div className="md:w-2/3 w-full border border-gray-200/60 shadow-inner bg-gray-50/50 rounded-sm p-8 relative z-10 backdrop-blur-sm transition-all duration-500 group-hover:bg-gray-50/80">
             <DropZone onFileSelect={handleFileSelect} disabled={status !== 'idle'} />
             <div className="mt-8">
               <UploadProgress status={status} error={error} fileName={fileName} />
             </div>
+            
+            {/* Interactive Terminal Flair */}
+            <div className="mt-8 pt-6 border-t border-gray-200/50 text-[10px] font-mono text-gray-400 uppercase tracking-widest flex justify-between px-2">
+              <motion.p animate={{ opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2 }}>System Status: {status === 'idle' ? 'Awaiting Input' : status}</motion.p>
+              <span className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${status === 'idle' ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${status === 'idle' ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
+                </span>
+                Active
+              </span>
+            </div>
           </div>
+          
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-50/30 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
         </section>
 
         <section className="grid lg:grid-cols-2 gap-12">
           {/* Core Features */}
-          <div className="bg-black text-white p-10 md:p-16 rounded-sm shadow-xl shadow-black/5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4">Core Systems</p>
-            <h2 className="text-3xl font-medium tracking-tight mb-12">Production-ready AI Workflow</h2>
-            <div className="space-y-10">
+          <motion.div 
+            whileHover={{ y: -5 }}
+            className="bg-black text-white p-10 md:p-16 rounded-sm shadow-2xl overflow-hidden relative transition-transform duration-500"
+          >
+            <motion.div 
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
+              className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl origin-bottom-left" 
+            />
+            
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4 relative z-10">Core Systems</p>
+            <h2 className="text-3xl font-medium tracking-tight mb-12 relative z-10">Production-ready AI Workflow</h2>
+            <div className="space-y-10 relative z-10">
               {coreFeatures.map((feature, i) => (
-                <motion.div
-                  initial={{ opacity: 0, x: -10 }}
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.1 * i, duration: 0.5 }}
-                  key={feature.title}
-                  className="border-l border-gray-800 pl-6"
+                  transition={{ delay: 0.1 * i, duration: 0.6, ease: "easeOut" }}
+                  key={feature.title} 
+                  className="border-l-2 border-gray-800 pl-6 hover:border-gray-500 transition-colors duration-300"
                 >
                   <h3 className="text-lg font-medium tracking-tight mb-2">{feature.title}</h3>
                   <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Premium Features */}
-          <div className="bg-white border border-gray-200 p-10 md:p-16 rounded-sm shadow-xl shadow-black/5 flex flex-col">
+          <motion.div 
+            whileHover={{ y: -5 }}
+            className="bg-white border border-gray-200 p-10 md:p-16 rounded-sm shadow-xl shadow-black/5 flex flex-col transition-transform duration-500"
+          >
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4">Upgrades</p>
             <h2 className="text-3xl font-medium tracking-tight mb-6">Premium Controls</h2>
             <p className="text-gray-500 text-sm leading-relaxed mb-10">
               Everything needed to position this as a premium capability with upgrade-worthy controls, unlocking advanced tailoring and personalization.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mt-auto">
               {premiumFeatures.map((item, i) => (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  whileHover={{ x: 5 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.05 * i, duration: 0.4 }}
-                  key={item}
-                  className="flex items-center gap-3"
+                  transition={{ delay: 0.05 * i, duration: 0.5 }}
+                  key={item} 
+                  className="flex items-center gap-3 cursor-default"
                 >
-                  <div className="w-1 h-1 bg-black rounded-full"></div>
+                  <motion.div 
+                    animate={{ scale: [1, 1.5, 1] }} 
+                    transition={{ repeat: Infinity, duration: 4, delay: i * 0.2 }}
+                    className="w-1.5 h-1.5 bg-black rounded-full"
+                  />
                   <span className="text-sm font-medium tracking-tight text-gray-700">{item}</span>
                 </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </section>
       </motion.div>
     </div>
