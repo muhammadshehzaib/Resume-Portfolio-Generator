@@ -6,6 +6,7 @@ import DropZone from '@/components/upload/DropZone';
 import UploadProgress from '@/components/upload/UploadProgress';
 import { uploadResume } from '@/lib/api';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const PlayCircle = () => (
   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,10 +73,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#efefef] p-0 sm:p-4 md:p-8 lg:p-12 font-sans text-slate-900 flex flex-col items-center">
       {/* Main Container mirroring the bordered white box in the image */}
-      <div className="w-full max-w-[1500px] bg-white border border-gray-200 shadow-xl shadow-black/5 rounded-sm overflow-hidden mb-12 flex flex-col">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-[1500px] bg-white border border-gray-200 shadow-xl shadow-black/5 rounded-sm overflow-hidden mb-12 flex flex-col"
+      >
 
         {/* Header */}
-        <header className="flex flex-wrap items-center justify-between px-6 py-5 md:px-10 border-b border-gray-100 gap-4">
+        <header className="flex flex-wrap items-center justify-between px-6 py-5 md:px-10 border-b border-gray-100 gap-4 relative z-20 bg-white">
           <div className="flex items-center gap-2 font-bold tracking-widest uppercase text-sm">
             <HexagonLogo />
             <span>ResumeOS</span>
@@ -95,11 +101,16 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <div className="grid lg:grid-cols-2 flex-grow border-b border-gray-100">
+        <div className="grid lg:grid-cols-2 flex-grow border-b border-gray-100 relative z-10">
           {/* Left Column */}
-          <div className="px-6 py-12 md:px-14 md:py-24 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col relative justify-center">
+          <div className="px-6 py-12 md:px-14 md:py-24 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col relative justify-center bg-white z-10">
 
-            <div className="max-w-[550px] mb-24">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+              className="max-w-[550px] mb-24"
+            >
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-8 mt-4">
                 AI For High-Stakes Career Leadership
               </p>
@@ -111,7 +122,7 @@ export default function Home() {
               </p>
 
               <div className="flex flex-wrap items-center gap-4">
-                <a href="#upload" className="bg-black text-white px-8 py-3.5 text-sm font-medium hover:bg-gray-800 transition rounded-sm">
+                <a href="#upload" className="bg-black text-white px-8 py-3.5 text-sm font-medium hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all rounded-sm duration-300">
                   Transition Roadmap
                 </a>
                 <button className="flex items-center border border-gray-300 px-6 py-3.5 text-sm font-medium hover:bg-gray-50 transition rounded-sm">
@@ -119,10 +130,15 @@ export default function Home() {
                   View the Framework
                 </button>
               </div>
-            </div>
+            </motion.div>
 
             {/* Testimonial Card */}
-            <div className="mt-auto border border-gray-150 p-6 max-w-[420px] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] bg-white lg:absolute lg:bottom-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6, ease: "easeOut" }}
+              className="mt-auto border border-gray-150 p-6 max-w-[420px] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] bg-white lg:absolute lg:bottom-12"
+            >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 bg-stone-200 overflow-hidden shrink-0 filter grayscale border border-gray-200">
                   <Image src="https://ui-avatars.com/api/?name=Elias+Vane&background=random&color=fff" width={48} height={48} alt="Elias Vane" className="w-full h-full object-cover" />
@@ -140,7 +156,7 @@ export default function Home() {
                 <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
                 <div className="w-1.5 h-1.5 rounded-full bg-gray-200"></div>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Right Column (Halftone Image) */}
@@ -153,7 +169,12 @@ export default function Home() {
             }}
           >
             <div className="absolute inset-0 pointer-events-none fade-edges shadow-[inset_0_0_100px_rgba(255,255,255,0.8)] z-10"></div>
-            <div className="w-full max-w-xl aspect-square relative z-0">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
+              className="w-full max-w-xl aspect-square relative z-0"
+            >
               <Image
                 src="/halftone_eagle.png"
                 alt="Dot Matrix Eagle"
@@ -161,13 +182,19 @@ export default function Home() {
                 className="object-contain"
                 priority
               />
-            </div>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Subsequent Sections Restyled */}
-      <div className="w-full max-w-[1500px] flex flex-col gap-12">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.7 }}
+        className="w-full max-w-[1500px] flex flex-col gap-12"
+      >
         <section id="upload" className="bg-white border border-gray-200 p-10 md:p-16 flex flex-col md:flex-row gap-12 rounded-sm shadow-xl shadow-black/5">
           <div className="md:w-1/3">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4">Upload Module</p>
@@ -188,11 +215,18 @@ export default function Home() {
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4">Core Systems</p>
             <h2 className="text-3xl font-medium tracking-tight mb-12">Production-ready AI Workflow</h2>
             <div className="space-y-10">
-              {coreFeatures.map((feature) => (
-                <div key={feature.title} className="border-l border-gray-800 pl-6">
+              {coreFeatures.map((feature, i) => (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 * i, duration: 0.5 }}
+                  key={feature.title}
+                  className="border-l border-gray-800 pl-6"
+                >
                   <h3 className="text-lg font-medium tracking-tight mb-2">{feature.title}</h3>
                   <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -205,17 +239,23 @@ export default function Home() {
               Everything needed to position this as a premium capability with upgrade-worthy controls, unlocking advanced tailoring and personalization.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto">
-              {premiumFeatures.map((item) => (
-                <div key={item} className="flex items-center gap-3">
+              {premiumFeatures.map((item, i) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.05 * i, duration: 0.4 }}
+                  key={item}
+                  className="flex items-center gap-3"
+                >
                   <div className="w-1 h-1 bg-black rounded-full"></div>
                   <span className="text-sm font-medium tracking-tight text-gray-700">{item}</span>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
-      </div>
+      </motion.div>
     </div>
   );
 }
-
