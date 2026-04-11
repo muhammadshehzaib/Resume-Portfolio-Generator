@@ -18,6 +18,9 @@ import Hero from '@/components/home/Hero';
 import IngestionModule from '@/components/home/IngestionModule';
 import FeatureGrid from '@/components/home/FeatureGrid';
 
+// Content
+import { CORE_FEATURES, PREMIUM_FEATURES } from '@/lib/constants';
+
 export default function Home() {
   const router = useRouter();
   const [status, setStatus] = useState<'idle' | 'uploading' | 'processing' | 'done' | 'error'>('idle');
@@ -47,32 +50,6 @@ export default function Home() {
   }, [mouseX, mouseY]);
 
   const background = useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(22, 163, 74, 0.05), transparent 80%)`;
-
-  const coreFeatures = [
-    {
-      title: 'Resume Upload + AI Extraction',
-      description: 'Upload a PDF and extract name, contact, experience, education, skills, projects, and certifications using advanced LLM pipelines.',
-    },
-    {
-      title: 'ATS Compatibility Scoring',
-      description: 'Get a 0-100 ATS score across key criteria with direct and actionable improvements for faster interview conversion.',
-    },
-    {
-      title: 'Portfolio Generation',
-      description: 'Instantly create a shareable site in Minimal, Modern, or Creative templates with public UUID links.',
-    },
-  ];
-
-  const premiumFeatures = [
-    'Profile photo upload (Cloudinary)',
-    'Custom colors per portfolio',
-    'Drag-to-reorder sections',
-    'Dark / light mode toggle',
-    'Preview mode for recruiter view',
-    'Available-for-hire badge',
-    'Custom slug URLs',
-    'QR code generator',
-  ];
 
   const handleFileSelect = async (file: File) => {
     setFileName(file.name);
@@ -120,7 +97,7 @@ export default function Home() {
           onFileSelect={handleFileSelect} 
         />
 
-        <FeatureGrid coreFeatures={coreFeatures} premiumFeatures={premiumFeatures} />
+        <FeatureGrid coreFeatures={CORE_FEATURES} premiumFeatures={PREMIUM_FEATURES} />
 
         <Footer />
       </motion.div>
