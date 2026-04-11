@@ -149,6 +149,9 @@ export default function PortfolioPage() {
       console.error('Failed to apply tailoring:', err);
     }
   };
+  const handleDownloadPDF = () => {
+    window.print();
+  };
 
   const renderTemplate = () => {
     switch (template) {
@@ -190,9 +193,33 @@ export default function PortfolioPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Print Styles */}
+      <style jsx global>{`
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+          body {
+            background: white !important;
+            padding: 0 !important;
+          }
+          .print-container {
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+          }
+          @page {
+            margin: 0;
+          }
+        }
+      `}</style>
+
       {/* Success Toast */}
       {saveSuccess && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-40">
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-40 no-print">
           Portfolio updated! ✓
         </div>
       )}
@@ -256,7 +283,7 @@ export default function PortfolioPage() {
 
       {/* Header with Controls (Premium Dashboard Aesthetic) */}
       {!isPreviewMode && (
-        <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.02)]">
+        <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.02)] no-print">
           <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between">
             
             {/* Left: Navigation & Stats */}
@@ -334,6 +361,15 @@ export default function PortfolioPage() {
               </div>
               
               <button
+                onClick={handleDownloadPDF}
+                className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-sm transition-colors flex items-center gap-2"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                PDF
+              </button>
+              <button
                 onClick={() => setIsPreviewMode(true)}
                 className="px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-sm transition-colors"
               >
@@ -353,7 +389,7 @@ export default function PortfolioPage() {
 
       {/* Template Switcher */}
       {!isPreviewMode && (
-        <div className="bg-white border-b border-gray-100">
+        <div className="bg-white border-b border-gray-100 no-print">
           <div className="max-w-[1600px] mx-auto px-6 py-3">
             <TemplateSwitcher current={template} onChange={handleTemplateChange} />
           </div>
@@ -361,17 +397,17 @@ export default function PortfolioPage() {
       )}
 
       {/* Portfolio Display */}
-      <div className={`flex gap-6 ${isPreviewMode ? '' : 'max-w-7xl mx-auto px-4'} py-8`}>
+      <div className={`flex gap-6 ${isPreviewMode ? '' : 'max-w-7xl mx-auto px-4'} py-8 print-container`}>
         {/* Main Portfolio */}
-        <div className={isPreviewMode ? 'w-full' : 'flex-1'}>
-          <div className={isPreviewMode ? '' : 'bg-white rounded-lg shadow-sm overflow-hidden'}>
+        <div className={isPreviewMode ? 'w-full' : 'flex-1 print-container'}>
+          <div className={isPreviewMode ? '' : 'bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 print-container'}>
             {renderTemplate()}
           </div>
         </div>
 
         {/* ATS Score Sidebar */}
         {!isPreviewMode && (
-          <div className="w-80">
+          <div className="w-80 no-print">
             <AtsScoreCard score={portfolio.ats_score} feedback={portfolio.ats_feedback} />
           </div>
         )}
@@ -381,7 +417,7 @@ export default function PortfolioPage() {
       {isPreviewMode && (
         <button
           onClick={() => setIsPreviewMode(false)}
-          className="fixed bottom-6 right-6 inline-flex h-12 items-center gap-2 rounded-xl bg-slate-900 px-6 text-sm font-semibold text-white shadow-xl transition-colors hover:bg-slate-800 z-50"
+          className="fixed bottom-6 right-6 inline-flex h-12 items-center gap-2 rounded-xl bg-slate-900 px-6 text-sm font-semibold text-white shadow-xl transition-colors hover:bg-slate-800 z-50 no-print"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

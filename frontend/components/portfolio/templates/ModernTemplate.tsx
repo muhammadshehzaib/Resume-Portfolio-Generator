@@ -90,50 +90,53 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
   };
 
   return (
-    <div className={`flex ${mainBgClass} min-h-screen`}>
+    <div className={`flex ${mainBgClass} min-h-screen print:bg-white print:block`}>
       {/* Sidebar */}
-      <div style={{ backgroundColor: accentColor }} className="w-80 text-white p-8">
+      <div style={{ backgroundColor: accentColor }} className="w-80 text-white p-8 print:w-full print:bg-white print:text-black print:p-0 print:mb-8 print:border-b-2 print:border-slate-100">
         {photoUrl && (
-          <div className="mb-6 text-center">
+          <div className="mb-6 text-center print:text-left print:flex print:items-center print:gap-4">
             <img
               src={photoUrl}
               alt="Profile"
-              className="w-24 h-24 rounded-full object-cover border-3 border-white mx-auto"
+              className="w-24 h-24 rounded-full object-cover border-3 border-white mx-auto print:mx-0 print:w-20 print:h-20 print:border-slate-200"
             />
+            {data.name && (
+              <h1 className="hidden print:block text-4xl font-bold">{data.name}</h1>
+            )}
           </div>
         )}
         {data.name && (
-          <h1 className="text-3xl font-bold mb-2">{data.name}</h1>
+          <h1 className="text-3xl font-bold mb-2 print:hidden">{data.name}</h1>
         )}
         {data.contact.location && (
-          <p className="mb-6" style={{ color: '#fbbf24' }}>{data.contact.location}</p>
+          <p className="mb-6 print:mb-2 print:text-sm" style={{ color: '#fbbf24' }}>{data.contact.location}</p>
         )}
         {availableForHire && (
-          <div className="mb-6">
+          <div className="mb-6 print:hidden">
             <span className="inline-block bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
               Available for Hire
             </span>
           </div>
         )}
 
-        {/* Contact */}
-        <div className="mb-8">
-          <h3 className="text-sm font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.7)' }}>CONTACT</h3>
-          <div className="space-y-2 text-sm">
-            {data.contact.email && <p>{data.contact.email}</p>}
-            {data.contact.phone && <p>{data.contact.phone}</p>}
-            {data.contact.linkedin && <p><a href={data.contact.linkedin} className="text-blue-300 hover:text-blue-200">LinkedIn</a></p>}
-            {data.contact.github && <p><a href={data.contact.github} className="text-blue-300 hover:text-blue-200">GitHub</a></p>}
+        {/* Contact Info (Inline for print) */}
+        <div className="mb-8 print:mb-4 print:flex print:flex-wrap print:gap-x-6 print:gap-y-1">
+          <h3 className="text-sm font-semibold mb-3 print:hidden" style={{ color: 'rgba(255,255,255,0.7)' }}>CONTACT</h3>
+          <div className="space-y-2 text-sm print:contents">
+            {data.contact.email && <p className="print:text-xs">{data.contact.email}</p>}
+            {data.contact.phone && <p className="print:text-xs">{data.contact.phone}</p>}
+            {data.contact.linkedin && <p className="print:hidden"><a href={data.contact.linkedin} className="text-blue-300 hover:text-blue-200">LinkedIn</a></p>}
+            {data.contact.github && <p className="print:hidden"><a href={data.contact.github} className="text-blue-300 hover:text-blue-200">GitHub</a></p>}
           </div>
         </div>
 
-        {/* Skills */}
+        {/* Skills (Inline pills for print) */}
         {data.skills.length > 0 && (
-          <div>
-            <h3 className="text-sm font-semibold mb-3" style={{ color: 'rgba(255,255,255,0.7)' }}>SKILLS</h3>
-            <div className="flex flex-wrap gap-2">
+          <div className="print:mb-4">
+            <h3 className="text-sm font-semibold mb-3 print:text-xs print:mb-1" style={{ color: 'rgba(255,255,255,0.7)' }}>SKILLS</h3>
+            <div className="flex flex-wrap gap-2 print:gap-1">
               {data.skills.slice(0, 12).map((skill, idx) => (
-                <span key={idx} className="text-white text-xs px-2 py-1 rounded-full" style={{ backgroundColor: accentColor }}>
+                <span key={idx} className="text-white text-xs px-2 py-1 rounded-full print:bg-slate-100 print:text-slate-700 print:border print:border-slate-200" style={{ backgroundColor: accentColor }}>
                   {skill}
                 </span>
               ))}
@@ -143,16 +146,22 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-8 max-w-3xl">
+      <div className="flex-1 p-8 max-w-3xl print:p-0 print:max-w-none">
         {data.summary && (
-          <div className="mb-8">
+          <div className="mb-8 print:mb-6">
             <h2 className="text-sm font-semibold mb-2" style={{ color: accentColor }}>ABOUT</h2>
-            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} leading-relaxed`}>{data.summary}</p>
+            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} leading-relaxed print:text-sm print:text-slate-700`}>{data.summary}</p>
           </div>
         )}
 
         {/* Dynamic Sections */}
-        {order.map((sectionName) => renderSection(sectionName))}
+        <div className="print:space-y-4">
+          {order.map((sectionName) => (
+             <div key={sectionName} className="print:break-inside-avoid">
+               {renderSection(sectionName)}
+             </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -99,28 +99,28 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
     }
   };
   return (
-    <div className="bg-zinc-950 text-white min-h-screen">
+    <div className="bg-zinc-950 text-white min-h-screen print:bg-white print:text-black">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 p-16 text-center">
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 p-16 text-center print:bg-white print:bg-none print:text-black print:p-8 print:border-b-2 print:border-slate-100">
         {photoUrl && (
-          <div className="mb-8">
+          <div className="mb-8 print:mb-4">
             <img
               src={photoUrl}
               alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border-4 border-white mx-auto"
+              className="w-32 h-32 rounded-full object-cover border-4 border-white mx-auto print:border-slate-200 print:w-24 print:h-24"
             />
           </div>
         )}
         {data.name && (
-          <h1 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-200 to-cyan-200">
+          <h1 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-200 to-cyan-200 print:text-black print:bg-none print:from-black print:to-black">
             {data.name}
           </h1>
         )}
         {data.summary && (
-          <p className="text-xl text-gray-200 max-w-2xl mx-auto">{data.summary}</p>
+          <p className="text-xl text-gray-200 max-w-2xl mx-auto print:text-slate-600 print:text-sm">{data.summary}</p>
         )}
         {availableForHire && (
-          <div className="mt-6">
+          <div className="mt-6 print:hidden">
             <span className="inline-block bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
               Available for Hire
             </span>
@@ -129,20 +129,20 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-8 py-12">
+      <div className="max-w-6xl mx-auto px-8 py-12 print:py-8">
         {/* Contact & Skills in Grid */}
-        <div className="grid grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-2 gap-8 mb-12 print:mb-8 print:gap-4">
           {/* Contact */}
           <div>
             <div className="text-xs font-mono mb-3 uppercase tracking-widest" style={{ color: accentColor }}>
               → CONTACT
             </div>
-            <div className="space-y-2">
-              {data.contact.email && <p className="text-gray-300">{data.contact.email}</p>}
-              {data.contact.phone && <p className="text-gray-300">{data.contact.phone}</p>}
-              {data.contact.location && <p className="text-gray-300">{data.contact.location}</p>}
-              {data.contact.linkedin && <p><a href={data.contact.linkedin} className="text-cyan-400 hover:text-cyan-300">LinkedIn</a></p>}
-              {data.contact.github && <p><a href={data.contact.github} className="text-cyan-400 hover:text-cyan-300">GitHub</a></p>}
+            <div className="space-y-2 print:space-y-1">
+              {data.contact.email && <p className="text-gray-300 print:text-slate-600 print:text-xs">{data.contact.email}</p>}
+              {data.contact.phone && <p className="text-gray-300 print:text-slate-600 print:text-xs">{data.contact.phone}</p>}
+              {data.contact.location && <p className="text-gray-300 print:text-slate-600 print:text-xs">{data.contact.location}</p>}
+              {data.contact.linkedin && <p className="print:hidden"><a href={data.contact.linkedin} className="text-cyan-400 hover:text-cyan-300">LinkedIn</a></p>}
+              {data.contact.github && <p className="print:hidden"><a href={data.contact.github} className="text-cyan-400 hover:text-cyan-300">GitHub</a></p>}
             </div>
           </div>
 
@@ -156,7 +156,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
                 {data.skills.slice(0, 8).map((skill, idx) => (
                   <span
                     key={idx}
-                    className="bg-gradient-to-r from-violet-500 to-cyan-500 px-3 py-1 rounded-lg text-sm font-medium"
+                    className="bg-gradient-to-r from-violet-500 to-cyan-500 px-3 py-1 rounded-lg text-sm font-medium print:bg-slate-100 print:bg-none print:text-slate-700 print:text-xs print:border print:border-slate-200"
                   >
                     {skill}
                   </span>
@@ -167,7 +167,13 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
         </div>
 
         {/* Dynamic Sections */}
-        {order.map((sectionName) => renderSection(sectionName))}
+        <div className="print:space-y-0 text-white print:text-black">
+          {order.map((sectionName) => (
+            <div key={sectionName} className="print:bg-white print:text-black">
+              {renderSection(sectionName)}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

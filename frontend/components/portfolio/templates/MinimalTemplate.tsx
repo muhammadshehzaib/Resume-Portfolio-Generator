@@ -16,7 +16,6 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
   const textClass = darkMode ? 'text-gray-100' : 'text-gray-900';
   const secondaryTextClass = darkMode ? 'text-gray-400' : 'text-slate-600';
   const borderClass = darkMode ? 'border-gray-700' : 'border-slate-200';
-  const linkClass = darkMode ? 'hover:text-gray-300' : 'hover:text-slate-900';
   const contentTextClass = darkMode ? 'text-gray-300' : 'text-gray-700';
   const accentColor = customColors?.primaryColor || '#3b82f6';
 
@@ -102,27 +101,27 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
   };
 
   return (
-    <div className={`${bgClass} p-12 max-w-2xl mx-auto`}>
+    <div className={`${bgClass} p-12 max-w-2xl mx-auto print:bg-white print:text-black print:p-0 print:max-w-none`}>
       {/* Photo */}
       {photoUrl && (
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 print:mb-4">
           <img
             src={photoUrl}
             alt="Profile"
-            className="w-32 h-32 rounded-full object-cover border-4 border-gray-300 mx-auto"
+            className="w-32 h-32 rounded-full object-cover border-4 border-gray-300 mx-auto print:w-24 print:h-24 print:border-slate-200"
           />
         </div>
       )}
 
       {/* Header */}
       {data.name && (
-        <div className={`text-center mb-8 pb-6 border-b ${borderClass}`}>
-          <h1 className={`text-4xl font-serif font-bold ${textClass} mb-2`}>{data.name}</h1>
+        <div className={`text-center mb-8 pb-6 border-b ${borderClass} print:mb-4 print:pb-2 print:border-slate-100`}>
+          <h1 className={`text-4xl font-serif font-bold ${textClass} mb-2 print:text-black print:text-3xl`}>{data.name}</h1>
           {data.contact.location && (
-            <p className={secondaryTextClass}>{data.contact.location}</p>
+            <p className={`${secondaryTextClass} print:text-slate-500 print:text-xs`}>{data.contact.location}</p>
           )}
           {availableForHire && (
-            <div className="mt-4">
+            <div className="mt-4 print:hidden">
               <span className="inline-block bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                 Available for Hire
               </span>
@@ -132,22 +131,28 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
       )}
 
       {/* Contact */}
-      <div className={`flex justify-center gap-4 text-sm mb-8 ${secondaryTextClass}`}>
-        {data.contact.email && <a href={`mailto:${data.contact.email}`} className={`${linkClass}`}>{data.contact.email}</a>}
+      <div className={`flex justify-center gap-4 text-sm mb-8 ${secondaryTextClass} print:mb-4 print:text-xs print:text-slate-500`}>
+        {data.contact.email && <span className="print:text-black">{data.contact.email}</span>}
         {data.contact.phone && <span>{data.contact.phone}</span>}
-        {data.contact.linkedin && <a href={data.contact.linkedin} className={`${linkClass}`}>LinkedIn</a>}
-        {data.contact.github && <a href={data.contact.github} className={`${linkClass}`}>GitHub</a>}
+        {data.contact.linkedin && <span className="print:hidden">LinkedIn</span>}
+        {data.contact.github && <span className="print:hidden">GitHub</span>}
       </div>
 
       {/* Summary */}
       {data.summary && (
-        <div className="mb-8">
-          <p className={`${contentTextClass} leading-relaxed`}>{data.summary}</p>
+        <div className="mb-8 print:mb-4">
+          <p className={`${contentTextClass} leading-relaxed print:text-slate-700 print:text-sm`}>{data.summary}</p>
         </div>
       )}
 
       {/* Dynamic Sections */}
-      {order.map((sectionName) => renderSection(sectionName))}
+      <div className="print:space-y-4">
+        {order.map((sectionName) => (
+          <div key={sectionName} className="print:break-inside-avoid">
+            {renderSection(sectionName)}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
