@@ -10,22 +10,22 @@ class ContactInfo(BaseModel):
     location: Optional[str] = None
 
 class Experience(BaseModel):
-    company: str
-    title: str
-    start_date: str
+    company: Optional[str] = None
+    title: Optional[str] = None
+    start_date: Optional[str] = None
     end_date: Optional[str] = None
     description: list[str] = []
 
 class Education(BaseModel):
-    institution: str
-    degree: str
+    institution: Optional[str] = None
+    degree: Optional[str] = None
     field: Optional[str] = None
     graduation_year: Optional[str] = None
     gpa: Optional[str] = None
 
 class Project(BaseModel):
-    name: str
-    description: str
+    name: Optional[str] = None
+    description: Optional[str] = None
     technologies: list[str] = []
     url: Optional[str] = None
 

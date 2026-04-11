@@ -90,7 +90,17 @@ export default function EditMode({ data, portfolioId, photoUrl, sectionOrder, on
     setSaving(true);
     setError(undefined);
     try {
+      // Save form data (ParsedResume)
       await onSave(formData);
+      
+      // Save section order if changed
+      if (orderChanged) {
+        await updateSettings(portfolioId, { section_order: currentSectionOrder });
+        if (onSectionOrderUpdate) {
+          onSectionOrderUpdate(currentSectionOrder);
+        }
+        setOrderChanged(false);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save');
     } finally {
@@ -114,28 +124,10 @@ export default function EditMode({ data, portfolioId, photoUrl, sectionOrder, on
     }
   };
 
-  const handleSaveOrder = async () => {
-    if (!orderChanged) return;
-
-    setSaving(true);
-    setError(undefined);
-    try {
-      await updateSettings(portfolioId, { section_order: currentSectionOrder });
-      if (onSectionOrderUpdate) {
-        onSectionOrderUpdate(currentSectionOrder);
-      }
-      setOrderChanged(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save section order');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
+        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center z-10">
           <h2 className="text-2xl font-bold text-gray-900">Edit Portfolio</h2>
           <button
             onClick={onCancel}
@@ -192,12 +184,12 @@ export default function EditMode({ data, portfolioId, photoUrl, sectionOrder, on
           </div>
 
           {/* Section Order */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="border border-gray-100 rounded-lg p-4 bg-gray-50/50">
+            <h3 className="font-semibold text-sm text-gray-900 mb-3 flex items-center gap-2">
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
               </svg>
-              Section Order
+              SECTION ORDER
             </h3>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
               <SortableContext items={currentSectionOrder} strategy={verticalListSortingStrategy}>
@@ -208,15 +200,7 @@ export default function EditMode({ data, portfolioId, photoUrl, sectionOrder, on
                 </div>
               </SortableContext>
             </DndContext>
-            {orderChanged && (
-              <button
-                onClick={handleSaveOrder}
-                disabled={saving}
-                className="mt-3 w-full px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
-              >
-                {saving ? 'Saving order...' : 'Save Section Order'}
-              </button>
-            )}
+            <p className="text-[10px] text-gray-400 mt-3 italic text-center">Drag and drop to rearrange sections</p>
           </div>
 
           {/* Name */}
