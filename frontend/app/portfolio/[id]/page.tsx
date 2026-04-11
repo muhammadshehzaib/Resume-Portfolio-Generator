@@ -212,7 +212,7 @@ export default function PortfolioPage() {
             border: none !important;
           }
           @page {
-            margin: 1cm;
+            margin: 0;
           }
         }
       `}</style>
