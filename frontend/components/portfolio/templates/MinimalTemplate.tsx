@@ -26,19 +26,19 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
     switch (sectionName) {
       case 'experience':
         return data.experiences.length > 0 ? (
-          <div key="exp" className={`mb-8 pb-6 border-t ${borderClass}`}>
-            <h2 className="text-xl font-serif font-bold mb-4" style={{ color: accentColor }}>Experience</h2>
+          <div key="exp" className={`mb-8 pb-6 border-t ${borderClass} print:mb-4 print:pb-2`}>
+            <h2 className="text-xl font-serif font-bold mb-4 print:text-lg print:mb-2" style={{ color: accentColor }}>Experience</h2>
             {data.experiences.map((exp, idx) => (
-              <div key={idx} className="mb-6">
+              <div key={idx} className="mb-6 print:mb-3 print:break-inside-avoid">
                 <div className="flex justify-between">
-                  <h3 className={`font-semibold ${textClass}`}>{exp.title}</h3>
-                  <span className={`${secondaryTextClass} text-sm`}>{exp.start_date} – {exp.end_date || 'Present'}</span>
+                  <h3 className={`font-semibold ${textClass} print:text-sm`}>{exp.title}</h3>
+                  <span className={`${secondaryTextClass} text-sm print:text-[10px]`}>{exp.start_date} – {exp.end_date || 'Present'}</span>
                 </div>
-                <p className={secondaryTextClass}>{exp.company}</p>
+                <p className={`${secondaryTextClass} print:text-xs font-medium`}>{exp.company}</p>
                 {exp.description.length > 0 && (
-                  <ul className="mt-2 ml-4 space-y-1">
+                  <ul className="mt-2 ml-4 space-y-1 print:mt-1 print:ml-3">
                     {exp.description.map((desc, i) => (
-                      <li key={i} className={`${contentTextClass} text-sm`}>• {desc}</li>
+                      <li key={i} className={`${contentTextClass} text-sm print:text-xs`}>• {desc}</li>
                     ))}
                   </ul>
                 )}
@@ -48,30 +48,30 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
         ) : null;
       case 'education':
         return data.education.length > 0 ? (
-          <div key="edu" className={`mb-8 pb-6 border-t ${borderClass}`}>
-            <h2 className="text-xl font-serif font-bold mb-4" style={{ color: accentColor }}>Education</h2>
+          <div key="edu" className={`mb-8 pb-6 border-t ${borderClass} print:mb-4 print:pb-2`}>
+            <h2 className="text-xl font-serif font-bold mb-4 print:text-lg print:mb-2" style={{ color: accentColor }}>Education</h2>
             {data.education.map((edu, idx) => (
-              <div key={idx} className="mb-4">
+              <div key={idx} className="mb-4 print:mb-2 print:break-inside-avoid">
                 <div className="flex justify-between">
-                  <h3 className={`font-semibold ${textClass}`}>{edu.degree}</h3>
-                  {edu.graduation_year && <span className={`${secondaryTextClass} text-sm`}>{edu.graduation_year}</span>}
+                  <h3 className={`font-semibold ${textClass} print:text-sm`}>{edu.degree}</h3>
+                  {edu.graduation_year && <span className={`${secondaryTextClass} text-sm print:text-[10px]`}>{edu.graduation_year}</span>}
                 </div>
-                <p className={secondaryTextClass}>{edu.institution}</p>
-                {edu.field && <p className={`text-sm ${contentTextClass}`}>{edu.field}</p>}
+                <p className={`${secondaryTextClass} print:text-xs`}>{edu.institution}</p>
+                {edu.field && <p className={`text-sm ${contentTextClass} print:text-xs`}>{edu.field}</p>}
               </div>
             ))}
           </div>
         ) : null;
       case 'projects':
         return data.projects.length > 0 ? (
-          <div key="proj" className={`mb-8 pb-6 border-t ${borderClass}`}>
-            <h2 className="text-xl font-serif font-bold mb-4" style={{ color: accentColor }}>Projects</h2>
+          <div key="proj" className={`mb-8 pb-6 border-t ${borderClass} print:mb-4 print:pb-2`}>
+            <h2 className="text-xl font-serif font-bold mb-4 print:text-lg print:mb-2" style={{ color: accentColor }}>Projects</h2>
             {data.projects.map((proj, idx) => (
-              <div key={idx} className="mb-4">
-                <h3 className={`font-semibold ${textClass}`}>{proj.name}</h3>
-                <p className={`${contentTextClass} text-sm`}>{proj.description}</p>
+              <div key={idx} className="mb-4 print:mb-2 print:break-inside-avoid">
+                <h3 className={`font-semibold ${textClass} print:text-sm`}>{proj.name}</h3>
+                <p className={`${contentTextClass} text-sm print:text-xs`}>{proj.description}</p>
                 {proj.technologies.length > 0 && (
-                  <p className={`${secondaryTextClass} text-sm mt-1`}>{proj.technologies.join(', ')}</p>
+                  <p className={`${secondaryTextClass} text-sm mt-1 print:text-[10px] print:mt-0`}>{proj.technologies.join(', ')}</p>
                 )}
               </div>
             ))}
@@ -79,18 +79,18 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
         ) : null;
       case 'skills':
         return data.skills.length > 0 ? (
-          <div key="skills" className={`mb-8 pb-6 border-t ${borderClass}`}>
-            <h2 className="text-xl font-serif font-bold mb-4" style={{ color: accentColor }}>Skills</h2>
-            <p className={contentTextClass}>{data.skills.join(' • ')}</p>
+          <div key="skills" className={`mb-8 pb-6 border-t ${borderClass} print:mb-4 print:pb-2`}>
+            <h2 className="text-xl font-serif font-bold mb-4 print:text-lg print:mb-2" style={{ color: accentColor }}>Skills</h2>
+            <p className={`${contentTextClass} print:text-xs print:leading-relaxed`}>{data.skills.join(' • ')}</p>
           </div>
         ) : null;
       case 'certifications':
         return data.certifications.length > 0 ? (
-          <div key="certs" className={`border-t ${borderClass} pt-6`}>
-            <h2 className="text-xl font-serif font-bold mb-4" style={{ color: accentColor }}>Certifications</h2>
-            <ul className="space-y-2">
+          <div key="certs" className={`border-t ${borderClass} pt-6 print:pt-2`}>
+            <h2 className="text-xl font-serif font-bold mb-4 print:text-lg print:mb-2" style={{ color: accentColor }}>Certifications</h2>
+            <ul className="space-y-2 print:space-y-0.5">
               {data.certifications.map((cert, idx) => (
-                <li key={idx} className={contentTextClass}>• {cert}</li>
+                <li key={idx} className={`${contentTextClass} print:text-xs`}>• {cert}</li>
               ))}
             </ul>
           </div>
@@ -101,7 +101,7 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
   };
 
   return (
-    <div className={`${bgClass} p-12 max-w-2xl mx-auto print:bg-white print:text-black print:p-0 print:max-w-none`}>
+    <div className={`${bgClass} p-12 max-w-2xl mx-auto print:bg-white print:text-black print:px-12 print:py-10 print:max-w-none`}>
       {/* Photo */}
       {photoUrl && (
         <div className="text-center mb-8 print:mb-4">
