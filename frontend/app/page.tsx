@@ -1,31 +1,12 @@
-import { useState, useEffect } from 'react';
+'use client';
+
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DropZone from '@/components/upload/DropZone';
 import UploadProgress from '@/components/upload/UploadProgress';
 import { uploadResume } from '@/lib/api';
 import Image from 'next/image';
-import { motion, Variants, AnimatePresence } from "framer-motion";
-
-const testimonials = [
-  {
-    name: "Elias Vane",
-    role: "CEO, OMNI SYSTEMS",
-    content: "...ResumeOS gave us shared context when alignment mattered most. It changed how we made decisions during the transition...",
-    image: "https://ui-avatars.com/api/?name=Elias+Vane&background=random&color=fff"
-  },
-  {
-    name: "Sarah Chen",
-    role: "VP Engineering, TechFlow",
-    content: "The speed at which we could generate professional portfolios for our entire leadership team was incredible. A total game changer for our rebranding.",
-    image: "https://ui-avatars.com/api/?name=Sarah+Chen&background=random&color=fff"
-  },
-  {
-    name: "Marcus Thorne",
-    role: "Managing Director, Global Strategy",
-    content: "In our industry, presentation is everything. ResumeOS ensures our candidate output is always world-class and perfectly tailored.",
-    image: "https://ui-avatars.com/api/?name=Marcus+Thorne&background=random&color=fff"
-  }
-];
+import { motion, Variants } from "framer-motion";
 
 const PlayCircle = () => (
   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,7 +16,7 @@ const PlayCircle = () => (
 );
 
 const HexagonLogo = () => (
-  <motion.svg 
+  <motion.svg
     animate={{ rotate: 360 }}
     transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
     className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
@@ -65,19 +46,6 @@ export default function Home() {
   const [status, setStatus] = useState<'idle' | 'uploading' | 'processing' | 'done' | 'error'>('idle');
   const [error, setError] = useState<string>();
   const [fileName, setFileName] = useState<string>();
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-
-  const paginate = (newDirection: number) => {
-    setCurrentTestimonial((prev) => (prev + newDirection + testimonials.length) % testimonials.length);
-  };
-
-  // Auto-slide testimonials
-  useEffect(() => {
-    const timer = setInterval(() => {
-      paginate(1);
-    }, 8000);
-    return () => clearInterval(timer);
-  }, []);
 
   const coreFeatures = [
     {
@@ -125,16 +93,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#efefef] p-0 sm:p-4 md:p-8 lg:p-12 font-sans text-slate-900 flex flex-col items-center">
       {/* Main Container mirroring the bordered white box in the image */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="w-full max-w-[1500px] bg-white border border-gray-200 shadow-2xl shadow-black/5 rounded-sm overflow-hidden mb-12 flex flex-col"
       >
-        
+
         {/* Header */}
         <header className="flex flex-wrap items-center justify-between px-6 py-5 md:px-10 border-b border-gray-100 gap-4 relative z-20 bg-white">
-          <motion.div 
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="flex items-center gap-2 font-bold tracking-widest uppercase text-sm cursor-pointer"
@@ -142,19 +110,19 @@ export default function Home() {
             <HexagonLogo />
             <span>ResumeOS</span>
           </motion.div>
-          
+
           <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-500">
             <motion.a whileHover={{ y: -2 }} href="#solutions" className="hover:text-black transition">Solutions</motion.a>
             <motion.a whileHover={{ y: -2 }} href="#framework" className="hover:text-black transition">Framework</motion.a>
             <motion.a whileHover={{ y: -2 }} href="#how-it-works" className="hover:text-black transition">How It Works</motion.a>
             <motion.a whileHover={{ y: -2 }} href="#case-studies" className="hover:text-black transition">Case Studies</motion.a>
           </nav>
-          
+
           <div className="flex items-center gap-6 text-sm font-medium">
-            <motion.a 
-              whileHover={{ scale: 1.05, backgroundColor: "#f9fafb" }} 
+            <motion.a
+              whileHover={{ scale: 1.05, backgroundColor: "#f9fafb" }}
               whileTap={{ scale: 0.95 }}
-              href="#upload" 
+              href="#upload"
               className="border border-gray-200 px-6 py-2.5 transition rounded-sm flex items-center justify-center min-w-[120px] shadow-sm hover:shadow-md"
             >
               Get Started
@@ -166,21 +134,21 @@ export default function Home() {
         <div className="grid lg:grid-cols-2 flex-grow border-b border-gray-100 relative z-10">
           {/* Left Column */}
           <div className="px-6 py-12 md:px-14 md:py-24 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col bg-white relative z-10 min-h-[700px]">
-            
+
             <div className="max-w-[550px] flex flex-col flex-grow">
-              <motion.div 
-                 variants={containerVariants}
-                 initial="hidden"
-                 animate="show"
-                 className="space-y-8"
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="space-y-8"
               >
                 <div>
                   <motion.p variants={itemVariants} className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-6">
                     AI For High-Stakes Career Leadership
                   </motion.p>
-                  
-                  <motion.h1 
-                    variants={itemVariants} 
+
+                  <motion.h1
+                    variants={itemVariants}
                     className="text-5xl md:text-[64px] font-medium tracking-tight leading-[1.05] mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900"
                   >
                     When Context Changes, Strategy Follows.
@@ -190,17 +158,17 @@ export default function Home() {
                     When the job market shifts, hesitation is fatal. ResumeOS provides professionals with the real-time context needed to execute career transitions, pivots, and ascensions with total confidence.
                   </motion.p>
                 </div>
-                
+
                 <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 relative z-[100]">
-                  <motion.a 
+                  <motion.a
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    href="#upload" 
+                    href="#upload"
                     className="bg-black text-white px-8 py-4 text-sm font-medium shadow-xl shadow-black/10 transition-all rounded-sm duration-300 relative overflow-hidden group/btn"
                   >
                     <span className="relative z-10">Transition Roadmap</span>
                   </motion.a>
-                  <motion.button 
+                  <motion.button
                     whileHover={{ scale: 1.05, y: -2, backgroundColor: "#fafafa" }}
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center border border-gray-300 px-8 py-4 text-sm font-medium transition rounded-sm bg-white hover:bg-gray-50"
@@ -210,60 +178,6 @@ export default function Home() {
                   </motion.button>
                 </motion.div>
               </motion.div>
-
-              {/* Testimonial Card - Forced to the bottom */}
-              <div className="mt-auto pt-20">
-                <div className="max-w-md bg-white border border-gray-200 p-8 shadow-xl shadow-black/[0.03] rounded-sm relative z-20">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentTestimonial}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.25 }}
-                    >
-                      <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-gray-100 overflow-hidden filter grayscale rounded-sm border border-gray-200 shrink-0">
-                          <Image 
-                            src={testimonials[currentTestimonial].image || ""} 
-                            width={48} 
-                            height={48} 
-                            alt={testimonials[currentTestimonial].name} 
-                            className="w-full h-full object-cover" 
-                          />
-                        </div>
-                        <div>
-                          <p className="font-bold text-base tracking-tight">{testimonials[currentTestimonial].name}</p>
-                          <p className="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest mt-1">{testimonials[currentTestimonial].role}</p>
-                        </div>
-                      </div>
-                      <p className="text-base text-gray-600 italic leading-relaxed">
-                        "{testimonials[currentTestimonial].content}"
-                      </p>
-                    </motion.div>
-                  </AnimatePresence>
-
-                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
-                    <div className="flex gap-4">
-                      {testimonials.map((_, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setCurrentTestimonial(i)}
-                          className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${i === currentTestimonial ? 'bg-black w-10' : 'bg-gray-200 w-2.5 hover:bg-gray-400'}`}
-                        />
-                      ))}
-                    </div>
-                    <div className="flex gap-2">
-                       <button onClick={() => paginate(-1)} className="p-3 border border-gray-100 rounded-sm hover:bg-gray-50 hover:border-black transition">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5"/></svg>
-                       </button>
-                       <button onClick={() => paginate(1)} className="p-3 border border-gray-100 rounded-sm hover:bg-gray-50 hover:border-black transition">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5"/></svg>
-                       </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           {/* End of Left Column */}
@@ -277,7 +191,7 @@ export default function Home() {
               backgroundPosition: 'center center'
             }}
           >
-            <div 
+            <div
               className="absolute inset-0 pointer-events-none z-10"
               style={{
                 backgroundImage: 'linear-gradient(to bottom, transparent 80%, rgba(0,0,0,0.03) 100%)',
@@ -286,15 +200,15 @@ export default function Home() {
               }}
             />
             <div className="absolute inset-0 pointer-events-none fade-edges shadow-[inset_0_0_100px_rgba(255,255,255,0.8)] z-20"></div>
-            <motion.div 
-               initial={{ opacity: 0, scale: 0.9 }}
-               animate={{ opacity: 1, scale: 1 }}
-               transition={{ 
-                 opacity: { delay: 0.4, duration: 1.2 },
-                 scale: { delay: 0.4, duration: 1.2 }
-               }}
-               whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
-               className="w-full max-w-xl aspect-square relative z-0 origin-center"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                opacity: { delay: 0.4, duration: 1.2 },
+                scale: { delay: 0.4, duration: 1.2 }
+              }}
+              whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
+              className="w-full max-w-xl aspect-square relative z-0 origin-center"
             >
               <Image
                 src="/halftone_eagle.png"
@@ -309,12 +223,12 @@ export default function Home() {
       </motion.div>
 
       {/* Subsequent Sections Restyled */}
-      <motion.div 
-         initial={{ opacity: 0, y: 50 }}
-         whileInView={{ opacity: 1, y: 0 }}
-         viewport={{ once: true, margin: "-100px" }}
-         transition={{ duration: 0.8, ease: "easeOut" }}
-         className="w-full max-w-[1500px] flex flex-col gap-12"
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full max-w-[1500px] flex flex-col gap-12"
       >
         <section id="upload" className="bg-white border border-gray-200 p-10 md:p-16 flex flex-col md:flex-row gap-12 rounded-sm shadow-xl shadow-black/5 items-center relative overflow-hidden group">
           <div className="md:w-1/3 relative z-10">
@@ -327,7 +241,7 @@ export default function Home() {
             <div className="mt-8">
               <UploadProgress status={status} error={error} fileName={fileName} />
             </div>
-            
+
             {/* Interactive Terminal Flair */}
             <div className="mt-8 pt-6 border-t border-gray-200/50 text-[10px] font-mono text-gray-400 uppercase tracking-widest flex justify-between px-2">
               <motion.p animate={{ opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2 }}>System Status: {status === 'idle' ? 'Awaiting Input' : status}</motion.p>
@@ -340,32 +254,32 @@ export default function Home() {
               </span>
             </div>
           </div>
-          
+
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-50/30 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
         </section>
 
         <section className="grid lg:grid-cols-2 gap-12">
           {/* Core Features */}
-          <motion.div 
+          <motion.div
             whileHover={{ y: -5 }}
             className="bg-black text-white p-10 md:p-16 rounded-sm shadow-2xl overflow-hidden relative transition-transform duration-500"
           >
-            <motion.div 
+            <motion.div
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
-              className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl origin-bottom-left" 
+              className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl origin-bottom-left"
             />
-            
+
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4 relative z-10">Core Systems</p>
             <h2 className="text-3xl font-medium tracking-tight mb-12 relative z-10">Production-ready AI Workflow</h2>
             <div className="space-y-10 relative z-10">
               {coreFeatures.map((feature, i) => (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 * i, duration: 0.6, ease: "easeOut" }}
-                  key={feature.title} 
+                  key={feature.title}
                   className="border-l-2 border-gray-800 pl-6 hover:border-gray-500 transition-colors duration-300"
                 >
                   <h3 className="text-lg font-medium tracking-tight mb-2">{feature.title}</h3>
@@ -376,7 +290,7 @@ export default function Home() {
           </motion.div>
 
           {/* Premium Features */}
-          <motion.div 
+          <motion.div
             whileHover={{ y: -5 }}
             className="bg-white border border-gray-200 p-10 md:p-16 rounded-sm shadow-xl shadow-black/5 flex flex-col transition-transform duration-500"
           >
@@ -387,17 +301,17 @@ export default function Home() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mt-auto">
               {premiumFeatures.map((item, i) => (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   whileHover={{ x: 5 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.05 * i, duration: 0.5 }}
-                  key={item} 
+                  key={item}
                   className="flex items-center gap-3 cursor-default"
                 >
-                  <motion.div 
-                    animate={{ scale: [1, 1.5, 1] }} 
+                  <motion.div
+                    animate={{ scale: [1, 1.5, 1] }}
                     transition={{ repeat: Infinity, duration: 4, delay: i * 0.2 }}
                     className="w-1.5 h-1.5 bg-black rounded-full"
                   />
@@ -411,3 +325,4 @@ export default function Home() {
     </div>
   );
 }
+
