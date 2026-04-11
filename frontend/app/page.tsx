@@ -66,10 +66,8 @@ export default function Home() {
   const [error, setError] = useState<string>();
   const [fileName, setFileName] = useState<string>();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [direction, setDirection] = useState(0);
 
   const paginate = (newDirection: number) => {
-    setDirection(newDirection);
     setCurrentTestimonial((prev) => (prev + newDirection + testimonials.length) % testimonials.length);
   };
 
@@ -167,103 +165,67 @@ export default function Home() {
         {/* Hero Section */}
         <div className="grid lg:grid-cols-2 flex-grow border-b border-gray-100 relative z-10">
           {/* Left Column */}
-          <div className="px-6 py-12 md:px-14 md:py-24 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col relative justify-center bg-white z-10 min-h-[850px]">
+          <div className="px-6 py-12 md:px-14 md:py-24 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col bg-white relative z-10 min-h-[700px]">
             
-            <motion.div 
-               variants={containerVariants}
-               initial="hidden"
-               animate="show"
-               className="max-w-[550px] relative z-10 flex flex-col h-full"
-            >
-              <div className="flex-grow">
-                <motion.p variants={itemVariants} className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-8 mt-4">
-                  AI For High-Stakes Career Leadership
-                </motion.p>
-                <motion.h1 
-                  variants={itemVariants} 
-                  className="text-5xl md:text-[64px] font-medium tracking-tight leading-[1.05] mb-8 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900"
-                  animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
-                  transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                  style={{ backgroundSize: "200% auto" }}
-                >
-                  When Context Changes, Strategy Follows.
-                </motion.h1>
-                <motion.p variants={itemVariants} className="text-gray-500 text-lg md:text-xl leading-relaxed mb-10 text-balance">
-                  When the job market shifts, hesitation is fatal. ResumeOS provides professionals with the real-time context needed to execute career transitions, pivots, and ascensions with total confidence.
-                </motion.p>
-                
-                <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 mb-16">
-                  <motion.a 
-                    whileHover={{ scale: 1.03, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    href="#upload" 
-                    className="bg-black text-white px-8 py-4 text-sm font-medium shadow-xl shadow-black/10 transition-all rounded-sm duration-300 relative overflow-hidden group"
+            <div className="max-w-[550px] flex flex-col flex-grow">
+              <motion.div 
+                 variants={containerVariants}
+                 initial="hidden"
+                 animate="show"
+                 className="space-y-8"
+              >
+                <div>
+                  <motion.p variants={itemVariants} className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-6">
+                    AI For High-Stakes Career Leadership
+                  </motion.p>
+                  
+                  <motion.h1 
+                    variants={itemVariants} 
+                    className="text-5xl md:text-[64px] font-medium tracking-tight leading-[1.05] mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900"
                   >
-                    <motion.div 
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[100%]"
-                      animate={{ translateX: ["-100%", "200%"] }}
-                      transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", repeatDelay: 1 }}
-                    />
-                    <span className="relative">Transition Roadmap</span>
+                    When Context Changes, Strategy Follows.
+                  </motion.h1>
+
+                  <motion.p variants={itemVariants} className="text-gray-500 text-lg md:text-xl leading-relaxed">
+                    When the job market shifts, hesitation is fatal. ResumeOS provides professionals with the real-time context needed to execute career transitions, pivots, and ascensions with total confidence.
+                  </motion.p>
+                </div>
+                
+                <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 relative z-[100]">
+                  <motion.a 
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    href="#upload" 
+                    className="bg-black text-white px-8 py-4 text-sm font-medium shadow-xl shadow-black/10 transition-all rounded-sm duration-300 relative overflow-hidden group/btn"
+                  >
+                    <span className="relative z-10">Transition Roadmap</span>
                   </motion.a>
                   <motion.button 
-                    whileHover={{ scale: 1.03, y: -2, backgroundColor: "#fafafa" }}
-                    whileTap={{ scale: 0.97 }}
-                    className="flex items-center border border-gray-300 px-6 py-4 text-sm font-medium transition rounded-sm bg-white"
+                    whileHover={{ scale: 1.05, y: -2, backgroundColor: "#fafafa" }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center border border-gray-300 px-8 py-4 text-sm font-medium transition rounded-sm bg-white hover:bg-gray-50"
                   >
                     <PlayCircle />
                     View the Framework
                   </motion.button>
                 </motion.div>
-              </div>
+              </motion.div>
 
-              {/* Testimonial Carousel */}
-              <div className="max-w-[420px] mt-auto z-50 relative h-[250px] w-full group/carousel flex items-end">
-                <AnimatePresence mode='wait' custom={direction}>
-                  <motion.div 
-                    key={currentTestimonial}
-                    custom={direction}
-                    variants={{
-                      enter: (direction: number) => ({
-                        x: direction > 0 ? 50 : -50,
-                        opacity: 0
-                      }),
-                      center: {
-                        x: 0,
-                        opacity: 1
-                      },
-                      exit: (direction: number) => ({
-                        x: direction < 0 ? 50 : -50,
-                        opacity: 0
-                      })
-                    }}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    drag="x"
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.2}
-                    onDragEnd={(e, { offset }) => {
-                      const swipe = offset.x;
-                      if (swipe < -30) {
-                        paginate(1);
-                      } else if (swipe > 30) {
-                        paginate(-1);
-                      }
-                    }}
-                    transition={{
-                      x: { type: "spring", stiffness: 400, damping: 40 },
-                      opacity: { duration: 0.2 }
-                    }}
-                    whileHover={{ scale: 1.01, boxShadow: "0 20px 40px -15px rgba(0,0,0,0.08)" }}
-                    whileDrag={{ scale: 1.05, cursor: "grabbing" }}
-                    className="absolute inset-0 border border-gray-150 p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] bg-white rounded-sm cursor-grab select-none pointer-events-auto"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-stone-200 overflow-hidden shrink-0 filter grayscale border border-gray-200">
+              {/* Testimonial Card - Forced to the bottom */}
+              <div className="mt-auto pt-20">
+                <div className="max-w-md bg-white border border-gray-200 p-8 shadow-xl shadow-black/[0.03] rounded-sm relative z-20">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentTestimonial}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 bg-gray-100 overflow-hidden filter grayscale rounded-sm border border-gray-200 shrink-0">
                           <Image 
-                            src={testimonials[currentTestimonial].image} 
+                            src={testimonials[currentTestimonial].image || ""} 
                             width={48} 
                             height={48} 
                             alt={testimonials[currentTestimonial].name} 
@@ -271,46 +233,38 @@ export default function Home() {
                           />
                         </div>
                         <div>
-                          <p className="font-bold text-sm tracking-tight">{testimonials[currentTestimonial].name}</p>
-                          <p className="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest mt-0.5">{testimonials[currentTestimonial].role}</p>
+                          <p className="font-bold text-base tracking-tight">{testimonials[currentTestimonial].name}</p>
+                          <p className="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest mt-1">{testimonials[currentTestimonial].role}</p>
                         </div>
                       </div>
-                      <div className="flex gap-2 opacity-0 group-hover/carousel:opacity-100 transition-opacity">
-                        <button onClick={(e) => { e.stopPropagation(); paginate(-1); }} className="hover:scale-110 transition-transform p-1">
-                          <svg className="w-4 h-4 text-gray-400 hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/></svg>
-                        </button>
-                        <button onClick={(e) => { e.stopPropagation(); paginate(1); }} className="hover:scale-110 transition-transform p-1">
-                          <svg className="w-4 h-4 text-gray-400 hover:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/></svg>
-                        </button>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600 italic leading-[1.7]">
-                      "{testimonials[currentTestimonial].content}"
-                    </p>
-                    
-                    <div className="flex gap-2 mt-6">
+                      <p className="text-base text-gray-600 italic leading-relaxed">
+                        "{testimonials[currentTestimonial].content}"
+                      </p>
+                    </motion.div>
+                  </AnimatePresence>
+
+                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
+                    <div className="flex gap-4">
                       {testimonials.map((_, i) => (
                         <button
                           key={i}
-                          onClick={(e) => { e.stopPropagation(); paginate(i - currentTestimonial); }}
-                          className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                            currentTestimonial === i ? 'bg-black scale-125' : 'bg-gray-200 hover:bg-gray-400'
-                          }`}
-                          aria-label={`Go to testimonial ${i + 1}`}
+                          onClick={() => setCurrentTestimonial(i)}
+                          className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${i === currentTestimonial ? 'bg-black w-10' : 'bg-gray-200 w-2.5 hover:bg-gray-400'}`}
                         />
                       ))}
                     </div>
-                  </motion.div>
-                </AnimatePresence>
+                    <div className="flex gap-2">
+                       <button onClick={() => paginate(-1)} className="p-3 border border-gray-100 rounded-sm hover:bg-gray-50 hover:border-black transition">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5"/></svg>
+                       </button>
+                       <button onClick={() => paginate(1)} className="p-3 border border-gray-100 rounded-sm hover:bg-gray-50 hover:border-black transition">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5"/></svg>
+                       </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </motion.div>
-
-            {/* Background flourish */}
-            <motion.div 
-              animate={{ opacity: [0.01, 0.03, 0.01], scale: [1, 1.1, 1] }}
-              transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
-              className="absolute top-0 left-0 w-[150%] h-[150%] pointer-events-none bg-[radial-gradient(circle_at_top_left,black,transparent_50%)]" 
-            />
+            </div>
           </div>
           {/* End of Left Column */}
 
@@ -323,26 +277,23 @@ export default function Home() {
               backgroundPosition: 'center center'
             }}
           >
-            <motion.div 
+            <div 
               className="absolute inset-0 pointer-events-none z-10"
-              animate={{ backgroundPosition: ["0px 0px", "0px 24px"] }}
-              transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
               style={{
                 backgroundImage: 'linear-gradient(to bottom, transparent 80%, rgba(0,0,0,0.03) 100%)',
-                backgroundSize: '100% 24px'
+                backgroundSize: '100% 24px',
+                opacity: 0.1
               }}
             />
             <div className="absolute inset-0 pointer-events-none fade-edges shadow-[inset_0_0_100px_rgba(255,255,255,0.8)] z-20"></div>
             <motion.div 
                initial={{ opacity: 0, scale: 0.9 }}
-               animate={{ opacity: 1, scale: 1, y: [-15, 15, -15], rotate: [-2, 2, -2] }}
+               animate={{ opacity: 1, scale: 1 }}
                transition={{ 
                  opacity: { delay: 0.4, duration: 1.2 },
-                 scale: { delay: 0.4, duration: 1.2 },
-                 y: { repeat: Infinity, duration: 7, ease: "easeInOut" },
-                 rotate: { repeat: Infinity, duration: 10, ease: "easeInOut" }
+                 scale: { delay: 0.4, duration: 1.2 }
                }}
-               whileHover={{ scale: 1.05, rotate: 0, transition: { duration: 0.3 } }}
+               whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
                className="w-full max-w-xl aspect-square relative z-0 origin-center"
             >
               <Image
