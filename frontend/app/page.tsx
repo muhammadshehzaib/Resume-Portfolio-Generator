@@ -113,9 +113,7 @@ export default function Home() {
 
           <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-500">
             <motion.a whileHover={{ y: -2 }} href="#solutions" className="hover:text-black transition">Solutions</motion.a>
-            <motion.a whileHover={{ y: -2 }} href="#framework" className="hover:text-black transition">Framework</motion.a>
-            <motion.a whileHover={{ y: -2 }} href="#how-it-works" className="hover:text-black transition">How It Works</motion.a>
-            <motion.a whileHover={{ y: -2 }} href="#case-studies" className="hover:text-black transition">Case Studies</motion.a>
+            <motion.a whileHover={{ y: -2 }} href="#upload" className="hover:text-black transition">Framework</motion.a>
           </nav>
 
           <div className="flex items-center gap-6 text-sm font-medium">
@@ -258,7 +256,7 @@ export default function Home() {
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-50/30 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
         </section>
 
-        <section className="grid lg:grid-cols-2 gap-12">
+        <section id="solutions" className="grid lg:grid-cols-2 gap-12">
           {/* Core Features */}
           <motion.div
             whileHover={{ y: -5 }}
