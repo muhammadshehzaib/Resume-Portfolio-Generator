@@ -1,5 +1,17 @@
 import type { Metadata } from 'next';
+import { Outfit, Newsreader } from 'next/font/google';
 import './globals.css';
+
+const outfit = Outfit({ 
+  subsets: ['latin'],
+  variable: '--font-outfit',
+});
+
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--font-newsreader',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -17,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-white text-gray-900">
+      <body className={`${outfit.variable} ${newsreader.variable} font-sans bg-white text-gray-900`}>
         {children}
       </body>
     </html>
