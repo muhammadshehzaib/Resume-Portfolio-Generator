@@ -101,7 +101,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
   return (
     <div className="bg-zinc-950 text-white min-h-screen print:bg-white print:text-black">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 p-16 text-center print:bg-white print:bg-none print:text-black print:p-8 print:border-b-2 print:border-slate-100">
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 p-16 text-center print:bg-white print:bg-none print:text-black print:p-0 print:border-b-2 print:border-slate-100">
         {photoUrl && (
           <div className="mb-8 print:mb-4">
             <img
@@ -129,7 +129,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-8 py-12 print:py-8">
+      <div className="max-w-6xl mx-auto px-8 py-12 print:py-0">
         {/* Contact & Skills in Grid */}
         <div className="grid grid-cols-2 gap-8 mb-12 print:mb-8 print:gap-4">
           {/* Contact */}

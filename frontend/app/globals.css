@@ -43,3 +43,23 @@ h4 {
 .animate-rise-in {
   animation: riseIn 0.65s ease-out both;
 }
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    padding: 15mm !important;
+  }
+  .print-container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  @page {
+    margin: 0;
+  }
+}

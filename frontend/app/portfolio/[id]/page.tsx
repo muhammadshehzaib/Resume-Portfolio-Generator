@@ -193,29 +193,6 @@ export default function PortfolioPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Print Styles */}
-      <style jsx global>{`
-        @media print {
-          .no-print {
-            display: none !important;
-          }
-          body {
-            background: white !important;
-            padding: 0 !important;
-          }
-          .print-container {
-            width: 100% !important;
-            max-width: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            box-shadow: none !important;
-            border: none !important;
-          }
-          @page {
-            margin: 0;
-          }
-        }
-      `}</style>
 
       {/* Success Toast */}
       {saveSuccess && (

@@ -101,7 +101,7 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
   };
 
   return (
-    <div className={`${bgClass} p-12 max-w-2xl mx-auto print:bg-white print:text-black print:p-12 print:max-w-none`}>
+    <div className={`${bgClass} p-12 max-w-2xl mx-auto print:bg-white print:text-black print:p-0 print:max-w-none`}>
       {/* Photo */}
       {photoUrl && (
         <div className="text-center mb-8 print:mb-4">
