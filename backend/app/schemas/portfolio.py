@@ -1,5 +1,9 @@
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, BeforeValidator
+from typing import Optional, Annotated, Any
+
+def coerce_none_to_list(v: Any) -> Any:
+    """Coerce None values to an empty list. Useful for AI-generated data."""
+    return [] if v is None else v
 
 class ContactInfo(BaseModel):
     email: Optional[str] = None
@@ -14,7 +18,7 @@ class Experience(BaseModel):
     title: Optional[str] = None
     start_date: Optional[str] = None
     end_date: Optional[str] = None
-    description: list[str] = []
+    description: Annotated[list[str], BeforeValidator(coerce_none_to_list)] = []
 
 class Education(BaseModel):
     institution: Optional[str] = None
@@ -26,18 +30,18 @@ class Education(BaseModel):
 class Project(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    technologies: list[str] = []
+    technologies: Annotated[list[str], BeforeValidator(coerce_none_to_list)] = []
     url: Optional[str] = None
 
 class ParsedResume(BaseModel):
     name: Optional[str] = None
     contact: ContactInfo = ContactInfo()
     summary: Optional[str] = None
-    experiences: list[Experience] = []
-    education: list[Education] = []
-    skills: list[str] = []
-    projects: list[Project] = []
-    certifications: list[str] = []
+    experiences: Annotated[list[Experience], BeforeValidator(coerce_none_to_list)] = []
+    education: Annotated[list[Education], BeforeValidator(coerce_none_to_list)] = []
+    skills: Annotated[list[str], BeforeValidator(coerce_none_to_list)] = []
+    projects: Annotated[list[Project], BeforeValidator(coerce_none_to_list)] = []
+    certifications: Annotated[list[str], BeforeValidator(coerce_none_to_list)] = []
 
 class AtsResult(BaseModel):
     score: int
