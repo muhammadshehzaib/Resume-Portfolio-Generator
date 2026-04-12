@@ -164,3 +164,23 @@ export async function getPortfolioSuggestions(id: string): Promise<SuggestionRes
   }
   return response.json();
 }
+
+export async function downloadPortfolioPDF(id: string, fileName: string = 'Resume.pdf'): Promise<void> {
+  const response = await fetch(`${API_URL}/api/portfolio/${id}/pdf`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to generate PDF');
+  }
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}

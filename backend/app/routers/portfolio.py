@@ -4,11 +4,12 @@ from typing import Optional
 import cloudinary
 import cloudinary.uploader
 from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.portfolio import Portfolio
 from app.schemas.portfolio import PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, TailorRequest, TailorResult, SuggestionResult
-from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service, suggestion_service
+from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service, suggestion_service, pdf_generator
 from app.auth import get_current_user
 from app.config import settings
 
@@ -135,6 +136,32 @@ async def get_portfolio(portfolio_id: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(portfolio)
     return _to_response(portfolio)
+
+@router.get("/portfolio/{portfolio_id}/pdf")
+async def get_portfolio_pdf(portfolio_id: str, db: Session = Depends(get_db)):
+    """Generate and return a PDF of the portfolio."""
+    portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
+    if not portfolio:
+        raise HTTPException(404, "Portfolio not found")
+        
+    try:
+        pdf_bytes = await pdf_generator.generate_portfolio_pdf(portfolio_id)
+        
+        # Determine a nice filename
+        parsed_data = json.loads(portfolio.parsed_data)
+        name = parsed_data.get("name", "Portfolio").replace(" ", "_")
+        filename = f"{name}_Resume.pdf"
+        
+        return StreamingResponse(
+            iter([pdf_bytes]),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"'
+            }
+        )
+    except Exception as e:
+        print(f"PDF Generation Error: {str(e)}")
+        raise HTTPException(500, f"Failed to generate PDF: {str(e)}")
 
 @router.patch("/portfolio/{portfolio_id}", response_model=PortfolioResponse)
 async def update_portfolio(

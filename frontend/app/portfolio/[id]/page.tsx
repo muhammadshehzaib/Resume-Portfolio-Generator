@@ -12,7 +12,7 @@ import CreativeTemplate from '@/components/portfolio/templates/CreativeTemplate'
 import QRCodeModal from '@/components/portfolio/QRCodeModal';
 import JobCustomizationModal from '@/components/portfolio/JobCustomizationModal';
 import SuggestionsModal from '@/components/portfolio/SuggestionsModal';
-import { getPortfolio, updatePortfolio, updateSettings } from '@/lib/api';
+import { getPortfolio, updatePortfolio, updateSettings, downloadPortfolioPDF } from '@/lib/api';
 import { PortfolioResponse, ParsedResume, PortfolioSettings } from '@/lib/types';
 import SettingsPanel from '@/components/portfolio/SettingsPanel';
 
@@ -149,8 +149,19 @@ export default function PortfolioPage() {
       console.error('Failed to apply tailoring:', err);
     }
   };
-  const handleDownloadPDF = () => {
-    window.print();
+  
+  const handleDownloadPDF = async () => {
+    if (!portfolio) return;
+    try {
+      // Create a nice filename from the user's name
+      const name = portfolio.parsed_data.name?.replace(/\s+/g, '_') || 'Portfolio';
+      const fileName = `${name}_Resume.pdf`;
+      
+      await downloadPortfolioPDF(portfolio.id, fileName);
+    } catch (err) {
+      console.error('Download error:', err);
+      setError('Failed to generate PDF. Please try again.');
+    }
   };
 
   const renderTemplate = () => {

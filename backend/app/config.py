@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str
     CLOUDINARY_API_SECRET: str
     ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:3005"
+    FRONTEND_URL: str = "http://localhost:3005"
 
     model_config = SettingsConfigDict(
         env_file=".env",
