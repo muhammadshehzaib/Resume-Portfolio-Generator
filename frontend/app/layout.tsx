@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { Outfit, Newsreader } from 'next/font/google';
+import { Figtree, Newsreader } from 'next/font/google';
 import './globals.css';
 
-const outfit = Outfit({ 
+const figtree = Figtree({ 
   subsets: ['latin'],
-  variable: '--font-outfit',
+  variable: '--font-figtree',
 });
 
 const newsreader = Newsreader({
@@ -29,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${newsreader.variable} font-sans bg-white text-gray-900`}>
+      <body className={`${figtree.variable} ${newsreader.variable} font-sans bg-white text-gray-900`}>
         {children}
       </body>
     </html>
