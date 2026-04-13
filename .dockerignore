@@ -1,11 +1,22 @@
 .git
 .gitignore
 .DS_Store
+.vscode
+.idea
+*.log
+.npm
+.cache
 
 backend/.venv
 backend/__pycache__
 backend/.pytest_cache
+backend/node_modules
 
 frontend/.next
 frontend/node_modules
 frontend/coverage
+frontend/.vercel
+
+node_modules
+dist
+build
