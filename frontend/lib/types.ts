@@ -83,3 +83,17 @@ export interface SuggestionResult {
   positives: string[];
   overall_score: number;
 }
+
+export interface RankedResumeItem {
+  id: string;
+  filename: string;
+  score: number;
+  feedback: string[];
+}
+
+export interface RankingJobResponse {
+  id: string;
+  job_description: string;
+  created_at: string;
+  results: RankedResumeItem[];
+}

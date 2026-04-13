@@ -21,7 +21,8 @@ export default function Header() {
       </motion.div>
       
       <nav className="hidden lg:flex items-center gap-12 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
-        <motion.a whileHover={{ y: -2, color: "#000" }} href="#solutions" className="transition-colors">Solutions</motion.a>
+        <motion.a whileHover={{ y: -2, color: "#000" }} href="/" className="transition-colors">Overview</motion.a>
+        <motion.a whileHover={{ y: -2, color: "#000" }} href="/rank" className="transition-colors text-black">Rank Resumes</motion.a>
         <motion.a whileHover={{ y: -2, color: "#000" }} href="#upload" className="transition-colors">Framework</motion.a>
       </nav>
       

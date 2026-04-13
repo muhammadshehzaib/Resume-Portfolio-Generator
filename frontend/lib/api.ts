@@ -1,4 +1,5 @@
-import { PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, SuggestionResult } from './types';
+import { PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, SuggestionResult, RankingJobResponse } from './types';
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -183,4 +184,35 @@ export async function downloadPortfolioPDF(id: string, fileName: string = 'Resum
   a.click();
   window.URL.revokeObjectURL(url);
   document.body.removeChild(a);
+}
+
+export async function rankResumes(jobDescription: string, files: File[]): Promise<RankingJobResponse> {
+  const formData = new FormData();
+  formData.append('job_description', jobDescription);
+  files.forEach((file) => formData.append('files', file));
+
+  const response = await fetch(`${API_URL}/api/ranking/rank`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Ranking failed' }));
+    throw new Error(error.detail || 'Ranking failed');
+  }
+
+  return response.json();
+}
+
+export async function getRankingJobs(): Promise<RankingJobResponse[]> {
+  const response = await fetch(`${API_URL}/api/ranking/jobs`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch ranking jobs');
+  }
+
+  return response.json();
 }
