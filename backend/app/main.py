@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from app.database import engine, Base
 from app.models.portfolio import Portfolio
-from app.routers import portfolio
+from app.routers import portfolio, ranking
 from app.config import settings
 
 def run_migrations():
@@ -46,6 +46,7 @@ app.add_middleware(
 )
 
 app.include_router(portfolio.router, prefix="/api")
+app.include_router(ranking.router, prefix="/api/ranking")
 
 @app.get("/health")
 async def health():

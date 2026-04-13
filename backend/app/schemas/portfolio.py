@@ -89,3 +89,15 @@ class SuggestionResult(BaseModel):
     improvements: list[str]
     positives: list[str]
     overall_score: int = Field(..., ge=1, le=100)
+
+class RankedResumeItem(BaseModel):
+    id: str
+    filename: str
+    score: int
+    feedback: list[str]
+
+class RankingJobResponse(BaseModel):
+    id: str
+    job_description: str
+    created_at: str
+    results: list[RankedResumeItem]

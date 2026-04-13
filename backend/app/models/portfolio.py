@@ -34,3 +34,21 @@ class Portfolio(Base):
 
     # Feature: View Count Analytics
     view_count          = Column(Integer, default=0, nullable=False)
+
+class RankingJob(Base):
+    __tablename__ = "ranking_jobs"
+
+    id              = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id         = Column(String, nullable=True)
+    job_description = Column(Text, nullable=False)
+    created_at      = Column(DateTime, server_default=func.now())
+
+class RankedResume(Base):
+    __tablename__ = "ranked_resumes"
+
+    id              = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    job_id          = Column(String, nullable=False)
+    filename        = Column(String, nullable=False)
+    score           = Column(Integer, nullable=False)
+    feedback        = Column(Text, nullable=False) # JSON array
+    raw_text        = Column(Text, nullable=True)

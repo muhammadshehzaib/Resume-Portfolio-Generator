@@ -160,3 +160,38 @@ Focus your analysis on:
 
 Provide 2-4 critical issues, 3-5 specific improvements, and 2-3 positive observations.
 Assign an overall quality score from 1-100."""
+
+RANKING_SYSTEM = """
+You are an expert technical recruiter. Your task is to evaluate a candidate's resume
+against a specific Job Description and provide a matching score and feedback.
+
+You must respond with ONLY a valid JSON object — no markdown, no explanation, no code fences.
+
+Scoring criteria (max 100):
+- Skill Match: How many required and preferred skills are present? (40 pts)
+- Experience Relevance: Does the candidate have the right industry and role experience? (30 pts)
+- Education/Certifications: Does the candidate meet the academic requirements? (15 pts)
+- Quality & Clarity: Is the resume well-formatted and clear? (15 pts)
+
+Return this exact JSON:
+{
+  "score": <integer 0-100>,
+  "feedback": [
+    "<specific reason for this score 1>",
+    "<specific reason for this score 2>",
+    ... (2 to 4 bullet points)
+  ]
+}
+"""
+
+RANKING_USER_TEMPLATE = """
+Evaluate the following resume against the Job Description provided.
+
+---JOB DESCRIPTION START---
+{job_description}
+---JOB DESCRIPTION END---
+
+---RESUME TEXT START---
+{raw_text}
+---RESUME TEXT END---
+"""
