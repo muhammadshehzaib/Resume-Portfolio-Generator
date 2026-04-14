@@ -1,6 +1,7 @@
 'use client';
 
 import { ParsedResume, CustomColors } from '@/lib/types';
+import { motion } from 'framer-motion';
 
 interface CreativeTemplateProps {
   data: ParsedResume;
@@ -21,160 +22,256 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
     switch (sectionName) {
       case 'experience':
         return data.experiences.length > 0 ? (
-          <div key="exp" className="mb-12">
-            <div className="text-xs font-mono mb-6 uppercase tracking-widest" style={{ color: accentColor }}>
-              → EXPERIENCE
-            </div>
-            <div className="space-y-8">
+          <section key="exp" id="experience" className="py-24 border-b border-white/5">
+            <motion.div 
+               initial={{ opacity: 0, x: -20 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-cyan-400"
+            >
+              / Professional History
+            </motion.div>
+            <div className="space-y-12">
               {data.experiences.map((exp, idx) => (
-                <div key={idx} className="flex gap-6">
-                  <div className="w-1 bg-gradient-to-b from-violet-500 to-cyan-500 rounded-full flex-shrink-0" />
-                  <div className="pb-8">
-                    <div className="flex justify-between mb-2">
-                      <h3 className="text-xl font-bold text-white">{exp.title}</h3>
-                      <span className="text-gray-400 text-sm">{exp.start_date} – {exp.end_date || 'Present'}</span>
-                    </div>
-                    <p className="font-semibold mb-2" style={{ color: accentColor }}>{exp.company}</p>
-                    {exp.description.length > 0 && (
-                      <ul className="space-y-1">
-                        {exp.description.map((desc, i) => (
-                          <li key={i} className="text-gray-300 text-sm">▪ {desc}</li>
-                        ))}
-                      </ul>
-                    )}
+                <motion.div 
+                  key={idx} 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="group relative"
+                >
+                  <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-4">
+                    <h3 className="text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors">{exp.title}</h3>
+                    <span className="text-gray-500 font-mono text-sm tracking-tighter">{exp.start_date} — {exp.end_date || 'PRESENT'}</span>
                   </div>
-                </div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="w-8 h-[1px] bg-cyan-500/50"></span>
+                    <p className="text-lg font-medium text-gray-300 italic">{exp.company}</p>
+                  </div>
+                  {exp.description.length > 0 && (
+                    <ul className="grid md:grid-cols-2 gap-4">
+                      {exp.description.map((desc, i) => (
+                        <li key={i} className="text-gray-400 text-sm leading-relaxed flex gap-3">
+                          <span className="text-cyan-500 mt-1">▹</span>
+                          {desc}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </motion.div>
               ))}
             </div>
-          </div>
+          </section>
         ) : null;
       case 'projects':
         return data.projects.length > 0 ? (
-          <div key="proj" className="mb-12">
-            <div className="text-xs font-mono mb-6 uppercase tracking-widest" style={{ color: accentColor }}>
-              → PROJECTS
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <section key="proj" id="projects" className="py-24 border-b border-white/5">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-violet-400"
+            >
+              / Selected Works
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {data.projects.map((proj, idx) => (
-                <div key={idx} className="bg-zinc-900 border border-violet-500 border-opacity-30 p-6 rounded-lg hover:border-opacity-100 transition-all">
-                  <h3 className="text-lg font-bold text-white mb-2">{proj.name}</h3>
-                  <p className="text-gray-400 text-sm mb-4">{proj.description}</p>
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  className="bg-zinc-900/50 backdrop-blur-sm border border-white/5 p-10 rounded-2xl hover:border-violet-500/30 transition-all group"
+                >
+                  <div className="h-1 w-12 bg-gradient-to-r from-violet-500 to-cyan-500 mb-8 rounded-full"></div>
+                  <h3 className="text-2xl font-bold text-white mb-4 group-hover:translate-x-1 transition-transform">{proj.name}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed mb-8">{proj.description}</p>
                   {proj.technologies.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {proj.technologies.map((tech, i) => (
-                        <span key={i} className="text-xs bg-cyan-500 bg-opacity-20 text-cyan-300 px-2 py-1 rounded">
+                        <span key={i} className="text-[9px] font-bold uppercase tracking-widest bg-white/5 text-gray-400 px-3 py-1 rounded-sm">
                           {tech}
                         </span>
                       ))}
                     </div>
                   )}
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </section>
         ) : null;
       case 'education':
         return data.education.length > 0 ? (
-          <div key="edu" className="mb-12">
-            <div className="text-xs font-mono mb-6 uppercase tracking-widest" style={{ color: accentColor }}>
-              → EDUCATION
-            </div>
-            <div className="space-y-4">
+          <section key="edu" id="education" className="py-24">
+             <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-emerald-400"
+            >
+              / Academic Foundation
+            </motion.div>
+            <div className="grid md:grid-cols-2 gap-12">
               {data.education.map((edu, idx) => (
-                <div key={idx} className="border-l-2 border-violet-500 pl-4">
-                  <h3 className="text-lg font-bold text-white">{edu.degree}</h3>
-                  <p style={{ color: accentColor }}>{edu.institution}</p>
-                  {edu.field && <p className="text-gray-400 text-sm">{edu.field}</p>}
-                  {edu.graduation_year && <p className="text-gray-500 text-sm">{edu.graduation_year}</p>}
+                <div key={idx} className="relative pl-8">
+                  <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-emerald-500/50 to-transparent"></div>
+                  <h3 className="text-2xl font-bold text-white mb-2">{edu.degree}</h3>
+                  <p className="text-emerald-400 font-medium mb-2">{edu.institution}</p>
+                  <p className="text-gray-500 text-sm font-mono tracking-tighter">{edu.graduation_year}</p>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         ) : null;
       case 'skills':
       case 'certifications':
-        return null; // These are in the header grid
+        return null;
       default:
         return null;
     }
   };
+
   return (
-    <div className="bg-zinc-950 text-white min-h-screen print:bg-white print:text-black">
+    <div className="bg-[#050505] text-white min-h-screen selection:bg-cyan-500/30">
+      
+      {/* Dynamic Background Noise/Grain Effect */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-50 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 p-16 text-center print:bg-white print:bg-none print:text-black print:p-0 print:border-b-2 print:border-slate-100">
-        {photoUrl && (
-          <div className="mb-8 print:mb-4">
-            <img
-              src={photoUrl}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border-4 border-white mx-auto print:border-slate-200 print:w-24 print:h-24"
-            />
-          </div>
-        )}
-        {data.name && (
-          <h1 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-200 to-cyan-200 print:text-black print:bg-none print:from-black print:to-black">
-            {data.name}
-          </h1>
-        )}
-        {data.summary && (
-          <p className="text-xl text-gray-200 max-w-2xl mx-auto print:text-slate-600 print:text-sm">{data.summary}</p>
-        )}
-        {availableForHire && (
-          <div className="mt-6 print:hidden">
-            <span className="inline-block bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-              Available for Hire
-            </span>
-          </div>
-        )}
-      </div>
+      <section id="about" className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-6 text-center">
+        {/* Abstract Background Elements */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-violet-600/20 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-600/20 blur-[120px] rounded-full"></div>
 
-      {/* Content */}
-      <div className="max-w-6xl mx-auto px-8 py-12 print:py-0">
-        {/* Contact & Skills in Grid */}
-        <div className="grid grid-cols-2 gap-8 mb-12 print:mb-8 print:gap-4">
-          {/* Contact */}
-          <div>
-            <div className="text-xs font-mono mb-3 uppercase tracking-widest" style={{ color: accentColor }}>
-              → CONTACT
-            </div>
-            <div className="space-y-2 print:space-y-1">
-              {data.contact.email && <p className="text-gray-300 print:text-slate-600 print:text-xs">{data.contact.email}</p>}
-              {data.contact.phone && <p className="text-gray-300 print:text-slate-600 print:text-xs">{data.contact.phone}</p>}
-              {data.contact.location && <p className="text-gray-300 print:text-slate-600 print:text-xs">{data.contact.location}</p>}
-              {data.contact.linkedin && <p className="print:hidden"><a href={data.contact.linkedin} className="text-cyan-400 hover:text-cyan-300">LinkedIn</a></p>}
-              {data.contact.github && <p className="print:hidden"><a href={data.contact.github} className="text-cyan-400 hover:text-cyan-300">GitHub</a></p>}
-            </div>
-          </div>
-
-          {/* Top Skills */}
-          {data.skills.length > 0 && (
-            <div>
-              <div className="text-xs font-mono mb-3 uppercase tracking-widest" style={{ color: accentColor }}>
-                → SKILLS
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {data.skills.slice(0, 8).map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-gradient-to-r from-violet-500 to-cyan-500 px-3 py-1 rounded-lg text-sm font-medium print:bg-slate-100 print:bg-none print:text-slate-700 print:text-xs print:border print:border-slate-200"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10"
+        >
+          {photoUrl && (
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="mb-12 relative inline-block"
+            >
+              <img
+                src={photoUrl}
+                alt="Profile"
+                className="w-40 h-40 rounded-full object-cover border-2 border-white/10 grayscale hover:grayscale-0 transition-all duration-700"
+              />
+              <div className="absolute inset-0 rounded-full border border-white/20 animate-ping opacity-20"></div>
+            </motion.div>
           )}
-        </div>
 
-        {/* Dynamic Sections */}
-        <div className="print:space-y-0 text-white print:text-black">
+          {data.name && (
+            <h1 className="text-7xl md:text-[120px] font-black tracking-tighter leading-[0.85] mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/20">
+              {data.name.split(' ').map((word, i) => (
+                <span key={i} className="block">{word}</span>
+              ))}
+            </h1>
+          )}
+
+          {data.summary && (
+            <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto leading-relaxed font-light tracking-tight px-4">
+              {data.summary}
+            </p>
+          )}
+
+          {availableForHire && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="mt-12 flex items-center justify-center gap-3"
+            >
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-500/80">Active Protocol: Available</span>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 text-gray-500"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </motion.div>
+      </section>
+
+      {/* Main Content Sections */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+        
+        {/* Bento Grid Skills & Info */}
+        <section id="contact" className="py-24 border-b border-white/5">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Skill Bento */}
+              <div className="md:col-span-2 bg-zinc-900/30 border border-white/5 p-12 rounded-3xl">
+                <div className="text-[10px] font-mono mb-8 uppercase tracking-[0.5em] text-gray-500">/ Core Competencies</div>
+                <div className="flex flex-wrap gap-3">
+                  {data.skills.map((skill, idx) => (
+                    <span
+                      key={idx}
+                      className="px-6 py-3 bg-white/5 border border-white/5 rounded-xl text-lg font-medium hover:bg-white hover:text-black transition-all cursor-default"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contact Bento */}
+              <div className="bg-gradient-to-br from-violet-600 to-indigo-700 p-12 rounded-3xl flex flex-col justify-between">
+                <div>
+                  <div className="text-[10px] font-mono mb-8 uppercase tracking-[0.5em] text-white/60">/ Connection</div>
+                  <div className="space-y-4">
+                    {data.contact.email && <div className="text-xl font-bold truncate">{data.contact.email}</div>}
+                    {data.contact.location && <div className="text-sm font-mono text-white/70">{data.contact.location}</div>}
+                  </div>
+                </div>
+                <div className="flex gap-4 mt-12">
+                  {data.contact.linkedin && (
+                    <a href={data.contact.linkedin} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                      LN
+                    </a>
+                  )}
+                  {data.contact.github && (
+                    <a href={data.contact.github} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                      GH
+                    </a>
+                  )}
+                </div>
+              </div>
+           </div>
+        </section>
+
+        {/* Dynamic Template Sections */}
+        <div className="pb-32">
           {order.map((sectionName) => (
-            <div key={sectionName} className="print:bg-white print:text-black">
+            <div key={sectionName}>
               {renderSection(sectionName)}
             </div>
           ))}
         </div>
       </div>
+
+      {/* Footer Branding */}
+      <footer className="py-24 text-center border-t border-white/5">
+        <div className="text-[10px] font-mono mb-4 uppercase tracking-[0.8em] text-gray-600">Generated by ResumeOS v4.0</div>
+        <div className="text-gray-400 text-sm">© {new Date().getFullYear()} {data.name} — All Rights Reserved</div>
+      </footer>
     </div>
   );
 }
+

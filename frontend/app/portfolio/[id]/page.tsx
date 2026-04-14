@@ -375,28 +375,43 @@ export default function PortfolioPage() {
         </div>
       )}
 
-      {/* Template Switcher */}
+      {/* Template Switcher - Only in Studio Mode */}
       {!isPreviewMode && (
         <div className="bg-white border-b border-gray-100 no-print">
-          <div className="max-w-[1600px] mx-auto px-6 py-3">
+          <div className="max-w-[1600px] mx-auto px-6 py-2">
             <TemplateSwitcher current={template} onChange={handleTemplateChange} />
           </div>
         </div>
       )}
 
+      {/* Internal Navigation for the Portfolio itself */}
+      <nav className={`sticky ${isPreviewMode ? 'top-0' : 'top-16'} z-30 w-full bg-white/70 backdrop-blur-md border-b border-gray-100 no-print`}>
+         <div className="max-w-screen-xl mx-auto px-6 h-12 flex items-center justify-between">
+           <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-900">{portfolio.parsed_data.name}</div>
+           <div className="flex gap-8 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">
+             <a href="#about" className="hover:text-black transition-colors">About</a>
+             <a href="#experience" className="hover:text-black transition-colors">Experience</a>
+             <a href="#projects" className="hover:text-black transition-colors">Projects</a>
+             <a href="#contact" className="hover:text-black transition-colors">Contact</a>
+           </div>
+         </div>
+      </nav>
+
       {/* Portfolio Display */}
-      <div className={`flex gap-6 ${isPreviewMode ? '' : 'max-w-7xl mx-auto px-4'} py-8 print-container`}>
+      <div className={`relative ${isPreviewMode ? '' : ''} print-container`}>
         {/* Main Portfolio */}
-        <div className={isPreviewMode ? 'w-full' : 'flex-1 print-container'}>
-          <div className={isPreviewMode ? '' : 'bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 print-container'}>
+        <div className="w-full print-container">
+          <div className="print-container">
             {renderTemplate()}
           </div>
         </div>
 
-        {/* ATS Score Sidebar */}
+        {/* Floating ATS Score (Studio only) */}
         {!isPreviewMode && (
-          <div className="w-80 no-print">
-            <AtsScoreCard score={portfolio.ats_score} feedback={portfolio.ats_feedback} />
+          <div className="fixed bottom-6 left-6 w-80 z-50 no-print pointer-events-none">
+            <div className="pointer-events-auto">
+              <AtsScoreCard score={portfolio.ats_score} feedback={portfolio.ats_feedback} />
+            </div>
           </div>
         )}
       </div>

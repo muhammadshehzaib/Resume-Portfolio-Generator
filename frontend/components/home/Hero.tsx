@@ -55,7 +55,7 @@ export default function Hero({ scrollYProgress, heroOpacity }: HeroProps) {
                 href="#upload" 
                 className="bg-black text-white px-10 py-5 text-[11px] font-bold uppercase tracking-[0.2em] rounded-[2px] shadow-2xl transition-all"
               >
-                Get Started Now
+                Build My Portfolio
               </motion.a>
             </Magnetic>
             <motion.button 

@@ -32,7 +32,7 @@ export default function Header() {
             href="#upload" 
             className="bg-black text-white px-8 py-3 text-[10px] font-bold uppercase tracking-[0.2em] rounded-[2px] shadow-xl shadow-black/10 hover:shadow-black/20 transition-all"
           >
-            Launch App
+            Generate Portfolio
           </motion.a>
         </Magnetic>
       </div>
