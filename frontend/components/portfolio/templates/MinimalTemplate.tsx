@@ -124,7 +124,7 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
   return (
     <div className={`${bgClass} min-h-screen selection:bg-zinc-200 selection:text-black`}>
       {/* Editorial Header / Hero */}
-      <header id="about" className="pt-32 pb-40 px-6 md:px-20 border-b border-zinc-100/50 text-center">
+      <header id="about" className="pt-20 pb-24 px-6 md:px-20 border-b border-zinc-100/50 text-center">
         {photoUrl && (
           <div className="mb-16">
             <img
@@ -140,10 +140,10 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 0.8 }}
         >
-          <h1 className={`text-6xl md:text-9xl font-serif font-medium ${textClass} mb-12 tracking-tighter`}>
+          <h1 className={`text-5xl md:text-7xl font-serif font-medium ${textClass} mb-10 tracking-tighter`}>
             {data.name}
           </h1>
-          <p className={`text-2xl md:text-4xl leading-snug ${darkMode ? 'text-zinc-400' : 'text-zinc-500'} font-serif italic max-w-5xl mx-auto`}>
+          <p className={`text-lg md:text-xl leading-relaxed ${darkMode ? 'text-zinc-400' : 'text-zinc-500'} font-serif italic max-w-4xl mx-auto`}>
             {data.summary}
           </p>
         </motion.div>
