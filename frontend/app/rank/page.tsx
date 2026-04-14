@@ -1,11 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { rankResumes, getRankingJobs } from '@/lib/api';
 import { RankingJobResponse, RankedResumeItem } from '@/lib/types';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
+
+function DebouncedTextarea({ value, onChange, placeholder, className }: { value: string, onChange: (val: string) => void, placeholder?: string, className?: string }) {
+  const [localValue, setLocalValue] = useState(value);
+
+  useEffect(() => {
+    if (value !== localValue) setLocalValue(value);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(localValue);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [localValue, onChange]);
+
+  return (
+    <textarea
+      value={localValue}
+      onChange={(e) => setLocalValue(e.target.value)}
+      placeholder={placeholder}
+      className={className}
+    />
+  );
+}
 
 export default function RankPage() {
   const [jobDescription, setJobDescription] = useState('');
@@ -37,7 +62,7 @@ export default function RankPage() {
 
   return (
     <div className="min-h-screen bg-[#fafafa] font-sans text-slate-900 flex flex-col items-center">
-      <div className="w-full max-w-[1400px] bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] rounded-xl mt-4 mb-12 flex flex-col relative z-10 overflow-hidden">
+      <div className="w-full max-w-[1400px] bg-white/95 border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] rounded-xl mt-4 mb-12 flex flex-col relative z-10 overflow-hidden">
         <Header />
 
         <main className="p-8 lg:p-16">
@@ -71,9 +96,9 @@ export default function RankPage() {
             <div className="lg:col-span-5 space-y-10">
               <section className="space-y-4">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Target Role Profile</label>
-                <textarea
+                <DebouncedTextarea
                   value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
+                  onChange={setJobDescription}
                   placeholder="Paste the job description here..."
                   className="w-full h-80 p-6 bg-slate-50 border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/50 transition-all resize-none shadow-inner"
                 />
@@ -132,7 +157,7 @@ export default function RankPage() {
 
             {/* Results Section */}
             <div className="lg:col-span-7">
-              <section className="bg-slate-50/30 backdrop-blur-md p-10 rounded-2xl border border-slate-100 min-h-[700px] shadow-inner relative">
+              <section className="bg-slate-50/70 p-10 rounded-2xl border border-slate-100 min-h-[700px] shadow-inner relative">
                 <div className="absolute top-0 right-0 p-10">
                    {status === 'done' && (
                      <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-emerald-500">Analysis Complete</div>
