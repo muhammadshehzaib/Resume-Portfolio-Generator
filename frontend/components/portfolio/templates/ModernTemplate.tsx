@@ -146,7 +146,7 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
           )}
           <h1 className={`text-xl font-bold ${textClass} tracking-tight`}>{data.name}</h1>
           <p className="text-xs font-medium uppercase tracking-widest mt-2" style={{ color: accentColor }}>
-            {data.contact.location || 'Global Protocol'}
+            {data.contact.location || 'Designer & Engineer'}
           </p>
         </div>
 
@@ -228,7 +228,7 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
         <footer className="mt-24 pt-10 border-t border-slate-200">
            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-300 flex items-center gap-4">
              <span className="w-8 h-px bg-slate-100"></span> 
-             System Generated // Portfolio OS v2.0
+             Personal Portfolio — Edition {new Date().getFullYear()}
            </p>
         </footer>
       </main>

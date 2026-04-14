@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import TemplateSwitcher from '@/components/portfolio/TemplateSwitcher';
 import ShareButton from '@/components/portfolio/ShareButton';
+import { motion } from 'framer-motion';
 import AtsScoreCard from '@/components/portfolio/AtsScoreCard';
 import EditMode from '@/components/portfolio/EditMode';
 import MinimalTemplate from '@/components/portfolio/templates/MinimalTemplate';
@@ -32,6 +33,7 @@ export default function PortfolioPage() {
   const [showQRCode, setShowQRCode] = useState(false);
   const [showJobCustomization, setShowJobCustomization] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showAtsScore, setShowAtsScore] = useState(false);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -339,6 +341,21 @@ export default function PortfolioPage() {
                 >
                   Tailor
                 </button>
+                <div className="h-4 w-px bg-slate-100 mx-1"></div>
+                <button
+                  onClick={() => setShowAtsScore(!showAtsScore)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded transition-all group ${
+                    showAtsScore ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:text-black'
+                  }`}
+                >
+                  <span className={`text-[10px] font-bold uppercase tracking-widest ${showAtsScore ? 'text-indigo-600' : 'text-slate-400 group-hover:text-black'}`}>ATS</span>
+                  <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-sm ${
+                    portfolio.ats_score >= 80 ? 'bg-emerald-500 text-white' : 
+                    portfolio.ats_score >= 60 ? 'bg-amber-500 text-white' : 'bg-red-500 text-white'
+                  }`}>
+                    {portfolio.ats_score}
+                  </span>
+                </button>
                 <button
                   onClick={() => setShowQRCode(true)}
                   className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-black hover:bg-slate-50 rounded transition-all"
@@ -406,12 +423,24 @@ export default function PortfolioPage() {
           </div>
         </div>
 
-        {/* Floating ATS Score (Studio only) */}
-        {!isPreviewMode && (
+        {/* Toggleable ATS Score (Studio only) */}
+        {!isPreviewMode && showAtsScore && (
           <div className="fixed bottom-6 left-6 w-80 z-50 no-print pointer-events-none">
-            <div className="pointer-events-auto">
+            <motion.div 
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="pointer-events-auto shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-2xl overflow-hidden"
+            >
+              <div className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Optimization Feedback</span>
+                <button onClick={() => setShowAtsScore(false)} className="text-slate-300 hover:text-black">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
               <AtsScoreCard score={portfolio.ats_score} feedback={portfolio.ats_feedback} />
-            </div>
+            </motion.div>
           </div>
         )}
       </div>

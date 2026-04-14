@@ -13,8 +13,8 @@ export default function AtsScoreCard({ score, feedback }: AtsScoreCardProps) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">ATS Compatibility Score</h3>
+    <div className="p-6">
+      <h3 className="text-lg font-bold text-slate-900 mb-4 tracking-tight">ATS Compatibility Score</h3>
 
       <div className="flex items-center gap-6 mb-6">
         <div className="text-center">
