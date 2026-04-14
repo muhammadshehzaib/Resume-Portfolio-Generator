@@ -10,7 +10,7 @@ export default function Header() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
-      className="flex items-center justify-between px-8 py-6 md:px-12 border-b border-gray-50 relative z-50 bg-white/80 backdrop-blur-md"
+      className="flex items-center justify-between px-8 py-6 md:px-12 border-b border-gray-50 relative z-50 bg-white/95"
     >
       <motion.div 
         whileHover={{ scale: 1.05 }}

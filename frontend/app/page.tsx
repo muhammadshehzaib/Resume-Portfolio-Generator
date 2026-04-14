@@ -36,20 +36,9 @@ export default function Home() {
 
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
-  // Mouse Dynamic Light Effect
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
-
-  const background = useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(22, 163, 74, 0.05), transparent 80%)`;
+  // Removed expensive mouse follow light effect for performance
+  // const background = useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(22, 163, 74, 0.05), transparent 80%)`;
+  const background = "none";
 
   const handleFileSelect = async (file: File) => {
     setFileName(file.name);
@@ -77,8 +66,8 @@ export default function Home() {
         style={{ scaleX: scrollYProgress }}
       />
 
-      {/* Dynamic Background Light */}
-      <motion.div className="fixed inset-0 pointer-events-none z-0" style={{ background }} />
+      {/* Dynamic Background Light - Removed for performance */}
+      {/* <motion.div className="fixed inset-0 pointer-events-none z-0" style={{ background }} /> */}
 
       <motion.div 
         initial={{ opacity: 0 }}

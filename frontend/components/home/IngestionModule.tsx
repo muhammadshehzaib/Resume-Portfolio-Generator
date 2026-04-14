@@ -57,7 +57,7 @@ export default function IngestionModule({ status, error, fileName, onFileSelect 
               opacity: [0.1, 0.2, 0.1]
             }}
             transition={{ duration: 8, repeat: Infinity }}
-            className="absolute top-0 right-0 w-96 h-96 bg-emerald-50 blur-[100px] rounded-full pointer-events-none"
+            className="absolute top-0 right-0 w-96 h-96 bg-emerald-50/20 rounded-full pointer-events-none"
           />
         </motion.div>
       </div>
