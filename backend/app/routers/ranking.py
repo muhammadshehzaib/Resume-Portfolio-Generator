@@ -34,9 +34,10 @@ async def rank_resumes(
 
     # 2. Process each file
     for file in files:
-        if file.content_type != "application/pdf":
-            continue # Skip non-PDFs or raise error? For bulk, skip is safer
-        
+        if file.content_type != "application/pdf" and not file.filename.lower().endswith(".pdf"):
+            print(f"Skipping {file.filename}: Invalid content type '{file.content_type}'")
+            continue # Skip non-PDFs
+
         file_bytes = await file.read()
         try:
             raw_text = pdf_parser.extract_text(file_bytes)
@@ -51,9 +52,10 @@ async def rank_resumes(
                 raw_text=raw_text
             )
             db.add(ranked_resume)
+            db.flush()
             
             results.append(RankedResumeItem(
-                id=ranked_resume.id,
+                id=str(ranked_resume.id),
                 filename=file.filename,
                 score=rank_result.score,
                 feedback=rank_result.feedback
