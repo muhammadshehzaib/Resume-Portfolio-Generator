@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { rankResumes, getRankingJobs } from '@/lib/api';
-import { RankingJobResponse, RankedResumeItem } from '@/lib/types';
+import { rankResumes } from '@/lib/api';
+import { RankingJobResponse } from '@/lib/types';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 

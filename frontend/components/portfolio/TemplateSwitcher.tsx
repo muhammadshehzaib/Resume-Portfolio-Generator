@@ -6,9 +6,9 @@ interface TemplateSwitcherProps {
 }
 
 const templates = [
-  { id: 'minimal', label: 'Minimal', description: 'Clean & editorial' },
-  { id: 'modern', label: 'Modern', description: 'Two-column sidebar' },
-  { id: 'creative', label: 'Creative', description: 'Bold & asymmetric' },
+  { id: 'minimal', label: 'Minimal' },
+  { id: 'modern', label: 'Modern' },
+  { id: 'creative', label: 'Creative' },
 ];
 
 export default function TemplateSwitcher({ current, onChange }: TemplateSwitcherProps) {
@@ -25,7 +25,6 @@ export default function TemplateSwitcher({ current, onChange }: TemplateSwitcher
           }`}
         >
           <div className="text-lg font-semibold leading-none">{t.label}</div>
-          <div className="mt-1 text-xs opacity-80">{t.description}</div>
         </button>
       ))}
     </div>

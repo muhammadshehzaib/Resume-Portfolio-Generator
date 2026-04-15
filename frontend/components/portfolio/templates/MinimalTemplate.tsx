@@ -16,7 +16,6 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
   const bgClass = darkMode ? 'bg-zinc-950' : 'bg-white';
   const textClass = darkMode ? 'text-zinc-100' : 'text-zinc-900';
   const secondaryTextClass = darkMode ? 'text-zinc-500' : 'text-zinc-400';
-  const borderClass = darkMode ? 'border-zinc-800' : 'border-zinc-100';
   const accentColor = customColors?.primaryColor || '#18181b';
 
   const DEFAULT_ORDER = ['experience', 'education', 'projects', 'skills', 'certifications'];
@@ -26,9 +25,9 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
     switch (sectionName) {
       case 'experience':
         return data.experiences.length > 0 ? (
-          <section key="exp" id="experience" className="py-20 border-b border-zinc-100/50">
-            <h2 className="text-sm font-bold uppercase tracking-[0.3em] mb-12 text-zinc-300">Experience</h2>
-            <div className="space-y-16">
+          <section key="exp" id="experience" className="py-16 border-b border-zinc-100/50">
+            <h2 className="text-xs font-bold uppercase tracking-[0.3em] mb-10 text-zinc-400">Work</h2>
+            <div className="space-y-12">
               {data.experiences.map((exp, idx) => (
                 <motion.div 
                   key={idx}
@@ -47,7 +46,7 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
                   {exp.description.length > 0 && (
                     <div className="space-y-4">
                       {exp.description.map((desc, i) => (
-                        <p key={i} className={`text-lg leading-relaxed ${darkMode ? 'text-zinc-400' : 'text-zinc-600'} font-light`}>
+                        <p key={i} className={`text-base md:text-lg leading-relaxed ${darkMode ? 'text-zinc-400' : 'text-zinc-600'} font-light`}>
                           {desc}
                         </p>
                       ))}
@@ -60,8 +59,8 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
         ) : null;
       case 'education':
         return data.education.length > 0 ? (
-          <section key="edu" id="education" className="py-20 border-b border-zinc-100/50">
-            <h2 className="text-sm font-bold uppercase tracking-[0.3em] mb-12 text-zinc-300">Education</h2>
+          <section key="edu" id="education" className="py-16 border-b border-zinc-100/50">
+            <h2 className="text-xs font-bold uppercase tracking-[0.3em] mb-10 text-zinc-400">Background</h2>
             <div className="grid md:grid-cols-2 gap-12">
               {data.education.map((edu, idx) => (
                 <div key={idx}>
@@ -75,9 +74,9 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
         ) : null;
       case 'projects':
         return data.projects.length > 0 ? (
-          <section key="proj" id="projects" className="py-20 border-b border-zinc-100/50">
-             <h2 className="text-sm font-bold uppercase tracking-[0.3em] mb-12 text-zinc-300">Case Studies</h2>
-             <div className="space-y-20">
+          <section key="proj" id="projects" className="py-16 border-b border-zinc-100/50">
+             <h2 className="text-xs font-bold uppercase tracking-[0.3em] mb-10 text-zinc-400">Case Studies</h2>
+             <div className="space-y-16">
               {data.projects.map((proj, idx) => (
                 <motion.div 
                   key={idx}
@@ -85,18 +84,27 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                 >
-                  <h3 className={`text-4xl md:text-5xl font-serif font-medium ${textClass} mb-6 tracking-tight`}>{proj.name}</h3>
+                  <div className="flex items-baseline justify-between gap-6">
+                    <h3 className={`text-4xl md:text-5xl font-serif font-medium ${textClass} mb-6 tracking-tight`}>{proj.name}</h3>
+                    {proj.url && (
+                      <a
+                        href={proj.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`shrink-0 text-xs font-bold uppercase tracking-[0.3em] ${darkMode ? 'text-zinc-300 hover:text-zinc-100' : 'text-zinc-500 hover:text-zinc-900'} border-b border-current pb-1`}
+                      >
+                        View
+                      </a>
+                    )}
+                  </div>
                   <p className={`text-xl leading-relaxed ${darkMode ? 'text-zinc-400' : 'text-zinc-600'} font-light max-w-4xl mb-8`}>
                     {proj.description}
                   </p>
                   {proj.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-x-8 gap-y-2">
-                       {proj.technologies.map((tech, i) => (
-                         <span key={i} className="text-xs font-bold uppercase tracking-widest text-zinc-300">
-                           {tech}
-                         </span>
-                       ))}
-                    </div>
+                    <p className={`text-xs font-mono ${darkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                      Stack: {proj.technologies.slice(0, 8).join(' · ')}
+                      {proj.technologies.length > 8 ? ' · …' : ''}
+                    </p>
                   )}
                 </motion.div>
               ))}
@@ -105,8 +113,8 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
         ) : null;
       case 'skills':
         return data.skills.length > 0 ? (
-          <section key="skills" id="skills" className="py-20">
-            <h2 className="text-sm font-bold uppercase tracking-[0.3em] mb-12 text-zinc-300">Expertise</h2>
+          <section key="skills" id="skills" className="py-16">
+            <h2 className="text-xs font-bold uppercase tracking-[0.3em] mb-10 text-zinc-400">Expertise</h2>
             <div className="columns-2 md:columns-3 gap-12 space-y-4">
               {data.skills.map((skill, idx) => (
                 <p key={idx} className={`text-lg ${textClass} font-light`}>{skill}</p>
@@ -124,9 +132,9 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
   return (
     <div className={`${bgClass} min-h-screen selection:bg-zinc-200 selection:text-black`}>
       {/* Editorial Header / Hero */}
-      <header id="about" className="pt-20 pb-24 px-6 md:px-20 border-b border-zinc-100/50 text-center">
+      <header id="about" className="pt-16 pb-16 px-6 md:px-20 border-b border-zinc-100/50 text-center">
         {photoUrl && (
-          <div className="mb-16">
+          <div className="mb-12">
             <img
               src={photoUrl}
               alt="Profile"
@@ -140,16 +148,16 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 0.8 }}
         >
-          <h1 className={`text-5xl md:text-7xl font-serif font-medium ${textClass} mb-10 tracking-tighter`}>
+          <h1 className={`text-5xl md:text-6xl font-serif font-medium ${textClass} mb-8 tracking-tighter`}>
             {data.name}
           </h1>
-          <p className={`text-lg md:text-xl leading-relaxed ${darkMode ? 'text-zinc-400' : 'text-zinc-500'} font-serif italic max-w-4xl mx-auto`}>
+          <p className={`text-lg md:text-xl leading-relaxed ${darkMode ? 'text-zinc-400' : 'text-zinc-600'} font-serif italic max-w-4xl mx-auto`}>
             {data.summary}
           </p>
         </motion.div>
         
         {availableForHire && (
-           <div className="mt-16 flex items-center justify-center gap-4 no-print">
+           <div className="mt-12 flex items-center justify-center gap-4 no-print">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
               <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-emerald-500">Open for Engagement</span>
            </div>
@@ -158,22 +166,38 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
 
       {/* Main Content Area */}
       <main className="px-6 md:px-20 max-w-screen-xl mx-auto">
-        <div className="py-20 border-b border-zinc-100/50 grid md:grid-cols-2 gap-12">
+        <section id="contact" className="py-14 border-b border-zinc-100/50 grid md:grid-cols-2 gap-12">
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-[0.3em] mb-6 text-zinc-300">Contact</h2>
+              <h2 className="text-xs font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Contact</h2>
               <div className="space-y-4">
                 {data.contact.email && <p className={`text-xl ${textClass} font-light`}>{data.contact.email}</p>}
                 {data.contact.phone && <p className={`text-lg ${secondaryTextClass} font-light`}>{data.contact.phone}</p>}
               </div>
             </div>
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-[0.3em] mb-6 text-zinc-300">Network</h2>
+              <h2 className="text-xs font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Network</h2>
               <div className="flex gap-8">
-                {data.contact.linkedin && <a href={data.contact.linkedin} className={`text-sm font-bold uppercase tracking-widest ${textClass} border-b border-black pb-1`}>LinkedIn</a>}
-                {data.contact.github && <a href={data.contact.github} className={`text-sm font-bold uppercase tracking-widest ${textClass} border-b border-black pb-1`}>GitHub</a>}
+                {data.contact.linkedin && (
+                  <a
+                    href={data.contact.linkedin}
+                    className={`text-sm font-bold uppercase tracking-widest ${textClass} border-b border-current pb-1`}
+                    style={{ color: accentColor }}
+                  >
+                    LinkedIn
+                  </a>
+                )}
+                {data.contact.github && (
+                  <a
+                    href={data.contact.github}
+                    className={`text-sm font-bold uppercase tracking-widest ${textClass} border-b border-current pb-1`}
+                    style={{ color: accentColor }}
+                  >
+                    GitHub
+                  </a>
+                )}
               </div>
             </div>
-        </div>
+        </section>
 
         {/* Dynamic Sections */}
         {order.map((sectionName) => (
@@ -190,4 +214,3 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
     </div>
   );
 }
-

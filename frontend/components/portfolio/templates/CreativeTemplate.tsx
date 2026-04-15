@@ -189,7 +189,10 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
               transition={{ delay: 1 }}
               className="mt-16 flex items-center justify-center gap-3 no-print"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: accentColor, boxShadow: `0 0 12px ${accentColor}66` }}
+              ></span>
               <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-zinc-600">Status: Available</span>
             </motion.div>
           )}
@@ -271,4 +274,3 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
     </div>
   );
 }
-

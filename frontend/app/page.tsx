@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { uploadResume } from '@/lib/api';
 import { 
   motion, 
   useScroll, 
-  useTransform, 
-  useMotionValue, 
-  useMotionTemplate 
+  useTransform
 } from "framer-motion";
 
 // Components
@@ -36,10 +34,6 @@ export default function Home() {
 
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
-  // Removed expensive mouse follow light effect for performance
-  // const background = useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(22, 163, 74, 0.05), transparent 80%)`;
-  const background = "none";
-
   const handleFileSelect = async (file: File) => {
     setFileName(file.name);
     setStatus('uploading');
@@ -65,9 +59,6 @@ export default function Home() {
         className="fixed top-0 left-0 right-0 h-1 bg-black origin-left z-[1000]"
         style={{ scaleX: scrollYProgress }}
       />
-
-      {/* Dynamic Background Light - Removed for performance */}
-      {/* <motion.div className="fixed inset-0 pointer-events-none z-0" style={{ background }} /> */}
 
       <motion.div 
         initial={{ opacity: 0 }}

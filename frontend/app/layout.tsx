@@ -1,17 +1,5 @@
 import type { Metadata } from 'next';
-import { Figtree, Newsreader } from 'next/font/google';
 import './globals.css';
-
-const figtree = Figtree({ 
-  subsets: ['latin'],
-  variable: '--font-figtree',
-});
-
-const newsreader = Newsreader({
-  subsets: ['latin'],
-  style: ['normal', 'italic'],
-  variable: '--font-newsreader',
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -29,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${figtree.variable} ${newsreader.variable} font-sans bg-white text-gray-900`}>
+      <body className="font-sans bg-white text-gray-900">
         {children}
       </body>
     </html>

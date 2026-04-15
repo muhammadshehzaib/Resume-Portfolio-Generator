@@ -17,6 +17,8 @@ import { getPortfolio, updatePortfolio, updateSettings, downloadPortfolioPDF } f
 import { PortfolioResponse, ParsedResume, PortfolioSettings } from '@/lib/types';
 import SettingsPanel from '@/components/portfolio/SettingsPanel';
 
+type NavItem = { id: string; label: string; show: boolean };
+
 export default function PortfolioPage() {
   const params = useParams();
   const id = params.id as string;
@@ -203,6 +205,89 @@ export default function PortfolioPage() {
         );
     }
   };
+
+  const buildNavItems = (templateId: string, data: ParsedResume, sectionOrder?: string[]): NavItem[] => {
+    const defaultOrder =
+      templateId === 'modern'
+        ? (['projects', 'experience', 'skills', 'certifications'] as const)
+        : templateId === 'creative'
+          ? (['projects', 'experience', 'education'] as const)
+          : (['experience', 'education', 'projects', 'skills', 'certifications'] as const);
+
+    const effectiveOrder = (sectionOrder && sectionOrder.length > 0 ? sectionOrder : [...defaultOrder]) as string[];
+
+    const labels: Record<string, string> =
+      templateId === 'minimal'
+        ? {
+            experience: 'Work',
+            education: 'Background',
+            projects: 'Case Studies',
+            skills: 'Expertise',
+            certifications: 'Certifications',
+          }
+        : templateId === 'modern'
+          ? {
+              experience: 'Work',
+              education: 'Background',
+              projects: 'Projects',
+              skills: 'Skills',
+              certifications: 'Certs',
+            }
+          : {
+              experience: 'Experience',
+              education: 'Education',
+              projects: 'Projects',
+              skills: 'Skills',
+              certifications: 'Certifications',
+            };
+
+    const showSection = (sectionName: string) => {
+      switch (sectionName) {
+        case 'experience':
+          return data.experiences?.length > 0;
+        case 'education':
+          return data.education?.length > 0;
+        case 'projects':
+          return data.projects?.length > 0;
+        case 'skills':
+          return data.skills?.length > 0;
+        case 'certifications':
+          return data.certifications?.length > 0;
+        default:
+          return false;
+      }
+    };
+
+    const items: NavItem[] = [{ id: 'about', label: 'About', show: true }];
+
+    for (const sectionName of effectiveOrder) {
+      if (!labels[sectionName]) continue;
+      if (!showSection(sectionName)) continue;
+      items.push({ id: sectionName, label: labels[sectionName], show: true });
+    }
+
+    items.push({ id: 'contact', label: 'Contact', show: true });
+    return items;
+  };
+
+  const navItems = buildNavItems(template, portfolio.parsed_data, portfolio.section_order);
+
+  const navRootClass =
+    template === 'minimal'
+      ? `sticky ${isPreviewMode ? 'top-0' : 'top-16'} z-30 w-full bg-white border-b border-zinc-100/60 no-print`
+      : `sticky ${isPreviewMode ? 'top-0' : 'top-16'} z-30 w-full bg-white/70 backdrop-blur-md border-b border-gray-100 no-print`;
+
+  const navNameClass =
+    template === 'minimal'
+      ? 'text-[11px] font-bold uppercase tracking-[0.25em] text-zinc-800 font-serif'
+      : 'text-[10px] font-bold uppercase tracking-[0.3em] text-slate-900';
+
+  const navLinksClass =
+    template === 'minimal'
+      ? 'flex gap-6 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 font-serif'
+      : 'flex gap-8 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400';
+
+  const navLinkHoverClass = template === 'minimal' ? 'hover:text-zinc-900' : 'hover:text-black';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -402,14 +487,19 @@ export default function PortfolioPage() {
       )}
 
       {/* Internal Navigation for the Portfolio itself */}
-      <nav className={`sticky ${isPreviewMode ? 'top-0' : 'top-16'} z-30 w-full bg-white/70 backdrop-blur-md border-b border-gray-100 no-print`}>
+      <nav className={navRootClass}>
          <div className="max-w-screen-xl mx-auto px-6 h-12 flex items-center justify-between">
-           <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-900">{portfolio.parsed_data.name}</div>
-           <div className="flex gap-8 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">
-             <a href="#about" className="hover:text-black transition-colors">About</a>
-             <a href="#experience" className="hover:text-black transition-colors">Experience</a>
-             <a href="#projects" className="hover:text-black transition-colors">Projects</a>
-             <a href="#contact" className="hover:text-black transition-colors">Contact</a>
+           <div className={navNameClass}>{portfolio.parsed_data.name}</div>
+           <div className={navLinksClass}>
+             {navItems.map((item) => (
+               <a
+                 key={item.id}
+                 href={`#${item.id}`}
+                 className={`${navLinkHoverClass} transition-colors`}
+               >
+                 {item.label}
+               </a>
+             ))}
            </div>
          </div>
       </nav>
