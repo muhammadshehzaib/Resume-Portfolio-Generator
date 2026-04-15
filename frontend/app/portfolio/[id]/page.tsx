@@ -289,6 +289,16 @@ export default function PortfolioPage() {
 
   const navLinkHoverClass = template === 'minimal' ? 'hover:text-zinc-900' : 'hover:text-black';
 
+  const studioContainerClass =
+    template === 'minimal'
+      ? 'max-w-5xl mx-auto px-6 md:px-20'
+      : 'max-w-[1600px] mx-auto px-6';
+
+  const portfolioNavContainerClass =
+    template === 'minimal'
+      ? 'max-w-5xl mx-auto px-6 md:px-20 h-12 flex items-center justify-between'
+      : 'max-w-screen-xl mx-auto px-6 h-12 flex items-center justify-between';
+
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -359,7 +369,7 @@ export default function PortfolioPage() {
       {/* Header with Controls (Premium Dashboard Aesthetic) */}
       {!isPreviewMode && (
         <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.02)] no-print">
-          <div className="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between">
+          <div className={`${studioContainerClass} h-16 flex items-center justify-between`}>
             
             {/* Left: Navigation & Stats */}
             <div className="flex items-center gap-8">
@@ -480,7 +490,7 @@ export default function PortfolioPage() {
       {/* Template Switcher - Only in Studio Mode */}
       {!isPreviewMode && (
         <div className="bg-white border-b border-gray-100 no-print">
-          <div className="max-w-[1600px] mx-auto px-6 py-2">
+          <div className={`${studioContainerClass} py-2`}>
             <TemplateSwitcher current={template} onChange={handleTemplateChange} />
           </div>
         </div>
@@ -488,7 +498,7 @@ export default function PortfolioPage() {
 
       {/* Internal Navigation for the Portfolio itself */}
       <nav className={navRootClass}>
-         <div className="max-w-screen-xl mx-auto px-6 h-12 flex items-center justify-between">
+         <div className={portfolioNavContainerClass}>
            <div className={navNameClass}>{portfolio.parsed_data.name}</div>
            <div className={navLinksClass}>
              {navItems.map((item) => (

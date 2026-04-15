@@ -164,40 +164,43 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
   return (
     <div className={`${bgClass} min-h-screen selection:bg-zinc-200 selection:text-black`}>
       {/* Editorial Header / Hero */}
-      <header id="about" className="pt-16 pb-16 px-6 md:px-20 border-b border-zinc-100/50 text-center">
-        {photoUrl && (
-          <div className="mb-12">
-            <img
-              src={photoUrl}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border border-zinc-200 p-1 mx-auto"
-            />
-          </div>
-        )}
-        
-        <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ duration: 0.8 }}
-        >
-          <h1 className={`text-5xl md:text-6xl font-serif font-medium ${textClass} mb-8 tracking-tighter`}>
-            {data.name}
-          </h1>
-          <p className={`text-lg md:text-xl leading-relaxed ${darkMode ? 'text-zinc-400' : 'text-zinc-600'} font-serif italic max-w-4xl mx-auto`}>
-            {data.summary}
-          </p>
-        </motion.div>
-        
-        {availableForHire && (
-           <div className="mt-12 flex items-center justify-center gap-4 no-print">
+      <header id="about" className="pt-16 pb-16 border-b border-zinc-100/50 text-center">
+        <div className="max-w-5xl mx-auto px-6 md:px-20">
+          {photoUrl && (
+            <div className="mb-10">
+              <img
+                src={photoUrl}
+                alt="Profile"
+                className="w-28 h-28 rounded-full object-cover border border-zinc-200 p-1 mx-auto"
+              />
+            </div>
+          )}
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl mx-auto"
+          >
+            <h1 className={`text-5xl md:text-6xl font-serif font-medium ${textClass} mb-6 tracking-tighter`}>
+              {data.name}
+            </h1>
+            <p className={`text-lg md:text-xl leading-relaxed ${darkMode ? 'text-zinc-400' : 'text-zinc-600'} font-serif italic`}>
+              {data.summary}
+            </p>
+          </motion.div>
+
+          {availableForHire && (
+            <div className="mt-10 flex items-center justify-center gap-4 no-print">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
               <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-emerald-500">Open for Engagement</span>
-           </div>
-        )}
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="px-6 md:px-20 max-w-screen-xl mx-auto">
+      <main className="px-6 md:px-20 max-w-5xl mx-auto">
         <section id="contact" className="py-14 border-b border-zinc-100/50 grid md:grid-cols-2 gap-12">
             <div>
               <h2 className="text-xs font-bold uppercase tracking-[0.3em] mb-6 text-zinc-400">Contact</h2>
