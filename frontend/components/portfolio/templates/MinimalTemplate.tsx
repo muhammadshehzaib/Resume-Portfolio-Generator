@@ -115,11 +115,43 @@ export default function MinimalTemplate({ data, availableForHire, darkMode, phot
         return data.skills.length > 0 ? (
           <section key="skills" id="skills" className="py-16">
             <h2 className="text-xs font-bold uppercase tracking-[0.3em] mb-10 text-zinc-400">Expertise</h2>
-            <div className="columns-2 md:columns-3 gap-12 space-y-4">
-              {data.skills.map((skill, idx) => (
-                <p key={idx} className={`text-lg ${textClass} font-light`}>{skill}</p>
-              ))}
-            </div>
+            {(() => {
+              const normalized = data.skills
+                .map((s) => s.trim())
+                .filter(Boolean)
+                .filter((s, i, arr) => arr.indexOf(s) === i);
+
+              const MAX_SKILLS = 18;
+              const shown = normalized.slice(0, MAX_SKILLS);
+              const remaining = Math.max(0, normalized.length - shown.length);
+
+              return (
+                <>
+                  <div className="flex flex-wrap gap-2">
+                    {shown.map((skill) => (
+                      <span
+                        key={skill}
+                        className={`text-xs md:text-sm font-medium px-3 py-1.5 rounded-full border border-zinc-100/60 ${
+                          darkMode ? 'bg-zinc-900/40 text-zinc-200 border-zinc-800' : 'bg-white text-zinc-700'
+                        }`}
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                    {remaining > 0 && (
+                      <span className={`text-xs md:text-sm font-medium px-3 py-1.5 rounded-full ${
+                        darkMode ? 'text-zinc-500' : 'text-zinc-400'
+                      }`}>
+                        +{remaining} more
+                      </span>
+                    )}
+                  </div>
+                  <p className={`mt-5 text-xs font-mono ${darkMode ? 'text-zinc-600' : 'text-zinc-400'}`}>
+                    Curated highlights — full stack available in studio.
+                  </p>
+                </>
+              );
+            })()}
           </section>
         ) : null;
       case 'certifications':
