@@ -23,18 +23,18 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
       case 'experience':
         return data.experiences.length > 0 ? (
           <section key="exp" id="experience" className="py-24 border-b border-white/[0.03]">
-            <motion.div 
-               initial={{ opacity: 0, x: -20 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               viewport={{ once: true }}
-               className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-zinc-500"
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-zinc-500"
             >
               / Experience
             </motion.div>
             <div className="space-y-12">
               {data.experiences.map((exp, idx) => (
-                <motion.div 
-                  key={idx} 
+                <motion.div
+                  key={idx}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -67,7 +67,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
       case 'projects':
         return data.projects.length > 0 ? (
           <section key="proj" id="projects" className="py-24 border-b border-white/[0.03]">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -77,7 +77,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {data.projects.map((proj, idx) => (
-                <motion.div 
+                <motion.div
                   key={idx}
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
@@ -106,7 +106,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
       case 'education':
         return data.education.length > 0 ? (
           <section key="edu" id="education" className="py-24">
-             <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -136,7 +136,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
 
   return (
     <div className="bg-[#050505] text-white min-h-screen selection:bg-zinc-800 selection:text-white">
-      
+
       {/* Subtle Grain Effect */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.015] z-50 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 
@@ -146,14 +146,14 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-white/[0.01] blur-[120px] rounded-full"></div>
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-white/[0.01] blur-[120px] rounded-full"></div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="relative z-10"
         >
           {photoUrl && (
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -183,7 +183,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
           )}
 
           {availableForHire && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
@@ -199,7 +199,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
         </motion.div>
 
         {/* Scroll Indicator */}
-        <motion.div 
+        <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2.5 }}
           className="absolute bottom-12 left-1/2 -translate-x-1/2 text-zinc-800"
@@ -212,48 +212,48 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
 
       {/* Main Content Sections */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12">
-        
+
         {/* Bento Grid Skills & Info */}
         <section id="contact" className="py-24 border-b border-white/[0.03]">
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Skill Bento */}
-              <div className="md:col-span-2 bg-white/[0.01] border border-white/5 p-12 rounded-3xl">
-                <div className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-zinc-700">/ Core Stack</div>
-                <div className="flex flex-wrap gap-x-10 gap-y-6">
-                  {data.skills.map((skill, idx) => (
-                    <span
-                      key={idx}
-                      className="text-2xl font-bold text-zinc-500 hover:text-white transition-colors cursor-default"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Skill Bento */}
+            <div className="md:col-span-2 bg-white/[0.01] border border-white/5 p-12 rounded-3xl">
+              <div className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-zinc-700">/ Core Stack</div>
+              <div className="flex flex-wrap gap-x-10 gap-y-6">
+                {data.skills.map((skill, idx) => (
+                  <span
+                    key={idx}
+                    className="text-2xl font-bold text-zinc-500 hover:text-white transition-colors cursor-default"
+                  >
+                    {skill}
+                  </span>
+                ))}
               </div>
+            </div>
 
-              {/* Contact Bento - Refined (No AI Colors) */}
-              <div className="bg-zinc-900 border border-white/5 p-12 rounded-3xl flex flex-col justify-between group hover:bg-zinc-800/80 transition-all duration-500">
-                <div>
-                  <div className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-zinc-600">/ Reach</div>
-                  <div className="space-y-6">
-                    {data.contact.email && <div className="text-2xl font-bold tracking-tight text-white">{data.contact.email}</div>}
-                    {data.contact.location && <div className="text-sm font-mono text-zinc-500">{data.contact.location}</div>}
-                  </div>
-                </div>
-                <div className="flex gap-4 mt-12">
-                  {data.contact.linkedin && (
-                    <a href={data.contact.linkedin} className="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
-                      <span className="text-[10px] font-bold">LN</span>
-                    </a>
-                  )}
-                  {data.contact.github && (
-                    <a href={data.contact.github} className="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
-                      <span className="text-[10px] font-bold">GH</span>
-                    </a>
-                  )}
+            {/* Contact Bento - Refined (No AI Colors) */}
+            <div className="bg-zinc-900 border border-white/5 p-12 rounded-3xl flex flex-col justify-between group hover:bg-zinc-800/80 transition-all duration-500">
+              <div>
+                <div className="text-[10px] font-mono mb-12 uppercase tracking-[0.5em] text-zinc-600">/ Reach</div>
+                <div className="space-y-6">
+                  {data.contact.email && <div className="text-2xl font-bold tracking-tight text-white">{data.contact.email}</div>}
+                  {data.contact.location && <div className="text-sm font-mono text-zinc-500">{data.contact.location}</div>}
                 </div>
               </div>
-           </div>
+              <div className="flex gap-4 mt-12">
+                {data.contact.linkedin && (
+                  <a href={data.contact.linkedin} className="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                    <span className="text-[10px] font-bold">LN</span>
+                  </a>
+                )}
+                {data.contact.github && (
+                  <a href={data.contact.github} className="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                    <span className="text-[10px] font-bold">GH</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Dynamic Template Sections */}
