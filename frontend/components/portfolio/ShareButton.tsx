@@ -19,7 +19,7 @@ export default function ShareButton({ portfolioId, slug }: ShareButtonProps) {
       return;
     }
 
-    const url = slug ? `${portfolioUrl}/p/${slug}` : `${portfolioUrl}/portfolio/${portfolioId}`;
+    const url = `${portfolioUrl}/p/${slug || portfolioId}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

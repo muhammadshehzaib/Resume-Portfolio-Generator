@@ -92,34 +92,8 @@ export default function PublicPortfolioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Simple Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <a href="/" className="text-blue-600 hover:text-blue-700 text-sm">← New portfolio</a>
-          <a
-            href={`/portfolio/${portfolio.id}`}
-            className="text-gray-600 hover:text-gray-700 text-sm underline"
-          >
-            Edit
-          </a>
-        </div>
-      </div>
-
-      {/* Portfolio Display */}
-      <div className="flex gap-6 max-w-7xl mx-auto px-4 py-8">
-        {/* Main Portfolio */}
-        <div className="flex-1">
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-            {renderTemplate()}
-          </div>
-        </div>
-
-        {/* ATS Score Sidebar */}
-        <div className="w-80">
-          <AtsScoreCard score={portfolio.ats_score} feedback={portfolio.ats_feedback} />
-        </div>
-      </div>
-    </div>
+    <main className="w-full min-h-screen">
+      {renderTemplate()}
+    </main>
   );
 }

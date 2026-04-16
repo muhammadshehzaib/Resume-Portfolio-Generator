@@ -26,7 +26,9 @@ async def get_portfolio_meta(portfolio_id: str, db: Session = Depends(get_db)):
 @router.get("/p/{slug}/meta", response_model=PortfolioResponse)
 async def get_portfolio_meta_by_slug(slug: str, db: Session = Depends(get_db)):
     """Retrieve portfolio metadata by slug without incrementing view count."""
-    portfolio = db.query(Portfolio).filter(Portfolio.slug == slug).first()
+    portfolio = db.query(Portfolio).filter(
+        (Portfolio.slug == slug) | (Portfolio.id == slug)
+    ).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
     return _to_response(portfolio)
@@ -363,7 +365,9 @@ async def get_suggestions(
 @router.get("/p/{slug}", response_model=PortfolioResponse)
 async def get_portfolio_by_slug(slug: str, db: Session = Depends(get_db)):
     """Retrieve portfolio by slug."""
-    portfolio = db.query(Portfolio).filter(Portfolio.slug == slug).first()
+    portfolio = db.query(Portfolio).filter(
+        (Portfolio.slug == slug) | (Portfolio.id == slug)
+    ).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
     # Increment view count
