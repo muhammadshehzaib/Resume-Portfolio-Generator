@@ -169,15 +169,15 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
           )}
 
           {data.name && (
-            <h1 className="text-7xl md:text-[120px] font-black tracking-tighter leading-[0.85] mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/20">
+            <h1 className="text-7xl md:text-[120px] font-black tracking-tighter leading-none mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40">
               {data.name.split(' ').map((word, i) => (
-                <span key={i} className="block">{word}</span>
+                <span key={i} className="block pb-2">{word}</span>
               ))}
             </h1>
           )}
 
           {data.summary && (
-            <p className="text-xl md:text-2xl text-zinc-500 max-w-2xl mx-auto leading-relaxed font-light tracking-tight px-4">
+            <p className="text-xl md:text-2xl text-zinc-400 max-w-4xl mx-auto leading-relaxed font-light tracking-tight px-4">
               {data.summary}
             </p>
           )}
