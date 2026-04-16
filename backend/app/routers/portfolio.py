@@ -1,19 +1,59 @@
-import json
-import re
-from typing import Optional
-import cloudinary
-import cloudinary.uploader
-from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
+import hashlib
+from datetime import datetime, timedelta
+import httpx
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models.portfolio import Portfolio
-from app.schemas.portfolio import PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, TailorRequest, TailorResult, SuggestionResult
+from app.models.portfolio import Portfolio, PortfolioView
+from app.schemas.portfolio import (
+    PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, 
+    TailorRequest, TailorResult, SuggestionResult, AnalyticsResponse,
+    GeographicStat, TimeSeriesStat
+)
 from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service, suggestion_service, pdf_generator
 from app.auth import get_current_user
 from app.config import settings
 
 router = APIRouter()
+
+async def record_view(portfolio_id: str, request: Request, db: Session):
+    """Helper to record a detailed portfolio view with GeoIP resolution."""
+    # 1. Get IP address
+    ip_address = request.client.host if request.client else "unknown"
+    
+    # 2. Hash IP for privacy and uniqueness tracking
+    ip_hash = hashlib.sha256(ip_address.encode()).hexdigest()
+    
+    # 3. Resolve Geo (if not previously resolved recently or just do it simple for now)
+    country, city = None, None
+    if ip_address != "127.0.0.1" and ip_address != "unknown":
+        try:
+            async with httpx.AsyncClient() as client:
+                res = await client.get(f"http://ip-api.com/json/{ip_address}", timeout=2.0)
+                if res.status_code == 200:
+                    data = res.json()
+                    country = data.get("country")
+                    city = data.get("city")
+        except Exception:
+            pass # Fail silently
+            
+    # 4. Save to DB
+    new_view = PortfolioView(
+        portfolio_id=portfolio_id,
+        ip_hash=ip_hash,
+        country=country,
+        city=city
+    )
+    db.add(new_view)
+    
+    # Also increment the legacy counter for quick stats
+    portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
+    if portfolio:
+        portfolio.view_count = (portfolio.view_count or 0) + 1
+        
+    db.commit()
 
 @router.get("/portfolio/{portfolio_id}/meta", response_model=PortfolioResponse)
 async def get_portfolio_meta(portfolio_id: str, db: Session = Depends(get_db)):
@@ -129,14 +169,10 @@ async def upload_resume(
 
 @router.get("/portfolio/{portfolio_id}", response_model=PortfolioResponse)
 async def get_portfolio(portfolio_id: str, db: Session = Depends(get_db)):
-    """Retrieve portfolio by UUID."""
+    """Retrieve portfolio by UUID without incrementing view count (Studio View)."""
     portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
-    # Increment view count
-    portfolio.view_count = (portfolio.view_count or 0) + 1
-    db.commit()
-    db.refresh(portfolio)
     return _to_response(portfolio)
 
 @router.get("/portfolio/{portfolio_id}/pdf")
@@ -363,18 +399,72 @@ async def get_suggestions(
         raise HTTPException(500, f"AI analysis failed: {str(e)}")
 
 @router.get("/p/{slug}", response_model=PortfolioResponse)
-async def get_portfolio_by_slug(slug: str, db: Session = Depends(get_db)):
-    """Retrieve portfolio by slug."""
+async def get_portfolio_by_slug(slug: str, request: Request, db: Session = Depends(get_db)):
+    """Retrieve portfolio by slug and record a detailed view."""
     portfolio = db.query(Portfolio).filter(
         (Portfolio.slug == slug) | (Portfolio.id == slug)
     ).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
-    # Increment view count
-    portfolio.view_count = (portfolio.view_count or 0) + 1
-    db.commit()
-    db.refresh(portfolio)
+    
+    # Record detailed view asynchronously (effectively)
+    await record_view(portfolio.id, request, db)
+    
     return _to_response(portfolio)
+
+@router.get("/portfolio/{portfolio_id}/analytics", response_model=AnalyticsResponse)
+async def get_portfolio_analytics(
+    portfolio_id: str,
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user)
+):
+    """Retrieve aggregated analytics for a portfolio."""
+    portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
+    if not portfolio:
+        raise HTTPException(404, "Portfolio not found")
+    if portfolio.user_id != user_id:
+        raise HTTPException(403, "Access denied")
+
+    # 1. Total & Unique
+    total_views = db.query(PortfolioView).filter(PortfolioView.portfolio_id == portfolio_id).count()
+    unique_visitors = db.query(func.count(func.distinct(PortfolioView.ip_hash))).filter(PortfolioView.portfolio_id == portfolio_id).scalar()
+
+    # 2. Geographic Stats
+    geo_stats = db.query(
+        PortfolioView.country, 
+        func.count(PortfolioView.id).label("count")
+    ).filter(
+        PortfolioView.portfolio_id == portfolio_id,
+        PortfolioView.country.isnot(None)
+    ).group_by(PortfolioView.country).order_by(func.count(PortfolioView.id).desc()).limit(10).all()
+    
+    geographic_stats = [GeographicStat(country=row[0], count=row[1]) for row in geo_stats]
+
+    # 3. Time Series (Last 7 Days)
+    time_series = []
+    today = datetime.now()
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        day_str = day.strftime("%Y-%m-%d")
+        
+        day_views = db.query(PortfolioView).filter(
+            PortfolioView.portfolio_id == portfolio_id,
+            func.date(PortfolioView.timestamp) == day.date()
+        ).count()
+        
+        day_uniques = db.query(func.count(func.distinct(PortfolioView.ip_hash))).filter(
+            PortfolioView.portfolio_id == portfolio_id,
+            func.date(PortfolioView.timestamp) == day.date()
+        ).scalar()
+        
+        time_series.append(TimeSeriesStat(date=day_str, views=day_views, uniques=day_uniques))
+
+    return AnalyticsResponse(
+        total_views=total_views,
+        unique_visitors=unique_visitors or 0,
+        geographic_stats=geographic_stats,
+        time_series=time_series
+    )
 
 @router.get("/slug/check")
 async def check_slug_availability(

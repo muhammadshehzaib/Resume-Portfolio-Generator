@@ -1,4 +1,17 @@
-import { PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, SuggestionResult, RankingJobResponse } from './types';
+import { PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, SuggestionResult, RankingJobResponse, AnalyticsResponse } from './types';
+
+
+export async function getPortfolioAnalytics(id: string): Promise<AnalyticsResponse> {
+  const response = await fetch(`${API_URL}/api/portfolio/${id}/analytics`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch analytics');
+  }
+
+  return response.json();
+}
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';

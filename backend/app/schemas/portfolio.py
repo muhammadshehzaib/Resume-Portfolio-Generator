@@ -90,6 +90,21 @@ class SuggestionResult(BaseModel):
     positives: list[str]
     overall_score: int = Field(..., ge=1, le=100)
 
+class GeographicStat(BaseModel):
+    country: str
+    count: int
+
+class TimeSeriesStat(BaseModel):
+    date: str
+    views: int
+    uniques: int
+
+class AnalyticsResponse(BaseModel):
+    total_views: int
+    unique_visitors: int
+    geographic_stats: list[GeographicStat]
+    time_series: list[TimeSeriesStat]
+
 class RankedResumeItem(BaseModel):
     id: str
     filename: str

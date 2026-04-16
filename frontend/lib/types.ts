@@ -84,6 +84,24 @@ export interface SuggestionResult {
   overall_score: number;
 }
 
+export interface GeographicStat {
+  country: string;
+  count: number;
+}
+
+export interface TimeSeriesStat {
+  date: string;
+  views: number;
+  uniques: number;
+}
+
+export interface AnalyticsResponse {
+  total_views: number;
+  unique_visitors: number;
+  geographic_stats: GeographicStat[];
+  time_series: TimeSeriesStat[];
+}
+
 export interface RankedResumeItem {
   id: string;
   filename: string;

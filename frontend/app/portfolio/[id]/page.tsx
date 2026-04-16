@@ -13,6 +13,7 @@ import CreativeTemplate from '@/components/portfolio/templates/CreativeTemplate'
 import QRCodeModal from '@/components/portfolio/QRCodeModal';
 import JobCustomizationModal from '@/components/portfolio/JobCustomizationModal';
 import SuggestionsModal from '@/components/portfolio/SuggestionsModal';
+import AnalyticsDashboard from '@/components/portfolio/AnalyticsDashboard';
 import { getPortfolio, updatePortfolio, updateSettings, downloadPortfolioPDF } from '@/lib/api';
 import { PortfolioResponse, ParsedResume, PortfolioSettings } from '@/lib/types';
 import SettingsPanel from '@/components/portfolio/SettingsPanel';
@@ -36,6 +37,7 @@ export default function PortfolioPage() {
   const [showJobCustomization, setShowJobCustomization] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showAtsScore, setShowAtsScore] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -380,13 +382,19 @@ export default function PortfolioPage() {
                 Studio
               </a>
               <div className="h-4 w-px bg-slate-200"></div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-300 flex items-center gap-2">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                {portfolio.view_count ?? 0}
-              </span>
+              <button 
+                onClick={() => setShowAnalytics(true)}
+                className="group flex items-center gap-2 px-2 py-1 rounded-md hover:bg-slate-50 transition-colors"
+                title="View Detailed Analytics"
+              >
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-300 group-hover:text-blue-500 flex items-center gap-2 transition-colors">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  {portfolio.view_count ?? 0}
+                </span>
+              </button>
             </div>
 
             {/* Center: Configuration & Toggles */}
@@ -429,6 +437,13 @@ export default function PortfolioPage() {
                   title="AI Insights"
                 >
                   Insights
+                </button>
+                <button
+                  onClick={() => setShowAnalytics(true)}
+                  className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-all"
+                  title="Portfolio Analytics"
+                >
+                  Stats
                 </button>
                 <button
                   onClick={() => setShowJobCustomization(true)}
@@ -557,6 +572,11 @@ export default function PortfolioPage() {
           Exit Preview
         </button>
       )}
+      <AnalyticsDashboard
+        portfolioId={id as string}
+        isOpen={showAnalytics}
+        onClose={() => setShowAnalytics(false)}
+      />
     </div>
   );
 }
