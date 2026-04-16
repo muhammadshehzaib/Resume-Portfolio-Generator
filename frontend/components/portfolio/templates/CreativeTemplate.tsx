@@ -50,7 +50,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
                     <p className="text-lg font-medium text-zinc-500 italic">{exp.company}</p>
                   </div>
                   {exp.description.length > 0 && (
-                    <ul className="grid md:grid-cols-2 gap-4">
+                    <ul className="space-y-4">
                       {exp.description.map((desc, i) => (
                         <li key={i} className="text-zinc-400 text-sm leading-relaxed flex gap-3">
                           <span className="text-zinc-700 mt-1">▹</span>
@@ -92,7 +92,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
                   {proj.technologies.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {proj.technologies.map((tech, i) => (
-                        <span key={i} className="text-[9px] font-bold uppercase tracking-widest bg-white/5 text-zinc-600 px-3 py-1 rounded-sm">
+                        <span key={i} className="text-[9px] font-bold uppercase tracking-widest bg-white/10 text-zinc-400 px-3 py-1 rounded-sm">
                           {tech}
                         </span>
                       ))}
@@ -141,7 +141,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
       <div className="fixed inset-0 pointer-events-none opacity-[0.015] z-50 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 
       {/* Hero Section */}
-      <section id="about" className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-6 text-center">
+      <section id="about" className="relative min-h-[70vh] flex flex-col items-center justify-center overflow-hidden px-6 py-24 text-center">
         {/* Abstract Background Elements (Minimal) */}
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-white/[0.01] blur-[120px] rounded-full"></div>
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-white/[0.01] blur-[120px] rounded-full"></div>
@@ -223,7 +223,7 @@ export default function CreativeTemplate({ data, availableForHire, photoUrl, cus
                   {data.skills.map((skill, idx) => (
                     <span
                       key={idx}
-                      className="text-2xl font-bold text-zinc-800 hover:text-white transition-colors cursor-default"
+                      className="text-2xl font-bold text-zinc-500 hover:text-white transition-colors cursor-default"
                     >
                       {skill}
                     </span>
