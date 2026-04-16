@@ -66,7 +66,7 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
                     <ul className="space-y-2">
                       {exp.description.map((desc, i) => (
                         <li key={i} className={`${secondaryTextClass} text-sm flex gap-3`}>
-                          <span className="text-slate-300">•</span> {desc}
+                          <span style={{ color: accentColor }}>•</span> {desc}
                         </li>
                       ))}
                     </ul>
@@ -128,7 +128,7 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
                   {proj.technologies.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {proj.technologies.map((tech, i) => (
-                        <span key={i} className="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-500 uppercase tracking-wider">
+                        <span key={i} className="text-[9px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider" style={{ color: accentColor, backgroundColor: `${accentColor}1a` }}>
                           {tech}
                         </span>
                       ))}
@@ -310,10 +310,10 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
              <div>
                <h3 className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-3">Core Tech</h3>
                <div className="flex flex-wrap gap-2">
-                 {data.skills.slice(0, 10).map((skill, i) => (
-                   <span key={i} className="text-[9px] font-bold px-2 py-1 bg-slate-50 text-slate-400 rounded-md border border-slate-100">
-                     {skill}
-                   </span>
+                  {data.skills.slice(0, 10).map((skill, i) => (
+                    <span key={i} className={`text-[9px] font-bold px-2.5 py-1.5 rounded-full border ${darkMode ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
+                      {skill}
+                    </span>
                  ))}
                </div>
              </div>
@@ -338,7 +338,7 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
               </p>
             )}
             {data.summary && (
-              <p className={`${secondaryTextClass} text-lg lg:text-xl leading-relaxed max-w-3xl font-medium line-clamp-6`}>
+              <p className={`${secondaryTextClass} text-lg lg:text-xl leading-loose max-w-2xl font-medium`}>
                 {data.summary}
               </p>
             )}
