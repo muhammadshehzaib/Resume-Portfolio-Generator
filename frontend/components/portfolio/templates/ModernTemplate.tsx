@@ -198,41 +198,8 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
   };
 
   return (
-    <div className={`min-h-screen ${mainBgClass} selection:bg-blue-500/20 font-sans`}>
-      {/* Dynamic Top Nav */}
-      <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 border-b ${borderClass} bg-white/70 dark:bg-[#0a0a0a]/70 backdrop-blur-xl no-print`}>
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {photoUrl ? (
-              <img src={photoUrl} alt="Profile" className="w-10 h-10 rounded-full object-cover shadow-md" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
-                 <span className="text-lg font-bold" style={{ color: accentColor }}>{displayName.charAt(0)}</span>
-              </div>
-            )}
-            <span className={`text-lg font-extrabold tracking-tight ${textClass}`}>{displayName}</span>
-          </div>
-          <nav className="hidden md:flex gap-8">
-            {navItems.map((item) => (
-              <a 
-                key={item.id} 
-                href={`#${item.id}`}
-                className={`text-xs font-bold uppercase tracking-[0.2em] transition-colors ${darkMode ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          {availableForHire && (
-            <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-500 text-xs font-bold uppercase tracking-widest">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              Available
-            </div>
-          )}
-        </div>
-      </header>
-
-      <main className="pt-20">
+    <div className={`min-h-[100vh] ${mainBgClass} selection:bg-blue-500/20 font-sans`}>
+      <main>
         {/* Massive Hero Section */}
         <section id="about" className="relative flex flex-col items-center justify-center text-center px-6 min-h-[85vh] overflow-hidden">
           {/* Subtle Background Effects */}
@@ -250,12 +217,12 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
               </div>
             )}
             
-            <h1 className={`text-6xl sm:text-7xl md:text-8xl font-black ${textClass} tracking-tighter mb-8 leading-[1.1]`} style={{ fontFeatureSettings: '"salt"' }}>
-              {displayName.split(' ')[0]} <br className="md:hidden" /> is <br className="hidden md:block" /> Building <br className="md:hidden" /> digital <br className="hidden md:block" /> experiences.
+            <h1 className={`text-5xl md:text-6xl font-extrabold ${textClass} tracking-tight mb-6 leading-tight max-w-4xl mx-auto`}>
+              {displayName.split(' ')[0]} is building digital experiences.
             </h1>
 
             {data.summary && (
-              <p className={`text-lg md:text-2xl ${secondaryTextClass} max-w-2xl mx-auto leading-relaxed font-light mb-12`}>
+              <p className={`text-base md:text-lg ${secondaryTextClass} max-w-3xl mx-auto leading-relaxed font-normal mb-10`}>
                 {data.summary}
               </p>
             )}
