@@ -291,10 +291,7 @@ export default function PortfolioPage() {
 
   const navLinkHoverClass = template === 'minimal' ? 'hover:text-zinc-900' : 'hover:text-black';
 
-  const studioContainerClass =
-    template === 'minimal'
-      ? 'max-w-5xl mx-auto px-6 md:px-20'
-      : 'max-w-[1600px] mx-auto px-6';
+  const studioContainerClass = 'max-w-[1600px] mx-auto px-6';
 
   const portfolioNavContainerClass =
     template === 'minimal'

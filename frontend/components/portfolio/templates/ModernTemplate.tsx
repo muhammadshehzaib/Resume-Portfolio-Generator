@@ -12,7 +12,7 @@ interface ModernTemplateProps {
   sectionOrder?: string[];
 }
 
-export default function ModernTemplate({ data, availableForHire, darkMode, photoUrl, customColors, sectionOrder }: ModernTemplateProps) {
+export default function ModernTemplate({ data, darkMode, customColors, sectionOrder }: ModernTemplateProps) {
   const mainBgClass = darkMode ? 'bg-[#0a0a0a]' : 'bg-white';
   const contentBgClass = darkMode ? 'bg-white/[0.02]' : 'bg-slate-50/50';
   const textClass = darkMode ? 'text-white' : 'text-slate-900';
@@ -35,23 +35,7 @@ export default function ModernTemplate({ data, availableForHire, darkMode, photo
     certifications: { id: 'certifications', label: 'Certifications' },
   };
 
-  const navItems = [
-    { id: 'about', label: 'About', show: true },
-    ...order
-      .map((sectionName) => {
-        const meta = sectionMeta[sectionName];
-        if (!meta) return null;
-        const show =
-          (sectionName === 'projects' && data.projects.length > 0) ||
-          (sectionName === 'experience' && data.experiences.length > 0) ||
-          (sectionName === 'education' && data.education.length > 0) ||
-          (sectionName === 'skills' && data.skills.length > 0) ||
-          (sectionName === 'certifications' && data.certifications.length > 0);
-        return { id: meta.id, label: meta.label, show };
-      })
-      .filter(Boolean) as Array<{ id: string; label: string; show: boolean }>,
-    { id: 'contact', label: 'Contact', show: true },
-  ].filter((item) => item.show);
+
 
   const renderSection = (sectionName: string) => {
     switch (sectionName) {

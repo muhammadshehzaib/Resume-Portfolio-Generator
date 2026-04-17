@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import MinimalTemplate from '@/components/portfolio/templates/MinimalTemplate';
 import ModernTemplate from '@/components/portfolio/templates/ModernTemplate';
 import CreativeTemplate from '@/components/portfolio/templates/CreativeTemplate';
-import AtsScoreCard from '@/components/portfolio/AtsScoreCard';
 import { getPortfolioBySlug } from '@/lib/api';
 import { PortfolioResponse } from '@/lib/types';
 
