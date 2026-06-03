@@ -1,6 +1,28 @@
-# Resume to Portfolio Generator
+# ResumeOS — Resume to Portfolio Generator
 
 Upload your resume, AI extracts structured info, and generates a beautiful portfolio website with multiple templates.
+
+<p align="center">
+  <a href="https://REPLACE-WITH-YOUR-VPS-URL"><img src="https://img.shields.io/badge/Live%20Demo-Visit-2ea44f?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo"></a>
+  <a href="https://github.com/muhammadshehzaib/Resume-Portfolio-Generator"><img src="https://img.shields.io/badge/Source-GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js%2015-000000?logo=nextdotjs&logoColor=white" alt="Next.js 15">
+  <img src="https://img.shields.io/badge/React%2019-61DAFB?logo=react&logoColor=black" alt="React 19">
+  <img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/AI-Grok%20%2F%20OpenAI-412991?logo=openai&logoColor=white" alt="AI">
+</p>
+
+> 📸 **Add a screenshot / demo GIF here.** Drop an image at `docs/screenshot.png` and uncomment the block below.
+<!--
+<p align="center">
+  <img src="docs/screenshot.png" alt="ResumeOS screenshot" width="850">
+</p>
+-->
+
+---
 
 ## Core Features
 
