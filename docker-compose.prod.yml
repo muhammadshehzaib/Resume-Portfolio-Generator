@@ -1,0 +1,57 @@
+# Production stack for the Resume-Portfolio-Generator (ResumeOS).
+# Single public origin (PUBLIC_URL); nginx routes /api -> backend, everything else -> frontend.
+#   docker compose -f docker-compose.prod.yml up -d --build
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: resume-backend
+    # Bound to localhost; the host's nginx proxies /api to it.
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    environment:
+      # AI (OpenAI-compatible). Reusing a Gemini key works: AI_PROVIDER=openai +
+      # AI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+      AI_PROVIDER: ${AI_PROVIDER:-openai}
+      AI_MODEL: ${AI_MODEL:-gemini-2.0-flash}
+      AI_BASE_URL: ${AI_BASE_URL:-https://generativelanguage.googleapis.com/v1beta/openai/}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?OPENAI_API_KEY (AI key) is required — the AI client is built at boot}
+      # SQLite persisted in the backend_data volume (survives rebuilds)
+      DATABASE_URL: sqlite:////app/data/portfolios.db
+      # Cloudinary (REQUIRED — backend won't start without these)
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:?required}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:?required}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:?required}
+      # Same-origin in production, so CORS origin = the public site URL
+      ALLOWED_ORIGINS: ${PUBLIC_URL:?set PUBLIC_URL to your public site URL}
+      FRONTEND_URL: ${PUBLIC_URL}
+    volumes:
+      - backend_data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8000/health').status==200 else sys.exit(1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        # API_URL is the bare public origin; the frontend appends /api itself.
+        NEXT_PUBLIC_API_URL: ${PUBLIC_URL:?set PUBLIC_URL}
+        NEXT_PUBLIC_PORTFOLIO_URL: ${PUBLIC_URL}
+    container_name: resume-frontend
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3005}:3005"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  backend_data:

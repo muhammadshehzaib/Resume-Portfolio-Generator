@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1
+
+# ---------- Build stage ----------
+FROM node:20-slim AS builder
+
+WORKDIR /app
+
+# Some npm packages need a build toolchain
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# NEXT_PUBLIC_* are inlined into the browser bundle at BUILD time
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_PORTFOLIO_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_PORTFOLIO_URL=$NEXT_PUBLIC_PORTFOLIO_URL
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# ---------- Production stage ----------
+FROM node:20-slim AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3005
+ENV HOSTNAME=0.0.0.0
+
+# Self-contained standalone server + static assets (next.config has output: 'standalone')
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+EXPOSE 3005
+
+CMD ["node", "server.js"]
