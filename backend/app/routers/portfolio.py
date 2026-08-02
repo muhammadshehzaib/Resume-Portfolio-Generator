@@ -155,6 +155,8 @@ async def upload_resume(
         parsed = await ai_extractor.extract(raw_text)
         ats = await ats_scorer.score(raw_text)
     except ValueError as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(500, f"AI processing failed: {str(e)}")
 
     portfolio = Portfolio(

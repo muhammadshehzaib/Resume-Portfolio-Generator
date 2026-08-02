@@ -60,29 +60,44 @@ def _parse_json_response(raw_text: str) -> dict:
 
     try:
         return json.loads(text)
-    except json.JSONDecodeError:
-        pass
-
-    start = text.find("{")
-    end = text.rfind("}")
-    if start != -1 and end != -1 and end > start:
-        return json.loads(text[start : end + 1])
-
-    raise ValueError("AI returned invalid JSON")
+    except json.JSONDecodeError as e:
+        print(f"DEBUG: JSONDecodeError on raw text (len {len(text)}): {str(e)}")
+        print(f"DEBUG: Context around error: ... {text[max(0, e.pos - 80):min(len(text), e.pos + 80)]} ...")
+        
+        start = text.find("{")
+        end = text.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            try:
+                return json.loads(text[start : end + 1])
+            except json.JSONDecodeError as e2:
+                print(f"DEBUG: JSONDecodeError on substring (len {end - start + 1}): {str(e2)}")
+                sub_text = text[start : end + 1]
+                print(f"DEBUG: Substring context around error: ... {sub_text[max(0, e2.pos - 80):min(len(sub_text), e2.pos + 80)]} ...")
+                raise ValueError(f"AI returned invalid JSON: {str(e2)}")
+        
+        raise ValueError("AI returned invalid JSON")
 
 
 def chat_json(system_prompt: str, user_prompt: str, max_tokens: int) -> dict:
     last_error: Exception | None = None
     for attempt in range(3):
         try:
-            message = client.chat.completions.create(
-                model=settings.AI_MODEL,
-                max_tokens=max_tokens,
-                messages=[
+            kwargs = {
+                "model": settings.AI_MODEL,
+                "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
                 ],
-            )
+            }
+            if max_tokens:
+                kwargs["max_tokens"] = max_tokens
+
+            # Enable structured JSON output mode for OpenAI and Gemini models
+            provider = settings.AI_PROVIDER.lower()
+            if provider == "openai" or "gemini" in settings.AI_MODEL.lower():
+                kwargs["response_format"] = {"type": "json_object"}
+
+            message = client.chat.completions.create(**kwargs)
             break
         except (APIConnectionError, APITimeoutError) as e:
             last_error = e
