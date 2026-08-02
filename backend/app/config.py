@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     AI_BASE_URL: str | None = None
     OPENAI_API_KEY: str | None = None
     DATABASE_URL: str = "sqlite:///./portfolios.db"
+    JWT_SECRET_KEY: str = "super_secret_resume_os_key_change_me_in_prod"
     CLOUDINARY_CLOUD_NAME: str
     CLOUDINARY_API_KEY: str
     CLOUDINARY_API_SECRET: str

@@ -1,5 +1,60 @@
-import { PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, SuggestionResult, RankingJobResponse, AnalyticsResponse } from './types';
+import { 
+  PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, 
+  SuggestionResult, RankingJobResponse, AnalyticsResponse, TokenResponse, UserResponse 
+} from './types';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+function getAuthHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+
+  const token = window.localStorage.getItem('rp_token');
+  if (token) {
+    return { Authorization: `Bearer ${token}` };
+  }
+
+  let userId = window.localStorage.getItem('rp_user_id');
+  if (!userId) {
+    userId = `user_${crypto.randomUUID()}`;
+    window.localStorage.setItem('rp_user_id', userId);
+  }
+
+  return { Authorization: `Bearer ${userId}` };
+}
+
+export async function loginUser(email: string, password: string): Promise<TokenResponse> {
+  const response = await fetch(`${API_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Incorrect email or password.' }));
+    throw new Error(error.detail || 'Login failed');
+  }
+
+  return response.json();
+}
+
+export async function signupUser(name: string, email: string, password: string, role: string): Promise<UserResponse> {
+  const response = await fetch(`${API_URL}/api/auth/signup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name, email, password, role }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Registration failed.' }));
+    throw new Error(error.detail || 'Signup failed');
+  }
+
+  return response.json();
+}
 
 export async function getPortfolioAnalytics(id: string): Promise<AnalyticsResponse> {
   const response = await fetch(`${API_URL}/api/portfolio/${id}/analytics`, {
@@ -13,20 +68,6 @@ export async function getPortfolioAnalytics(id: string): Promise<AnalyticsRespon
   return response.json();
 }
 
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
-function getAuthHeaders(): Record<string, string> {
-  if (typeof window === 'undefined') return {};
-
-  let userId = window.localStorage.getItem('rp_user_id');
-  if (!userId) {
-    userId = `user_${crypto.randomUUID()}`;
-    window.localStorage.setItem('rp_user_id', userId);
-  }
-
-  return { Authorization: `Bearer ${userId}` };
-}
 
 export async function uploadResume(file: File): Promise<PortfolioResponse> {
   const formData = new FormData();

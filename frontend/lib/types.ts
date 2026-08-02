@@ -115,3 +115,19 @@ export interface RankingJobResponse {
   created_at: string;
   results: RankedResumeItem[];
 }
+
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  role: string;
+  name: string;
+}
+
+export interface UserResponse {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  created_at: string;
+}
+

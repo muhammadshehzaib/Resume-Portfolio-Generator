@@ -6,7 +6,8 @@ from app.database import get_db
 from app.models.portfolio import RankingJob, RankedResume
 from app.schemas.portfolio import RankingJobResponse, RankedResumeItem
 from app.services import pdf_parser, ranking_service
-from app.auth import get_current_user
+from app.auth import get_current_user, require_role
+from app.models.user import User
 
 router = APIRouter()
 
@@ -15,7 +16,7 @@ async def rank_resumes(
     job_description: str = Form(...),
     files: List[UploadFile] = File(...),
     db: Session = Depends(get_db),
-    user_id: str = Depends(get_current_user)
+    current_user: User = Depends(require_role(["recruiter"]))
 ):
     """Bulk upload resumes and rank them against a job description."""
     if not files:
@@ -23,7 +24,7 @@ async def rank_resumes(
 
     # 1. Create the Ranking Job
     job = RankingJob(
-        user_id=user_id,
+        user_id=current_user.id,
         job_description=job_description
     )
     db.add(job)
@@ -76,10 +77,10 @@ async def rank_resumes(
 @router.get("/jobs", response_model=List[RankingJobResponse])
 async def get_ranking_jobs(
     db: Session = Depends(get_db),
-    user_id: str = Depends(get_current_user)
+    current_user: User = Depends(require_role(["recruiter"]))
 ):
     """Retrieve all ranking jobs for the current user."""
-    jobs = db.query(RankingJob).filter(RankingJob.user_id == user_id).order_by(RankingJob.created_at.desc()).all()
+    jobs = db.query(RankingJob).filter(RankingJob.user_id == current_user.id).order_by(RankingJob.created_at.desc()).all()
     
     response = []
     for job in jobs:
