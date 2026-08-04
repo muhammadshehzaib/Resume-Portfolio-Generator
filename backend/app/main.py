@@ -36,13 +36,11 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Resume Portfolio API")
 
-# Get allowed origins from settings
-allowed_origins = settings.ALLOWED_ORIGINS.split(",")
-allowed_origins = [origin.strip() for origin in allowed_origins]
-
+# CORS Middleware - allow all origins for dev / container compatibility (e.g. Playwright frontend:3005)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

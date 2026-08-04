@@ -49,19 +49,75 @@ h4 {
   .no-print {
     display: none !important;
   }
-  body {
-    background: white !important;
-    padding: 15mm !important;
+
+  /* Force all Framer Motion & animated elements to be 100% visible and correctly positioned in print/PDF */
+  *,
+  *::before,
+  *::after {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+    visibility: visible !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
   }
+
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* High contrast text & borders for clean paper CV output */
+  h1, h2, h3, h4, h5, h6, p, span, div, li, a {
+    color: #0f172a !important;
+    text-shadow: none !important;
+  }
+
+  h1 {
+    font-size: 26pt !important;
+  }
+
+  h2 {
+    font-size: 16pt !important;
+    color: #334155 !important;
+  }
+
+  h3 {
+    font-size: 13pt !important;
+  }
+
   .print-container {
     width: 100% !important;
-    max-width: none !important;
+    max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
+    background: #ffffff !important;
   }
+
+  section {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+    border-color: #e2e8f0 !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  div[class*="space-y"] > div,
+  .grid > div,
+  article {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
   @page {
-    margin: 0;
+    size: A4;
+    margin: 12mm 15mm;
   }
 }
