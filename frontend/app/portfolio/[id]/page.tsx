@@ -274,22 +274,24 @@ export default function PortfolioPage() {
 
   const navItems = buildNavItems(template, portfolio.parsed_data, portfolio.section_order);
 
-  const navRootClass =
-    template === 'minimal'
-      ? `sticky ${isPreviewMode ? 'top-0' : 'top-16'} z-30 w-full bg-white border-b border-zinc-100/60 no-print`
-      : `sticky ${isPreviewMode ? 'top-0' : 'top-16'} z-30 w-full bg-white/70 backdrop-blur-md border-b border-gray-100 no-print`;
+  // Nav inline styles — using style props avoids Tailwind JIT purge issues with dynamic classes
+  const navBg = darkMode ? '#09090b' : (template === 'minimal' ? '#ffffff' : 'rgba(255,255,255,0.75)');
+  const navBorderColor = darkMode ? '#27272a' : (template === 'minimal' ? 'rgba(244,244,245,0.6)' : '#f3f4f6');
+  const navNameColor = darkMode ? '#f4f4f5' : (template === 'minimal' ? '#27272a' : '#0f172a');
+  const navLinkColor = darkMode ? '#d4d4d8' : (template === 'minimal' ? '#a1a1aa' : '#94a3b8');
+  const navLinkHoverColor = darkMode ? '#ffffff' : (template === 'minimal' ? '#18181b' : '#000000');
+
+  const navRootClass = `sticky ${isPreviewMode ? 'top-0' : 'top-16'} z-30 w-full border-b no-print${template !== 'minimal' ? ' backdrop-blur-md' : ''}`;
 
   const navNameClass =
     template === 'minimal'
-      ? 'text-[11px] font-bold uppercase tracking-[0.25em] text-zinc-800 font-serif'
-      : 'text-[10px] font-bold uppercase tracking-[0.3em] text-slate-900';
+      ? 'text-[11px] font-bold uppercase tracking-[0.25em] font-serif'
+      : 'text-[10px] font-bold uppercase tracking-[0.3em]';
 
   const navLinksClass =
     template === 'minimal'
-      ? 'flex gap-6 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 font-serif'
-      : 'flex gap-8 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400';
-
-  const navLinkHoverClass = template === 'minimal' ? 'hover:text-zinc-900' : 'hover:text-black';
+      ? 'flex gap-6 text-[10px] font-bold uppercase tracking-[0.25em] font-serif'
+      : 'flex gap-8 text-[9px] font-bold uppercase tracking-[0.2em]';
 
   const studioContainerClass = 'max-w-[1600px] mx-auto px-6';
 
@@ -367,18 +369,33 @@ export default function PortfolioPage() {
 
       {/* Header with Controls (Premium Dashboard Aesthetic) */}
       {!isPreviewMode && (
-        <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.02)] no-print">
+        <div
+          className="sticky top-0 z-40 backdrop-blur-xl border-b shadow-[0_4px_30px_rgba(0,0,0,0.04)] no-print"
+          style={{
+            backgroundColor: darkMode ? 'rgba(24,24,27,0.97)' : 'rgba(255,255,255,0.85)',
+            borderColor: darkMode ? '#3f3f46' : '#f3f4f6',
+          }}
+        >
           <div className={`${studioContainerClass} h-16 flex items-center justify-between`}>
             
             {/* Left: Navigation & Stats */}
             <div className="flex items-center gap-8">
-              <a href="/" className="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-black transition-colors">
+              <a
+                href="/"
+                className="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest transition-colors"
+                style={{ color: darkMode ? '#a1a1aa' : '#94a3b8' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = darkMode ? '#ffffff' : '#000000')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = darkMode ? '#a1a1aa' : '#94a3b8')}
+              >
                 <svg className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 Studio
               </a>
-              <div className="h-4 w-px bg-slate-200"></div>
+              <div
+                className="h-4 w-px"
+                style={{ backgroundColor: darkMode ? '#52525b' : '#e2e8f0' }}
+              ></div>
               <button 
                 onClick={() => setShowAnalytics(true)}
                 className="group flex items-center gap-2 px-2 py-1 rounded-md hover:bg-slate-50 transition-colors"
@@ -395,7 +412,7 @@ export default function PortfolioPage() {
             </div>
 
             {/* Center: Configuration & Toggles */}
-            <div className="hidden lg:flex items-center gap-2 bg-slate-50/50 p-1 rounded-md border border-slate-100">
+            <div className={`hidden lg:flex items-center gap-2 p-1 rounded-md border ${darkMode ? 'bg-zinc-800/60 border-zinc-700' : 'bg-slate-50/50 border-slate-100'}`}>
               <button
                 onClick={handleToggleDarkMode}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest transition-all ${
@@ -412,7 +429,7 @@ export default function PortfolioPage() {
               >
                 Hireable
               </button>
-              <div className="w-px h-3 bg-slate-200 mx-1"></div>
+              <div className={`w-px h-3 mx-1 ${darkMode ? 'bg-zinc-600' : 'bg-slate-200'}`}></div>
               <button
                 onClick={() => setShowSettings(true)}
                 className="flex items-center gap-2 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-black transition-colors"
@@ -427,7 +444,7 @@ export default function PortfolioPage() {
 
             {/* Right: Core Actions */}
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1 border-r border-slate-100 pr-3">
+              <div className={`flex items-center gap-1 border-r pr-3 ${darkMode ? 'border-zinc-700' : 'border-slate-100'}`}>
                 <button
                   onClick={() => setShowSuggestions(true)}
                   className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-all"
@@ -448,7 +465,7 @@ export default function PortfolioPage() {
                 >
                   Tailor
                 </button>
-                <div className="h-4 w-px bg-slate-100 mx-1"></div>
+                <div className={`h-4 w-px mx-1 ${darkMode ? 'bg-zinc-700' : 'bg-slate-100'}`}></div>
                 <button
                   onClick={() => setShowAtsScore(!showAtsScore)}
                   className={`flex items-center gap-2 px-3 py-2 rounded transition-all group ${
@@ -509,15 +526,21 @@ export default function PortfolioPage() {
       )}
 
       {/* Internal Navigation for the Portfolio itself */}
-      <nav className={navRootClass}>
+      <nav
+        className={navRootClass}
+        style={{ backgroundColor: navBg, borderColor: navBorderColor }}
+      >
          <div className={portfolioNavContainerClass}>
-           <div className={navNameClass}>{portfolio.parsed_data.name}</div>
-           <div className={navLinksClass}>
+           <div className={navNameClass} style={{ color: navNameColor }}>{portfolio.parsed_data.name}</div>
+           <div className={navLinksClass} style={{ color: navLinkColor }}>
              {navItems.map((item) => (
                <a
                  key={item.id}
                  href={`#${item.id}`}
-                 className={`${navLinkHoverClass} transition-colors`}
+                 style={{ color: navLinkColor }}
+                 onMouseEnter={(e) => (e.currentTarget.style.color = navLinkHoverColor)}
+                 onMouseLeave={(e) => (e.currentTarget.style.color = navLinkColor)}
+                 className="transition-colors"
                >
                  {item.label}
                </a>
