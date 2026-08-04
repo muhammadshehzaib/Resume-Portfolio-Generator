@@ -49,6 +49,82 @@ def _build_client() -> OpenAI:
 client = _build_client()
 
 
+def repair_json(s: str) -> str:
+    """
+    Repair common JSON formatting issues from LLM responses:
+    - Escapes unescaped double quotes inside string values.
+    - Escapes raw newlines/carriage returns inside string values.
+    """
+    result = []
+    inside_string = False
+    i = 0
+    n = len(s)
+    
+    valid_json_starts = set('"{[tfn-0123456789')
+    
+    while i < n:
+        char = s[i]
+        
+        # Keep escaped characters as-is
+        if char == '\\' and i + 1 < n:
+            result.append(s[i:i+2])
+            i += 2
+            continue
+            
+        if char == '"':
+            if not inside_string:
+                inside_string = True
+                result.append(char)
+                i += 1
+            else:
+                # Determine if this double quote closes the string or is an unescaped internal quote.
+                # A closing quote MUST be followed by:
+                # - Optional whitespace, then ':' (end of key)
+                # - Optional whitespace, then '}' (end of object)
+                # - Optional whitespace, then ']' (end of array)
+                # - Optional whitespace, then ',' AND after the comma, a valid JSON value/key start
+                # - End of document
+                next_idx = -1
+                for j in range(i + 1, n):
+                    if not s[j].isspace():
+                        next_idx = j
+                        break
+                
+                is_closing = False
+                if next_idx == -1:
+                    is_closing = True
+                else:
+                    next_char = s[next_idx]
+                    if next_char in (':', '}', ']'):
+                        is_closing = True
+                    elif next_char == ',':
+                        after_comma_char = None
+                        for k in range(next_idx + 1, n):
+                            if not s[k].isspace():
+                                after_comma_char = s[k]
+                                break
+                        if after_comma_char is None or after_comma_char in valid_json_starts or after_comma_char in ('}', ']'):
+                            is_closing = True
+                
+                if is_closing:
+                    inside_string = False
+                    result.append(char)
+                else:
+                    result.append('\\"')
+                i += 1
+        elif char in ('\n', '\r') and inside_string:
+            if char == '\n':
+                result.append('\\n')
+            else:
+                result.append('\\r')
+            i += 1
+        else:
+            result.append(char)
+            i += 1
+            
+    return "".join(result)
+
+
 def _parse_json_response(raw_text: str) -> dict:
     text = raw_text.strip()
 
@@ -58,24 +134,36 @@ def _parse_json_response(raw_text: str) -> dict:
         if len(lines) >= 3:
             text = "\n".join(lines[1:-1]).strip()
 
+    # Try 1: Try parsing direct text
     try:
         return json.loads(text)
     except json.JSONDecodeError as e:
         print(f"DEBUG: JSONDecodeError on raw text (len {len(text)}): {str(e)}")
-        print(f"DEBUG: Context around error: ... {text[max(0, e.pos - 80):min(len(text), e.pos + 80)]} ...")
         
-        start = text.find("{")
-        end = text.rfind("}")
-        if start != -1 and end != -1 and end > start:
-            try:
-                return json.loads(text[start : end + 1])
-            except json.JSONDecodeError as e2:
-                print(f"DEBUG: JSONDecodeError on substring (len {end - start + 1}): {str(e2)}")
-                sub_text = text[start : end + 1]
-                print(f"DEBUG: Substring context around error: ... {sub_text[max(0, e2.pos - 80):min(len(sub_text), e2.pos + 80)]} ...")
-                raise ValueError(f"AI returned invalid JSON: {str(e2)}")
-        
-        raise ValueError("AI returned invalid JSON")
+        # Try 2: Try parsing repaired direct text
+        try:
+            repaired = repair_json(text)
+            return json.loads(repaired)
+        except json.JSONDecodeError as e_repair:
+            print(f"DEBUG: JSONDecodeError on repaired text: {str(e_repair)}")
+            
+            # Try 3: Try extracting {...} substring
+            start = text.find("{")
+            end = text.rfind("}")
+            if start != -1 and end != -1 and end > start:
+                substring = text[start : end + 1]
+                try:
+                    return json.loads(substring)
+                except json.JSONDecodeError as e2:
+                    # Try 4: Try parsing repaired substring
+                    try:
+                        repaired_sub = repair_json(substring)
+                        return json.loads(repaired_sub)
+                    except json.JSONDecodeError as e3:
+                        print(f"DEBUG: JSONDecodeError on repaired substring: {str(e3)}")
+                        raise ValueError(f"AI returned invalid JSON: {str(e3)}")
+            
+            raise ValueError("AI returned invalid JSON")
 
 
 def chat_json(system_prompt: str, user_prompt: str, max_tokens: int) -> dict:
