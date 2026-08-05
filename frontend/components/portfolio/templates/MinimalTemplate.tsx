@@ -52,7 +52,7 @@ export default function MinimalTemplate({
                       {exp.title}
                     </h3>
                     <span className="text-xs uppercase tracking-widest font-mono text-zinc-400">
-                      {exp.start_date} — {exp.end_date || 'Present'}
+                      {exp.start_date} - {exp.end_date || 'Present'}
                     </span>
                   </div>
                   <p className="text-base font-serif italic text-zinc-400 mb-6">{exp.company}</p>

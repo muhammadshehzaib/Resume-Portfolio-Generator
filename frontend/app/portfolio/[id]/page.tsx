@@ -159,14 +159,14 @@ export default function PortfolioPage() {
     }
   };
   
-  const handleDownloadPDF = async () => {
+  const handleDownloadPDF = async (mode: 'ats' | 'web' = 'ats') => {
     if (!portfolio) return;
     try {
-      // Create a nice filename from the user's name
-      const name = portfolio.parsed_data.name?.replace(/\s+/g, '_') || 'Portfolio';
-      const fileName = `${name}_Resume.pdf`;
-      
-      await downloadPortfolioPDF(portfolio.id, fileName);
+      const name = portfolio.parsed_data.name?.replace(/\s+/g, '_') || 'Candidate';
+      const suffix = mode === 'ats' ? 'Executive_ATS_Resume' : 'Web_Portfolio';
+      const fileName = `${name}_${suffix}.pdf`;
+
+      await downloadPortfolioPDF(portfolio.id, fileName, mode);
     } catch (err) {
       console.error('Download error:', err);
       setError('Failed to generate PDF. Please try again.');
@@ -500,10 +500,11 @@ export default function PortfolioPage() {
               </div>
               
               <button
-                onClick={handleDownloadPDF}
-                className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-sm transition-colors flex items-center gap-2"
+                onClick={() => handleDownloadPDF('ats')}
+                className="px-4 py-2 text-[10px] font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded transition-all flex items-center gap-1.5 border border-emerald-200"
+                title="Download Executive ATS Resume PDF"
               >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 PDF

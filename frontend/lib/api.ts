@@ -221,8 +221,12 @@ export async function getPortfolioSuggestions(id: string): Promise<SuggestionRes
   return response.json();
 }
 
-export async function downloadPortfolioPDF(id: string, fileName: string = 'Resume.pdf'): Promise<void> {
-  const response = await fetch(`${API_URL}/api/portfolio/${id}/pdf`, {
+export async function downloadPortfolioPDF(
+  id: string,
+  fileName: string = 'Executive_ATS_Resume.pdf',
+  mode: 'ats' | 'web' = 'ats'
+): Promise<void> {
+  const response = await fetch(`${API_URL}/api/portfolio/${id}/pdf?mode=${mode}`, {
     headers: getAuthHeaders(),
   });
 

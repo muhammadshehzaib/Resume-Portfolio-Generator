@@ -184,20 +184,26 @@ async def get_portfolio(portfolio_id: str, db: Session = Depends(get_db)):
     return _to_response(portfolio)
 
 @router.get("/portfolio/{portfolio_id}/pdf")
-async def get_portfolio_pdf(portfolio_id: str, db: Session = Depends(get_db)):
-    """Generate and return a PDF of the portfolio."""
+async def get_portfolio_pdf(
+    portfolio_id: str,
+    mode: Optional[str] = "ats",
+    db: Session = Depends(get_db)
+):
+    """Generate and return a PDF of the portfolio (mode='ats' for dedicated executive ATS CV, mode='web' for web portfolio)."""
     portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
     if not portfolio:
         raise HTTPException(404, "Portfolio not found")
-        
+
     try:
-        pdf_bytes = await pdf_generator.generate_portfolio_pdf(portfolio_id)
-        
+        pdf_mode = mode.lower() if mode else "ats"
+        pdf_bytes = await pdf_generator.generate_portfolio_pdf(portfolio_id, mode=pdf_mode)
+
         # Determine a nice filename
         parsed_data = json.loads(portfolio.parsed_data)
         name = parsed_data.get("name", "Portfolio").replace(" ", "_")
-        filename = f"{name}_Resume.pdf"
-        
+        suffix = "Executive_ATS_Resume" if pdf_mode == "ats" else "Web_Portfolio"
+        filename = f"{name}_{suffix}.pdf"
+
         return StreamingResponse(
             iter([pdf_bytes]),
             media_type="application/pdf",
@@ -208,6 +214,7 @@ async def get_portfolio_pdf(portfolio_id: str, db: Session = Depends(get_db)):
     except Exception as e:
         print(f"PDF Generation Error: {str(e)}")
         raise HTTPException(500, f"Failed to generate PDF: {str(e)}")
+
 
 @router.patch("/portfolio/{portfolio_id}", response_model=PortfolioResponse)
 async def update_portfolio(

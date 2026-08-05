@@ -222,6 +222,9 @@ def clean_markdown_asterisks(text: str) -> str:
     cleaned = re.sub(r"^\s*\*\s+", "- ", cleaned, flags=re.MULTILINE)
     # Remove remaining lone asterisks
     cleaned = cleaned.replace("**", "").replace("*", "")
+    # Remove em-dashes and en-dashes
+    cleaned = cleaned.replace("—", " - ").replace("–", "-")
+    cleaned = re.sub(r"\s+-\s+", " - ", cleaned)
     return cleaned.strip()
 
 

@@ -54,7 +54,7 @@ export default function CreativeTemplate({
                       {exp.title}
                     </h3>
                     <span className="text-zinc-300 font-mono text-xs font-bold tracking-wider px-3.5 py-1.5 rounded-full bg-zinc-800 border border-zinc-700">
-                      {exp.start_date} — {exp.end_date || 'PRESENT'}
+                      {exp.start_date} - {exp.end_date || 'PRESENT'}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 mb-6">
@@ -321,7 +321,7 @@ export default function CreativeTemplate({
       {/* Footer */}
       <footer className="py-20 text-center border-t border-zinc-800">
         <div className="text-xs font-mono mb-2 uppercase tracking-[0.5em] text-zinc-400 font-bold">
-          Digital Portfolio — {new Date().getFullYear()}
+          Digital Portfolio | {new Date().getFullYear()}
         </div>
         <div className="text-white text-xs font-extrabold uppercase tracking-widest">
           © {data.name}

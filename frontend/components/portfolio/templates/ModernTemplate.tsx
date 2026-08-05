@@ -216,7 +216,7 @@ export default function ModernTemplate({
                         </p>
                       </div>
                       <span className="text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300/60 dark:border-slate-700 self-start md:self-auto">
-                        {exp.start_date} — {exp.end_date || 'Present'}
+                        {exp.start_date} - {exp.end_date || 'Present'}
                       </span>
                     </div>
 
@@ -376,7 +376,7 @@ export default function ModernTemplate({
                 }}
               >
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: accentColor }}></span>
-                {primaryRole} {location && `— ${location}`}
+                {primaryRole} {location && `| ${location}`}
               </div>
             )}
 
