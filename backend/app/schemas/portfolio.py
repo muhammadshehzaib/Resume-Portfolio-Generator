@@ -116,3 +116,11 @@ class RankingJobResponse(BaseModel):
     job_description: str
     created_at: str
     results: list[RankedResumeItem]
+
+class ChatRequest(BaseModel):
+    message: str
+    chat_history: Optional[list[dict[str, Any]]] = None
+
+class ChatResponse(BaseModel):
+    reply: str
+

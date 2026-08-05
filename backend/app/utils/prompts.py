@@ -38,7 +38,7 @@ The JSON must match this exact schema:
       "gpa": string | null
     }
   ],
-  "skills": [string],
+  "skills": [string], // Individual clean skill names only (e.g. ["MySQL", "PostgreSQL", "React", "Node.js"]). NEVER include category headings or prefixes like "Databases & ORMs:", "Languages:", "Tools:", etc.
   "projects": [
     {
       "name": string | null,

@@ -1,4 +1,5 @@
 import json
+import re
 import time
 from openai import OpenAI, APIConnectionError, APITimeoutError
 from app.config import settings
@@ -209,3 +210,74 @@ def chat_json(system_prompt: str, user_prompt: str, max_tokens: int) -> dict:
         )
 
     return _parse_json_response(raw_json)
+
+
+def clean_markdown_asterisks(text: str) -> str:
+    if not text:
+        return text
+    # Convert bold/italic markdown asterisks to plain text
+    cleaned = re.sub(r"\*{2,3}(.*?)\*{2,3}", r"\1", text)
+    cleaned = re.sub(r"\*(.*?)\*", r"\1", cleaned)
+    # Convert bullet asterisks (* Item) to hyphen bullets (- Item)
+    cleaned = re.sub(r"^\s*\*\s+", "- ", cleaned, flags=re.MULTILINE)
+    # Remove remaining lone asterisks
+    cleaned = cleaned.replace("**", "").replace("*", "")
+    return cleaned.strip()
+
+
+def ask_portfolio_ai(parsed_data: dict, candidate_name: str, message: str, chat_history: list = None) -> str:
+    """
+    Answers questions about the candidate strictly using their portfolio/resume data.
+    If an off-topic question is asked, instructs the user to ask relevant career questions.
+    """
+    json_data_str = json.dumps(parsed_data, indent=2)
+    name = candidate_name or "the candidate"
+
+    system_prompt = (
+        f"You are a helpful and professional AI Assistant on {name}'s portfolio website.\n"
+        f"Your task is to answer recruiter and visitor questions strictly based on {name}'s resume data provided below.\n\n"
+        f"CRITICAL RULES:\n"
+        f"1. ONLY answer questions related to {name}'s work experience, technical skills, projects, education, career accomplishments, or professional background.\n"
+        f"2. IF THE USER ASKS AN OFF-TOPIC OR RANDOM QUESTION (e.g. general knowledge, math, unrelated coding problems, jokes, news, weather, or topics unrelated to {name}'s resume), YOU MUST POLITELY REFUSE WITH A RESPONSE SIMILAR TO:\n"
+        f"\"I can only answer questions related to {name}'s professional background, work experience, skills, and projects. Please ask a question about their career or experience!\"\n"
+        f"3. FORMATTING RULE: DO NOT use markdown bolding with asterisks (such as **Key Features:** or **Overview:**). Use clean plain text headers and hyphens (-) for bullet points.\n"
+        f"4. Provide complete, helpful, and comprehensive answers without cutting off mid-sentence.\n\n"
+        f"CANDIDATE RESUME DATA:\n"
+        f"{json_data_str}"
+    )
+
+    messages = [{"role": "system", "content": system_prompt}]
+
+    if chat_history and isinstance(chat_history, list):
+        for h in chat_history[-6:]:
+            role = h.get("role")
+            content = h.get("content")
+            if role in ("user", "assistant") and content:
+                messages.append({"role": role, "content": str(content)})
+
+    messages.append({"role": "user", "content": message})
+
+    last_error: Exception | None = None
+    for attempt in range(3):
+        try:
+            res = client.chat.completions.create(
+                model=settings.AI_MODEL,
+                messages=messages,
+                max_tokens=2048,
+            )
+            reply = res.choices[0].message.content
+            if not reply:
+                return f"I am here to answer questions about {name}'s professional experience. How can I help?"
+            return clean_markdown_asterisks(reply)
+        except (APIConnectionError, APITimeoutError) as e:
+            last_error = e
+            if attempt < 2:
+                time.sleep(1 + attempt)
+                continue
+            raise ValueError(f"LLM request failed after retries: {type(e).__name__}: {str(e)}")
+        except Exception as e:
+            raise ValueError(f"LLM request failed: {type(e).__name__}: {str(e)}")
+
+    raise ValueError(f"LLM request failed: {type(last_error).__name__}: {str(last_error)}")
+
+

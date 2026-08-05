@@ -8,6 +8,8 @@ import CreativeTemplate from '@/components/portfolio/templates/CreativeTemplate'
 import { getPortfolioBySlug } from '@/lib/api';
 import { PortfolioResponse } from '@/lib/types';
 
+import AIChatWidget from '@/components/portfolio/AIChatWidget';
+
 export default function PublicPortfolioPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -91,8 +93,13 @@ export default function PublicPortfolioPage() {
   };
 
   return (
-    <main className="w-full min-h-screen">
+    <main className="w-full min-h-screen relative">
       {renderTemplate()}
+      <AIChatWidget
+        portfolioIdOrSlug={slug}
+        candidateName={portfolio.parsed_data.name}
+      />
     </main>
   );
 }
+

@@ -270,3 +270,34 @@ export async function getRankingJobs(): Promise<RankingJobResponse[]> {
 
   return response.json();
 }
+
+export async function chatWithPortfolioAI(
+  idOrSlug: string,
+  message: string,
+  chatHistory: Array<{ role: string; content: string }> = []
+): Promise<{ reply: string }> {
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+  const endpoint = isUuid
+    ? `${API_URL}/api/portfolio/${idOrSlug}/chat`
+    : `${API_URL}/api/p/${idOrSlug}/chat`;
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({
+      message,
+      chat_history: chatHistory,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'AI Request failed' }));
+    throw new Error(error.detail || 'Failed to get AI response');
+  }
+
+  return response.json();
+}
+

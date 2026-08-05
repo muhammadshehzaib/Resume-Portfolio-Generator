@@ -17,6 +17,7 @@ import AnalyticsDashboard from '@/components/portfolio/AnalyticsDashboard';
 import { getPortfolio, updatePortfolio, updateSettings, downloadPortfolioPDF } from '@/lib/api';
 import { PortfolioResponse, ParsedResume, PortfolioSettings } from '@/lib/types';
 import SettingsPanel from '@/components/portfolio/SettingsPanel';
+import AIChatWidget from '@/components/portfolio/AIChatWidget';
 
 type NavItem = { id: string; label: string; show: boolean };
 
@@ -597,6 +598,13 @@ export default function PortfolioPage() {
         isOpen={showAnalytics}
         onClose={() => setShowAnalytics(false)}
       />
+
+      {!isPreviewMode && (
+        <AIChatWidget
+          portfolioIdOrSlug={id}
+          candidateName={portfolio.parsed_data.name}
+        />
+      )}
     </div>
   );
 }

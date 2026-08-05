@@ -13,9 +13,10 @@ from app.models.portfolio import Portfolio, PortfolioView
 from app.schemas.portfolio import (
     PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, 
     TailorRequest, TailorResult, SuggestionResult, AnalyticsResponse,
-    GeographicStat, TimeSeriesStat
+    GeographicStat, TimeSeriesStat, ChatRequest, ChatResponse
 )
 from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service, suggestion_service, pdf_generator
+from app.services.llm import ask_portfolio_ai
 from app.auth import get_current_user, require_role
 from app.models.user import User
 from app.config import settings
@@ -484,3 +485,60 @@ async def check_slug_availability(
         query = query.filter(Portfolio.id != exclude_id)
     taken = query.first() is not None
     return {"available": not taken}
+
+
+@router.post("/portfolio/{portfolio_id}/chat", response_model=ChatResponse)
+async def chat_with_portfolio(
+    portfolio_id: str,
+    req: ChatRequest,
+    db: Session = Depends(get_db)
+):
+    """Ask AI questions about a candidate's portfolio by ID."""
+    portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
+    if not portfolio:
+        raise HTTPException(404, "Portfolio not found")
+
+    parsed_data = json.loads(portfolio.parsed_data)
+    candidate_name = parsed_data.get("name", "Candidate")
+
+    try:
+        reply = ask_portfolio_ai(
+            parsed_data=parsed_data,
+            candidate_name=candidate_name,
+            message=req.message,
+            chat_history=req.chat_history
+        )
+        return ChatResponse(reply=reply)
+    except Exception as e:
+        print(f"Chat error: {str(e)}")
+        raise HTTPException(500, f"Failed to get AI response: {str(e)}")
+
+
+@router.post("/p/{slug}/chat", response_model=ChatResponse)
+async def chat_with_portfolio_by_slug(
+    slug: str,
+    req: ChatRequest,
+    db: Session = Depends(get_db)
+):
+    """Ask AI questions about a candidate's public portfolio by slug."""
+    portfolio = db.query(Portfolio).filter(Portfolio.slug == slug).first()
+    if not portfolio:
+        portfolio = db.query(Portfolio).filter(Portfolio.id == slug).first()
+    if not portfolio:
+        raise HTTPException(404, "Portfolio not found")
+
+    parsed_data = json.loads(portfolio.parsed_data)
+    candidate_name = parsed_data.get("name", "Candidate")
+
+    try:
+        reply = ask_portfolio_ai(
+            parsed_data=parsed_data,
+            candidate_name=candidate_name,
+            message=req.message,
+            chat_history=req.chat_history
+        )
+        return ChatResponse(reply=reply)
+    except Exception as e:
+        print(f"Chat error: {str(e)}")
+        raise HTTPException(500, f"Failed to get AI response: {str(e)}")
+
