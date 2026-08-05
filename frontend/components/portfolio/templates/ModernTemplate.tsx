@@ -23,13 +23,14 @@ export default function ModernTemplate({
 }: ModernTemplateProps) {
   const [activeTechFilter, setActiveTechFilter] = useState<string | null>(null);
 
-  const mainBgClass = darkMode ? 'bg-[#0b0f19]' : 'bg-slate-50/80';
-  const textClass = darkMode ? 'text-slate-100' : 'text-slate-900';
-  const secondaryTextClass = darkMode ? 'text-slate-400' : 'text-slate-600';
+  // High contrast background & text pairings for maximum readability
+  const mainBgClass = darkMode ? 'bg-[#090d16]' : 'bg-[#f8fafc]';
+  const textClass = darkMode ? 'text-white' : 'text-slate-950';
+  const secondaryTextClass = darkMode ? 'text-slate-300' : 'text-slate-700';
   const cardBgClass = darkMode
-    ? 'bg-slate-900/60 backdrop-blur-xl border-slate-800/80 hover:border-slate-700'
-    : 'bg-white/80 backdrop-blur-xl border-slate-200/80 hover:border-slate-300';
-  const accentColor = customColors?.primaryColor || '#3b82f6';
+    ? 'bg-[#111827] border-slate-800 hover:border-slate-700 shadow-lg'
+    : 'bg-white border-slate-200 hover:border-slate-300 shadow-md';
+  const accentColor = customColors?.primaryColor || '#2563eb';
 
   const DEFAULT_ORDER = ['projects', 'experience', 'skills', 'education', 'certifications'];
   const order = sectionOrder && sectionOrder.length > 0 ? sectionOrder : DEFAULT_ORDER;
@@ -38,7 +39,6 @@ export default function ModernTemplate({
   const primaryRole = data.experiences?.[0]?.title;
   const location = data.contact.location;
 
-  // Extract unique tech stack items across projects
   const allTechs = Array.from(
     new Set(data.projects.flatMap((p) => p.technologies || []))
   );
@@ -63,12 +63,12 @@ export default function ModernTemplate({
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div>
                 <span
-                  className="text-xs font-bold uppercase tracking-[0.25em] block mb-2"
+                  className="text-xs font-black uppercase tracking-[0.25em] block mb-2"
                   style={{ color: accentColor }}
                 >
                   Featured Projects
                 </span>
-                <h2 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${textClass}`}>
+                <h2 className={`text-3xl md:text-4xl font-black tracking-tight ${textClass}`}>
                   Selected Work & Case Studies
                 </h2>
               </div>
@@ -78,10 +78,10 @@ export default function ModernTemplate({
                 <div className="flex flex-wrap gap-2 max-w-xl no-print">
                   <button
                     onClick={() => setActiveTechFilter(null)}
-                    className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                    className={`text-xs font-bold px-3.5 py-2 rounded-full transition-all ${
                       activeTechFilter === null
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md'
-                        : 'bg-slate-200/60 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-300'
+                        ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 shadow-md'
+                        : 'bg-slate-200/80 text-slate-800 dark:bg-slate-800 dark:text-slate-200 hover:bg-slate-300'
                     }`}
                   >
                     All ({data.projects.length})
@@ -92,10 +92,10 @@ export default function ModernTemplate({
                       onClick={() =>
                         setActiveTechFilter(activeTechFilter === tech ? null : tech)
                       }
-                      className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+                      className={`text-xs font-bold px-3.5 py-2 rounded-full transition-all ${
                         activeTechFilter === tech
                           ? 'text-white shadow-md'
-                          : 'bg-slate-200/60 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-300'
+                          : 'bg-slate-200/80 text-slate-800 dark:bg-slate-800 dark:text-slate-200 hover:bg-slate-300'
                       }`}
                       style={
                         activeTechFilter === tech
@@ -119,12 +119,12 @@ export default function ModernTemplate({
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.08 }}
-                  className={`group relative rounded-3xl border p-8 md:p-10 transition-all duration-300 flex flex-col justify-between shadow-sm hover:shadow-xl ${cardBgClass}`}
+                  className={`group relative rounded-3xl border p-8 md:p-10 transition-all duration-300 flex flex-col justify-between ${cardBgClass}`}
                 >
                   <div>
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <h3
-                        className={`text-2xl font-bold tracking-tight ${textClass} group-hover:translate-x-0.5 transition-transform`}
+                        className={`text-2xl font-bold tracking-tight ${textClass}`}
                       >
                         {proj.name}
                       </h3>
@@ -133,7 +133,7 @@ export default function ModernTemplate({
                           href={proj.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="shrink-0 p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:scale-110 transition-all shadow-sm"
+                          className="shrink-0 p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:scale-110 transition-all shadow-sm border border-slate-200 dark:border-slate-700"
                           title="View Live Project"
                         >
                           <svg
@@ -153,18 +153,18 @@ export default function ModernTemplate({
                       )}
                     </div>
                     <p
-                      className={`text-base leading-relaxed mb-8 ${secondaryTextClass} font-normal`}
+                      className={`text-base leading-relaxed mb-8 ${secondaryTextClass} font-medium`}
                     >
                       {proj.description}
                     </p>
                   </div>
 
                   {proj.technologies && proj.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                    <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-200/80 dark:border-slate-800">
                       {proj.technologies.map((tech, i) => (
                         <span
                           key={i}
-                          className="text-[11px] font-semibold px-3 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50"
+                          className="text-xs font-bold px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300/60 dark:border-slate-700"
                         >
                           {tech}
                         </span>
@@ -182,17 +182,17 @@ export default function ModernTemplate({
           <section key="exp" id={sectionMeta.experience.id} className="py-20">
             <div className="mb-12">
               <span
-                className="text-xs font-bold uppercase tracking-[0.25em] block mb-2"
+                className="text-xs font-black uppercase tracking-[0.25em] block mb-2"
                 style={{ color: accentColor }}
               >
                 Career Journey
               </span>
-              <h2 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${textClass}`}>
+              <h2 className={`text-3xl md:text-4xl font-black tracking-tight ${textClass}`}>
                 Professional Experience
               </h2>
             </div>
 
-            <div className="relative border-l-2 border-slate-200 dark:border-slate-800 ml-4 md:ml-8 space-y-12 pl-6 md:pl-10">
+            <div className="relative border-l-2 border-slate-300 dark:border-slate-700 ml-4 md:ml-8 space-y-12 pl-6 md:pl-10">
               {data.experiences.map((exp, idx) => (
                 <motion.div
                   key={idx}
@@ -202,21 +202,20 @@ export default function ModernTemplate({
                   transition={{ delay: idx * 0.1 }}
                   className="relative group"
                 >
-                  {/* Timeline Bullet Node */}
                   <div
-                    className="absolute -left-[31px] md:-left-[47px] top-1.5 w-4 h-4 rounded-full border-4 border-white dark:border-[#0b0f19] shadow-md transition-transform group-hover:scale-125"
+                    className="absolute -left-[31px] md:-left-[47px] top-2 w-4 h-4 rounded-full border-4 border-white dark:border-[#090d16] shadow-md"
                     style={{ backgroundColor: accentColor }}
                   ></div>
 
-                  <div className={`p-8 md:p-10 rounded-3xl border shadow-sm ${cardBgClass}`}>
+                  <div className={`p-8 md:p-10 rounded-3xl border ${cardBgClass}`}>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
                       <div>
                         <h3 className={`text-2xl font-bold ${textClass}`}>{exp.title}</h3>
-                        <p className="text-sm font-semibold tracking-wide" style={{ color: accentColor }}>
+                        <p className="text-base font-bold tracking-wide mt-1" style={{ color: accentColor }}>
                           {exp.company}
                         </p>
                       </div>
-                      <span className="text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 self-start md:self-auto border border-slate-200/40 dark:border-slate-700/40">
+                      <span className="text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300/60 dark:border-slate-700 self-start md:self-auto">
                         {exp.start_date} — {exp.end_date || 'Present'}
                       </span>
                     </div>
@@ -224,8 +223,8 @@ export default function ModernTemplate({
                     {exp.description && exp.description.length > 0 && (
                       <ul className="space-y-3 mt-6">
                         {exp.description.map((desc, i) => (
-                          <li key={i} className={`text-sm md:text-base leading-relaxed ${secondaryTextClass} flex items-start gap-3`}>
-                            <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600"></span>
+                          <li key={i} className={`text-base leading-relaxed ${secondaryTextClass} font-medium flex items-start gap-3`}>
+                            <span className="shrink-0 mt-2 w-2 h-2 rounded-full bg-slate-500 dark:bg-slate-400"></span>
                             <span>{desc}</span>
                           </li>
                         ))}
@@ -243,12 +242,12 @@ export default function ModernTemplate({
           <section key="skills" id={sectionMeta.skills.id} className="py-20">
             <div className="text-center mb-12">
               <span
-                className="text-xs font-bold uppercase tracking-[0.25em] block mb-2"
+                className="text-xs font-black uppercase tracking-[0.25em] block mb-2"
                 style={{ color: accentColor }}
               >
                 Technical Competencies
               </span>
-              <h2 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${textClass}`}>
+              <h2 className={`text-3xl md:text-4xl font-black tracking-tight ${textClass}`}>
                 Tools & Technologies
               </h2>
             </div>
@@ -257,10 +256,10 @@ export default function ModernTemplate({
               {data.skills.map((skill, idx) => (
                 <motion.div
                   key={idx}
-                  whileHover={{ scale: 1.06, y: -2 }}
-                  className={`text-sm md:text-base font-semibold px-6 py-3.5 rounded-2xl border shadow-sm ${cardBgClass} ${textClass} flex items-center gap-2 cursor-default`}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  className={`text-sm md:text-base font-bold px-6 py-3.5 rounded-2xl border ${cardBgClass} ${textClass} flex items-center gap-2.5 cursor-default`}
                 >
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: accentColor }}></span>
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: accentColor }}></span>
                   {skill}
                 </motion.div>
               ))}
@@ -273,31 +272,31 @@ export default function ModernTemplate({
           <section key="edu" id={sectionMeta.education.id} className="py-20">
             <div className="mb-12 text-center">
               <span
-                className="text-xs font-bold uppercase tracking-[0.25em] block mb-2"
+                className="text-xs font-black uppercase tracking-[0.25em] block mb-2"
                 style={{ color: accentColor }}
               >
                 Academic Background
               </span>
-              <h2 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${textClass}`}>
+              <h2 className={`text-3xl md:text-4xl font-black tracking-tight ${textClass}`}>
                 Education
               </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {data.education.map((edu, idx) => (
-                <div key={idx} className={`p-8 rounded-3xl border shadow-sm ${cardBgClass}`}>
+                <div key={idx} className={`p-8 rounded-3xl border ${cardBgClass}`}>
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <h3 className={`text-xl font-bold ${textClass}`}>{edu.degree}</h3>
                     {edu.graduation_year && (
-                      <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                      <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300/60 dark:border-slate-700">
                         {edu.graduation_year}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm font-semibold mb-2" style={{ color: accentColor }}>
+                  <p className="text-base font-bold mb-2" style={{ color: accentColor }}>
                     {edu.institution}
                   </p>
-                  {edu.field && <p className={`text-xs ${secondaryTextClass}`}>{edu.field}</p>}
+                  {edu.field && <p className={`text-sm font-medium ${secondaryTextClass}`}>{edu.field}</p>}
                 </div>
               ))}
             </div>
@@ -309,12 +308,12 @@ export default function ModernTemplate({
           <section key="certs" id={sectionMeta.certifications.id} className="py-20">
             <div className="mb-12 text-center">
               <span
-                className="text-xs font-bold uppercase tracking-[0.25em] block mb-2"
+                className="text-xs font-black uppercase tracking-[0.25em] block mb-2"
                 style={{ color: accentColor }}
               >
                 Validated Skills
               </span>
-              <h2 className={`text-3xl md:text-4xl font-extrabold tracking-tight ${textClass}`}>
+              <h2 className={`text-3xl md:text-4xl font-black tracking-tight ${textClass}`}>
                 Certifications
               </h2>
             </div>
@@ -323,12 +322,12 @@ export default function ModernTemplate({
               {data.certifications.map((cert, idx) => (
                 <div
                   key={idx}
-                  className={`p-6 rounded-2xl border ${cardBgClass} text-center flex items-center justify-center gap-3 shadow-sm`}
+                  className={`p-6 rounded-2xl border ${cardBgClass} text-center flex items-center justify-center gap-3`}
                 >
                   <svg className="w-5 h-5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className={`${textClass} text-sm font-semibold`}>{cert}</p>
+                  <p className={`${textClass} text-sm font-bold`}>{cert}</p>
                 </div>
               ))}
             </div>
@@ -342,15 +341,9 @@ export default function ModernTemplate({
 
   return (
     <div className={`min-h-screen ${mainBgClass} selection:bg-blue-500/20 font-sans relative overflow-hidden`}>
-      {/* Background Glowing Orb */}
-      <div
-        className="absolute top-20 left-1/2 -translate-x-1/2 w-[700px] h-[700px] opacity-15 blur-[140px] rounded-full pointer-events-none"
-        style={{ backgroundColor: accentColor }}
-      ></div>
-
       <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         {/* Modern Hero Section */}
-        <section id="about" className="relative flex flex-col items-center justify-center text-center pt-24 pb-20 min-h-[75vh]">
+        <section id="about" className="relative flex flex-col items-center justify-center text-center pt-24 pb-20 min-h-[70vh]">
           {photoUrl && (
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -361,13 +354,9 @@ export default function ModernTemplate({
               <img
                 src={photoUrl}
                 alt={displayName}
-                className="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover p-1.5 border-2 shadow-xl group-hover:scale-105 transition-all duration-300"
+                className="w-36 h-36 rounded-full object-cover p-1.5 border-2 shadow-2xl transition-transform duration-300"
                 style={{ borderColor: accentColor }}
               />
-              <div
-                className="absolute inset-0 rounded-full blur-md opacity-40 group-hover:opacity-70 transition-opacity -z-10"
-                style={{ backgroundColor: accentColor }}
-              ></div>
             </motion.div>
           )}
 
@@ -379,24 +368,24 @@ export default function ModernTemplate({
           >
             {primaryRole && (
               <div
-                className="mb-6 inline-flex items-center gap-2 uppercase tracking-[0.3em] font-bold text-xs px-5 py-2.5 rounded-full border shadow-sm backdrop-blur-md"
+                className="mb-6 inline-flex items-center gap-2 uppercase tracking-[0.3em] font-extrabold text-xs px-5 py-2.5 rounded-full border shadow-sm"
                 style={{
                   color: accentColor,
                   borderColor: `${accentColor}44`,
-                  backgroundColor: `${accentColor}11`,
+                  backgroundColor: `${accentColor}15`,
                 }}
               >
-                <span className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: accentColor }}></span>
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: accentColor }}></span>
                 {primaryRole} {location && `— ${location}`}
               </div>
             )}
 
-            <h1 className={`text-5xl md:text-7xl font-extrabold ${textClass} tracking-tight mb-8 leading-[1.1]`}>
+            <h1 className={`text-5xl md:text-7xl font-black ${textClass} tracking-tight mb-8 leading-[1.1]`}>
               {displayName}
             </h1>
 
             {data.summary && (
-              <p className={`text-lg md:text-xl ${secondaryTextClass} max-w-3xl mx-auto leading-relaxed font-normal mb-10`}>
+              <p className={`text-lg md:text-xl ${secondaryTextClass} max-w-3xl mx-auto leading-relaxed font-medium mb-10`}>
                 {data.summary}
               </p>
             )}
@@ -404,28 +393,25 @@ export default function ModernTemplate({
             <div className="flex flex-wrap items-center justify-center gap-4 no-print">
               <a
                 href="#projects"
-                className="px-8 py-4 rounded-full text-sm font-bold text-white shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
-                style={{
-                  backgroundColor: accentColor,
-                  boxShadow: `0 10px 25px -5px ${accentColor}66`,
-                }}
+                className="px-8 py-4 rounded-full text-sm font-extrabold text-white shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-2"
+                style={{ backgroundColor: accentColor }}
               >
                 View Selected Work
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                 </svg>
               </a>
               <a
                 href="#contact"
-                className={`px-8 py-4 rounded-full text-sm font-bold border ${cardBgClass} ${textClass} hover:-translate-y-1 transition-all duration-300 shadow-sm`}
+                className={`px-8 py-4 rounded-full text-sm font-extrabold border ${cardBgClass} ${textClass} hover:scale-105 transition-all duration-300`}
               >
                 Get In Touch
               </a>
             </div>
 
             {availableForHire && (
-              <div className="mt-8 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-widest no-print">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <div className="mt-8 inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-black uppercase tracking-widest no-print">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 Available for New Roles
               </div>
             )}
@@ -439,22 +425,22 @@ export default function ModernTemplate({
           ))}
 
           {/* Contact Section */}
-          <section id="contact" className="py-24 border-t border-slate-200/80 dark:border-slate-800/80">
+          <section id="contact" className="py-24 border-t border-slate-200 dark:border-slate-800">
             <div className="max-w-3xl mx-auto text-center">
-              <span className="text-xs font-bold uppercase tracking-[0.25em] block mb-2" style={{ color: accentColor }}>
+              <span className="text-xs font-black uppercase tracking-[0.25em] block mb-2" style={{ color: accentColor }}>
                 Get In Touch
               </span>
-              <h2 className={`text-4xl md:text-5xl font-extrabold ${textClass} tracking-tight mb-6`}>
+              <h2 className={`text-4xl md:text-5xl font-black ${textClass} tracking-tight mb-6`}>
                 Let's collaborate
               </h2>
-              <p className={`${secondaryTextClass} text-lg mb-10`}>
+              <p className={`${secondaryTextClass} text-lg font-medium mb-10`}>
                 Whether you have a full-time role, consulting project, or technical initiative, my inbox is open.
               </p>
               <div className="flex justify-center items-center gap-4 flex-wrap no-print">
                 {data.contact.email && (
                   <a
                     href={`mailto:${data.contact.email}`}
-                    className="px-6 py-3.5 rounded-full text-sm font-bold text-white shadow-lg transition-transform hover:scale-105 flex items-center gap-2"
+                    className="px-7 py-4 rounded-full text-sm font-extrabold text-white shadow-lg transition-transform hover:scale-105 flex items-center gap-2"
                     style={{ backgroundColor: accentColor }}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -468,7 +454,7 @@ export default function ModernTemplate({
                     href={data.contact.linkedin}
                     target="_blank"
                     rel="noreferrer"
-                    className={`px-6 py-3.5 rounded-full text-sm font-bold border ${cardBgClass} ${textClass} hover:scale-105 transition-transform flex items-center gap-2`}
+                    className={`px-7 py-4 rounded-full text-sm font-extrabold border ${cardBgClass} ${textClass} hover:scale-105 transition-transform`}
                   >
                     LinkedIn
                   </a>
@@ -478,7 +464,7 @@ export default function ModernTemplate({
                     href={data.contact.github}
                     target="_blank"
                     rel="noreferrer"
-                    className={`px-6 py-3.5 rounded-full text-sm font-bold border ${cardBgClass} ${textClass} hover:scale-105 transition-transform flex items-center gap-2`}
+                    className={`px-7 py-4 rounded-full text-sm font-extrabold border ${cardBgClass} ${textClass} hover:scale-105 transition-transform`}
                   >
                     GitHub
                   </a>
@@ -489,7 +475,7 @@ export default function ModernTemplate({
         </div>
       </main>
 
-      <footer className="py-8 text-center text-xs font-semibold text-slate-400 dark:text-slate-600 border-t border-slate-200/60 dark:border-slate-800/60">
+      <footer className="py-8 text-center text-xs font-bold text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800">
         &copy; {new Date().getFullYear()} {displayName}. All rights reserved.
       </footer>
     </div>
