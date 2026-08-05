@@ -131,3 +131,30 @@ export interface UserResponse {
   created_at: string;
 }
 
+export interface MatchedSkill {
+  name: string;
+  importance?: string;
+}
+
+export interface MissingSkill {
+  name: string;
+  importance?: string;
+  suggestion?: string;
+}
+
+export interface JobMatchResponse {
+  match_score: number;
+  matched_skills: MatchedSkill[];
+  missing_skills: MissingSkill[];
+  strengths: string[];
+  improvements: string[];
+  suggested_bullet_rewrites: string[];
+}
+
+export interface CoverLetterResponse {
+  company_name?: string;
+  job_title?: string;
+  cover_letter_text: string;
+}
+
+

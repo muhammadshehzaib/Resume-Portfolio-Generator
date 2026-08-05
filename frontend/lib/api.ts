@@ -1,6 +1,7 @@
 import { 
   PortfolioResponse, ParsedResume, PortfolioSettings, TailorResult, 
-  SuggestionResult, RankingJobResponse, AnalyticsResponse, TokenResponse, UserResponse 
+  SuggestionResult, RankingJobResponse, AnalyticsResponse, TokenResponse, UserResponse,
+  JobMatchResponse, CoverLetterResponse
 } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -300,4 +301,47 @@ export async function chatWithPortfolioAI(
 
   return response.json();
 }
+
+export async function analyzeJobMatch(
+  portfolioId: string,
+  jobDescription: string
+): Promise<JobMatchResponse> {
+  const response = await fetch(`${API_URL}/api/portfolio/${portfolioId}/job-match`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({ job_description: jobDescription }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Job Match analysis failed' }));
+    throw new Error(error.detail || 'Failed to analyze job match');
+  }
+
+  return response.json();
+}
+
+export async function generateCoverLetter(
+  portfolioId: string,
+  jobDescription: string
+): Promise<CoverLetterResponse> {
+  const response = await fetch(`${API_URL}/api/portfolio/${portfolioId}/cover-letter`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({ job_description: jobDescription }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Cover Letter generation failed' }));
+    throw new Error(error.detail || 'Failed to generate cover letter');
+  }
+
+  return response.json();
+}
+
 

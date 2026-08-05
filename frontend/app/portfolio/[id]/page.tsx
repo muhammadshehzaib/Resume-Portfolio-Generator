@@ -18,6 +18,7 @@ import { getPortfolio, updatePortfolio, updateSettings, downloadPortfolioPDF } f
 import { PortfolioResponse, ParsedResume, PortfolioSettings } from '@/lib/types';
 import SettingsPanel from '@/components/portfolio/SettingsPanel';
 import AIChatWidget from '@/components/portfolio/AIChatWidget';
+import JobMatcherModal from '@/components/portfolio/JobMatcherModal';
 
 type NavItem = { id: string; label: string; show: boolean };
 
@@ -39,6 +40,7 @@ export default function PortfolioPage() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showAtsScore, setShowAtsScore] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showJobMatcher, setShowJobMatcher] = useState(false);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -482,6 +484,13 @@ export default function PortfolioPage() {
                   </span>
                 </button>
                 <button
+                  onClick={() => setShowJobMatcher(true)}
+                  className="px-3 py-2 text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded transition-all flex items-center gap-1.5"
+                  title="Target Job Matcher & Cover Letter Generator"
+                >
+                  <span>🎯 Job Match</span>
+                </button>
+                <button
                   onClick={() => setShowQRCode(true)}
                   className="px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-black hover:bg-slate-50 rounded transition-all"
                 >
@@ -597,6 +606,11 @@ export default function PortfolioPage() {
         portfolioId={id as string}
         isOpen={showAnalytics}
         onClose={() => setShowAnalytics(false)}
+      />
+      <JobMatcherModal
+        portfolioId={id as string}
+        isOpen={showJobMatcher}
+        onClose={() => setShowJobMatcher(false)}
       />
 
       {!isPreviewMode && (

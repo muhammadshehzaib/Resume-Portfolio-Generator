@@ -13,9 +13,10 @@ from app.models.portfolio import Portfolio, PortfolioView
 from app.schemas.portfolio import (
     PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, 
     TailorRequest, TailorResult, SuggestionResult, AnalyticsResponse,
-    GeographicStat, TimeSeriesStat, ChatRequest, ChatResponse
+    GeographicStat, TimeSeriesStat, ChatRequest, ChatResponse,
+    JobMatchRequest, JobMatchResponse, CoverLetterRequest, CoverLetterResponse
 )
-from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service, suggestion_service, pdf_generator
+from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service, suggestion_service, pdf_generator, job_matcher
 from app.services.llm import ask_portfolio_ai
 from app.auth import get_current_user, require_role
 from app.models.user import User
@@ -541,4 +542,47 @@ async def chat_with_portfolio_by_slug(
     except Exception as e:
         print(f"Chat error: {str(e)}")
         raise HTTPException(500, f"Failed to get AI response: {str(e)}")
+
+
+@router.post("/portfolio/{portfolio_id}/job-match", response_model=JobMatchResponse)
+async def analyze_job_match_endpoint(
+    portfolio_id: str,
+    req: JobMatchRequest,
+    db: Session = Depends(get_db)
+):
+    """Analyze job match heatmap and keyword gaps for a portfolio."""
+    portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
+    if not portfolio:
+        raise HTTPException(404, "Portfolio not found")
+
+    parsed_data = json.loads(portfolio.parsed_data)
+
+    try:
+        match_data = job_matcher.analyze_job_match(parsed_data, req.job_description)
+        return JobMatchResponse.model_validate(match_data)
+    except Exception as e:
+        print(f"Job Match Error: {str(e)}")
+        raise HTTPException(500, f"Failed to analyze job match: {str(e)}")
+
+
+@router.post("/portfolio/{portfolio_id}/cover-letter", response_model=CoverLetterResponse)
+async def generate_cover_letter_endpoint(
+    portfolio_id: str,
+    req: CoverLetterRequest,
+    db: Session = Depends(get_db)
+):
+    """Generate a tailored cover letter based on portfolio and target job description."""
+    portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
+    if not portfolio:
+        raise HTTPException(404, "Portfolio not found")
+
+    parsed_data = json.loads(portfolio.parsed_data)
+
+    try:
+        cover_data = job_matcher.generate_cover_letter(parsed_data, req.job_description)
+        return CoverLetterResponse.model_validate(cover_data)
+    except Exception as e:
+        print(f"Cover Letter Error: {str(e)}")
+        raise HTTPException(500, f"Failed to generate cover letter: {str(e)}")
+
 

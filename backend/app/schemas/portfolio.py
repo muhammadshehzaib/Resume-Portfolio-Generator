@@ -124,3 +124,32 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
 
+class MatchedSkill(BaseModel):
+    name: str
+    importance: Optional[str] = "high"
+
+class MissingSkill(BaseModel):
+    name: str
+    importance: Optional[str] = "high"
+    suggestion: Optional[str] = None
+
+class JobMatchRequest(BaseModel):
+    job_description: str
+
+class JobMatchResponse(BaseModel):
+    match_score: int
+    matched_skills: list[MatchedSkill] = []
+    missing_skills: list[MissingSkill] = []
+    strengths: list[str] = []
+    improvements: list[str] = []
+    suggested_bullet_rewrites: list[str] = []
+
+class CoverLetterRequest(BaseModel):
+    job_description: str
+
+class CoverLetterResponse(BaseModel):
+    company_name: Optional[str] = None
+    job_title: Optional[str] = None
+    cover_letter_text: str
+
+
