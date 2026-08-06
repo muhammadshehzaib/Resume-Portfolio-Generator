@@ -119,6 +119,7 @@ export default function ModernTemplate({
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.08 }}
+                  data-project-name={proj.name}
                   className={`group relative rounded-3xl border p-8 md:p-10 transition-all duration-300 flex flex-col justify-between ${cardBgClass}`}
                 >
                   <div>

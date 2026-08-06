@@ -348,4 +348,22 @@ export async function generateCoverLetter(
   return response.json();
 }
 
+export async function recordAnalyticsEvent(
+  portfolioId: string,
+  event: { view_id?: string; duration_seconds?: number; project_clicked?: string }
+): Promise<void> {
+  try {
+    await fetch(`${API_URL}/api/portfolio/${portfolioId}/event`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    });
+  } catch (err) {
+    // Fail silently for tracking
+  }
+}
+
+
 

@@ -95,11 +95,34 @@ export interface TimeSeriesStat {
   uniques: number;
 }
 
+export interface RecruiterFeedItem {
+  id: string;
+  location: string;
+  device_type: string;
+  referrer: string;
+  duration_formatted: string;
+  engagement_score: number;
+  engagement_rating: string;
+  clicked_projects: string[];
+  timestamp_ago: string;
+}
+
+export interface ProjectClickItem {
+  project_name: string;
+  clicks: number;
+  percentage: number;
+}
+
 export interface AnalyticsResponse {
   total_views: number;
   unique_visitors: number;
   geographic_stats: GeographicStat[];
   time_series: TimeSeriesStat[];
+  recruiter_engagement_score: number;
+  recruiter_feed: RecruiterFeedItem[];
+  project_clicks: ProjectClickItem[];
+  device_breakdown: Record<string, number>;
+  referral_breakdown: Record<string, number>;
 }
 
 export interface RankedResumeItem {

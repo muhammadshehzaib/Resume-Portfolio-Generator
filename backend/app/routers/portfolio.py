@@ -14,7 +14,8 @@ from app.schemas.portfolio import (
     PortfolioResponse, ParsedResume, CustomColors, PortfolioSettings, 
     TailorRequest, TailorResult, SuggestionResult, AnalyticsResponse,
     GeographicStat, TimeSeriesStat, ChatRequest, ChatResponse,
-    JobMatchRequest, JobMatchResponse, CoverLetterRequest, CoverLetterResponse
+    JobMatchRequest, JobMatchResponse, CoverLetterRequest, CoverLetterResponse,
+    RecruiterFeedItem, ProjectClickItem, AnalyticsEventRequest
 )
 from app.services import pdf_parser, ai_extractor, ats_scorer, tailor_service, suggestion_service, pdf_generator, job_matcher
 from app.services.llm import ask_portfolio_ai
@@ -24,15 +25,35 @@ from app.config import settings
 
 router = APIRouter()
 
+def parse_device_type(user_agent: str) -> str:
+    if not user_agent:
+        return "Desktop"
+    ua = user_agent.lower()
+    if "mobile" in ua or "iphone" in ua or "android" in ua:
+        return "Mobile"
+    elif "ipad" in ua or "tablet" in ua:
+        return "Tablet"
+    return "Desktop"
+
+def parse_referrer(ref: str) -> str:
+    if not ref:
+        return "Direct"
+    ref_lower = ref.lower()
+    if "linkedin" in ref_lower:
+        return "LinkedIn"
+    elif "github" in ref_lower:
+        return "GitHub"
+    elif "google" in ref_lower:
+        return "Google"
+    elif "twitter" in ref_lower or "x.com" in ref_lower or "t.co" in ref_lower:
+        return "Twitter"
+    return "Referral"
+
 async def record_view(portfolio_id: str, request: Request, db: Session):
-    """Helper to record a detailed portfolio view with GeoIP resolution."""
-    # 1. Get IP address
+    """Helper to record a detailed portfolio view with GeoIP resolution, device type, and referrer."""
     ip_address = request.client.host if request.client else "unknown"
-    
-    # 2. Hash IP for privacy and uniqueness tracking
     ip_hash = hashlib.sha256(ip_address.encode()).hexdigest()
     
-    # 3. Resolve Geo (if not previously resolved recently or just do it simple for now)
     country, city = None, None
     if ip_address != "127.0.0.1" and ip_address != "unknown":
         try:
@@ -43,23 +64,30 @@ async def record_view(portfolio_id: str, request: Request, db: Session):
                     country = data.get("country")
                     city = data.get("city")
         except Exception:
-            pass # Fail silently
-            
-    # 4. Save to DB
+            pass
+
+    user_agent = request.headers.get("user-agent", "")
+    referer = request.headers.get("referer", "")
+    device_type = parse_device_type(user_agent)
+    referrer_name = parse_referrer(referer)
+
     new_view = PortfolioView(
         portfolio_id=portfolio_id,
         ip_hash=ip_hash,
         country=country,
-        city=city
+        city=city,
+        device_type=device_type,
+        referrer=referrer_name,
+        duration_seconds=5
     )
     db.add(new_view)
     
-    # Also increment the legacy counter for quick stats
     portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id).first()
     if portfolio:
         portfolio.view_count = (portfolio.view_count or 0) + 1
         
     db.commit()
+    return new_view.id
 
 @router.get("/portfolio/{portfolio_id}/meta", response_model=PortfolioResponse)
 async def get_portfolio_meta(portfolio_id: str, db: Session = Depends(get_db)):
@@ -427,6 +455,34 @@ async def get_portfolio_by_slug(slug: str, request: Request, db: Session = Depen
     
     return _to_response(portfolio)
 
+@router.post("/portfolio/{portfolio_id}/event")
+async def record_analytics_event(
+    portfolio_id: str,
+    req: AnalyticsEventRequest,
+    db: Session = Depends(get_db)
+):
+    """Record duration heartbeat or project click event for a portfolio view."""
+    query = db.query(PortfolioView).filter(PortfolioView.portfolio_id == portfolio_id)
+    if req.view_id:
+        query = query.filter(PortfolioView.id == req.view_id)
+
+    view = query.order_by(PortfolioView.timestamp.desc()).first()
+    if not view:
+        return {"status": "ignored"}
+
+    if req.duration_seconds and req.duration_seconds > (view.duration_seconds or 0):
+        view.duration_seconds = req.duration_seconds
+
+    if req.project_clicked:
+        current_clicks = json.loads(view.clicked_projects) if view.clicked_projects else []
+        if req.project_clicked not in current_clicks:
+            current_clicks.append(req.project_clicked)
+            view.clicked_projects = json.dumps(current_clicks)
+
+    db.commit()
+    return {"status": "ok", "view_id": view.id}
+
+
 @router.get("/portfolio/{portfolio_id}/analytics", response_model=AnalyticsResponse)
 async def get_portfolio_analytics(
     portfolio_id: str,
@@ -442,7 +498,7 @@ async def get_portfolio_analytics(
 
     # 1. Total & Unique
     total_views = db.query(PortfolioView).filter(PortfolioView.portfolio_id == portfolio_id).count()
-    unique_visitors = db.query(func.count(func.distinct(PortfolioView.ip_hash))).filter(PortfolioView.portfolio_id == portfolio_id).scalar()
+    unique_visitors = db.query(func.count(func.distinct(PortfolioView.ip_hash))).filter(PortfolioView.portfolio_id == portfolio_id).scalar() or 0
 
     # 2. Geographic Stats
     geo_stats = db.query(
@@ -470,16 +526,108 @@ async def get_portfolio_analytics(
         day_uniques = db.query(func.count(func.distinct(PortfolioView.ip_hash))).filter(
             PortfolioView.portfolio_id == portfolio_id,
             func.date(PortfolioView.timestamp) == day.date()
-        ).scalar()
+        ).scalar() or 0
         
         time_series.append(TimeSeriesStat(date=day_str, views=day_views, uniques=day_uniques))
 
+    # 4. Device Breakdown
+    devices_raw = db.query(
+        PortfolioView.device_type,
+        func.count(PortfolioView.id)
+    ).filter(PortfolioView.portfolio_id == portfolio_id).group_by(PortfolioView.device_type).all()
+    device_breakdown = {row[0] or "Desktop": row[1] for row in devices_raw}
+
+    # 5. Referral Breakdown
+    referral_raw = db.query(
+        PortfolioView.referrer,
+        func.count(PortfolioView.id)
+    ).filter(PortfolioView.portfolio_id == portfolio_id).group_by(PortfolioView.referrer).all()
+    referral_breakdown = {row[0] or "Direct": row[1] for row in referral_raw}
+
+    # 6. Recruiter Activity Feed & Engagement Scores
+    recent_views = db.query(PortfolioView).filter(
+        PortfolioView.portfolio_id == portfolio_id
+    ).order_by(PortfolioView.timestamp.desc()).limit(15).all()
+
+    recruiter_feed = []
+    total_scores = []
+    project_clicks_map = {}
+
+    now = datetime.now()
+    for v in recent_views:
+        loc = f"{v.city}, {v.country}" if v.city and v.country else (v.country or v.city or "Unknown Location")
+        dev = v.device_type or "Desktop"
+        ref = v.referrer or "Direct"
+        duration_sec = v.duration_seconds or 5
+        
+        if duration_sec >= 60:
+            dur_fmt = f"{duration_sec // 60}.{(duration_sec % 60) // 6} min"
+        else:
+            dur_fmt = f"{duration_sec} sec"
+
+        clicked_list = json.loads(v.clicked_projects) if v.clicked_projects else []
+        for p_name in clicked_list:
+            project_clicks_map[p_name] = project_clicks_map.get(p_name, 0) + 1
+
+        # Engagement score logic: Base 40 + duration pts + click pts
+        duration_pts = min(40, (duration_sec // 15) * 5)
+        click_pts = min(20, len(clicked_list) * 10)
+        score = min(100, 40 + duration_pts + click_pts)
+        total_scores.append(score)
+
+        if score >= 80:
+            rating = "🔥 High Engagement Lead"
+        elif score >= 55:
+            rating = "⚡ Engaged Prospect"
+        else:
+            rating = "👀 Casual Visitor"
+
+        diff_sec = (now - v.timestamp).total_seconds() if v.timestamp else 0
+        if diff_sec < 60:
+            time_ago = "Just now"
+        elif diff_sec < 3600:
+            time_ago = f"{int(diff_sec // 60)} mins ago"
+        elif diff_sec < 86400:
+            time_ago = f"{int(diff_sec // 3600)} hours ago"
+        else:
+            time_ago = f"{int(diff_sec // 86400)} days ago"
+
+        recruiter_feed.append(RecruiterFeedItem(
+            id=v.id,
+            location=loc,
+            device_type=dev,
+            referrer=ref,
+            duration_formatted=dur_fmt,
+            engagement_score=score,
+            engagement_rating=rating,
+            clicked_projects=clicked_list,
+            timestamp_ago=time_ago
+        ))
+
+    total_clicks = sum(project_clicks_map.values()) or 1
+    project_clicks = [
+        ProjectClickItem(
+            project_name=name,
+            clicks=cnt,
+            percentage=int((cnt / total_clicks) * 100)
+        )
+        for name, cnt in sorted(project_clicks_map.items(), key=lambda x: x[1], reverse=True)
+    ]
+
+    avg_engagement_score = int(sum(total_scores) / len(total_scores)) if total_scores else 65
+
     return AnalyticsResponse(
         total_views=total_views,
-        unique_visitors=unique_visitors or 0,
+        unique_visitors=unique_visitors,
         geographic_stats=geographic_stats,
-        time_series=time_series
+        time_series=time_series,
+        recruiter_engagement_score=avg_engagement_score,
+        recruiter_feed=recruiter_feed,
+        project_clicks=project_clicks,
+        device_breakdown=device_breakdown,
+        referral_breakdown=referral_breakdown
     )
+
 
 @router.get("/slug/check")
 async def check_slug_availability(

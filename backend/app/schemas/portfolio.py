@@ -99,11 +99,38 @@ class TimeSeriesStat(BaseModel):
     views: int
     uniques: int
 
+class RecruiterFeedItem(BaseModel):
+    id: str
+    location: str
+    device_type: str
+    referrer: str
+    duration_formatted: str
+    engagement_score: int
+    engagement_rating: str
+    clicked_projects: list[str] = []
+    timestamp_ago: str
+
+class ProjectClickItem(BaseModel):
+    project_name: str
+    clicks: int
+    percentage: int
+
+class AnalyticsEventRequest(BaseModel):
+    view_id: Optional[str] = None
+    duration_seconds: Optional[int] = 0
+    project_clicked: Optional[str] = None
+
 class AnalyticsResponse(BaseModel):
     total_views: int
     unique_visitors: int
     geographic_stats: list[GeographicStat]
     time_series: list[TimeSeriesStat]
+    recruiter_engagement_score: int = 0
+    recruiter_feed: list[RecruiterFeedItem] = []
+    project_clicks: list[ProjectClickItem] = []
+    device_breakdown: dict[str, int] = {}
+    referral_breakdown: dict[str, int] = {}
+
 
 class RankedResumeItem(BaseModel):
     id: str

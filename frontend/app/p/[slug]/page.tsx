@@ -9,6 +9,7 @@ import { getPortfolioBySlug } from '@/lib/api';
 import { PortfolioResponse } from '@/lib/types';
 
 import AIChatWidget from '@/components/portfolio/AIChatWidget';
+import { useTracker } from '@/lib/useTracker';
 
 export default function PublicPortfolioPage() {
   const params = useParams();
@@ -16,6 +17,8 @@ export default function PublicPortfolioPage() {
   const [portfolio, setPortfolio] = useState<PortfolioResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
+
+  useTracker(portfolio?.id);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
